@@ -35,7 +35,7 @@ export async function addProfile(p) {
     const { data, error } = await supabase.from('profiles').insert({
       name: p.name, country: p.country || '🇹🇷', age: p.age, online: true, admin: !!p.admin,
       devices: p.devices || [], bio: p.bio || '', tags: p.tags || [], socials: p.socials || {},
-      rating: 0, times: p.times || [], games: p.games || [],
+      rating: 0, times: p.times || [], games: p.games || [], user_id: p.user_id || null,
     }).select().single()
     if (error) throw error
     return rowToPlayer(data)
@@ -155,4 +155,39 @@ export async function saveSettings(part) {
     if (part.ads) row.ads = part.ads
     await supabase.from('site_settings').upsert(row, { onConflict: 'id' })
   } catch (e) { console.warn('[db] saveSettings', e.message) }
+}
+
+/* ---------- Kimlik doğrulama (Supabase Auth) ---------- */
+export async function signUp(email, password, meta) {
+  if (!supaEnabled) return { error: 'no-supabase' }
+  try {
+    const { data, error } = await supabase.auth.signUp({ email, password, options: { data: meta || {} } })
+    if (error) return { error: error.message }
+    return { user: data.user, session: data.session }
+  } catch (e) { return { error: e.message } }
+}
+export async function signIn(email, password) {
+  if (!supaEnabled) return { error: 'no-supabase' }
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+    if (error) return { error: error.message }
+    return { user: data.user, session: data.session }
+  } catch (e) { return { error: e.message } }
+}
+export async function signOut() {
+  if (!supaEnabled) return
+  try { await supabase.auth.signOut() } catch (e) { console.warn('[db] signOut', e.message) }
+}
+export async function getSession() {
+  if (!supaEnabled) return null
+  try { const { data } = await supabase.auth.getSession(); return data ? data.session : null }
+  catch (e) { console.warn('[db] getSession', e.message); return null }
+}
+export async function getMyProfile(userId) {
+  if (!supaEnabled || !userId) return null
+  try {
+    const { data, error } = await supabase.from('profiles').select('*').eq('user_id', userId).maybeSingle()
+    if (error) throw error
+    return data ? rowToPlayer(data) : null
+  } catch (e) { console.warn('[db] getMyProfile', e.message); return null }
 }

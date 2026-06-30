@@ -728,7 +728,7 @@ function Landing({ onStart, onLogin, onInfo, onBlog, siteCfg={ logoSize:42 } }){
 }
 
 /* ============================== REGISTER ============================== */
-function Register({ onDone, onBack, login }){
+function Register({ onDone, onBack, login, busy=false, error="" }){
   const [f, setF] = useState({ name:"", email:"", pass:"", dob:"", country:"Türkiye", city:"" });
   const set = (k,v) => setF(s => ({ ...s, [k]:v }));
   const valid = login ? (f.email && f.pass) : (f.name && f.email && f.pass && f.dob);
@@ -766,9 +766,10 @@ function Register({ onDone, onBack, login }){
                   <input className="input" placeholder="İstanbul" value={f.city} onChange={e=>set("city",e.target.value)} /></div>
               </>
             )}
-            <button className="btn btn-primary btn-block" disabled={!valid}
+            {error && <div style={{ background:"rgba(248,81,73,.1)", border:"1px solid rgba(248,81,73,.35)", color:"#ff9b95", fontSize:13, padding:"10px 12px", clipPath:"var(--notch-sm)" }}>{error}</div>}
+            <button className="btn btn-primary btn-block" disabled={!valid || busy}
               onClick={() => onDone(f)} style={{ marginTop:4 }}>
-              {login ? "Giriş Yap" : "Hesabı Oluştur"} <ChevronRight size={16} />
+              {busy ? "Lütfen bekle..." : (login ? "Giriş Yap" : "Hesabı Oluştur")} <ChevronRight size={16} />
             </button>
             <button className="btn btn-ghost btn-block btn-sm" onClick={onBack}>Geri</button>
           </div>
@@ -982,6 +983,9 @@ function App(){
   const { push, node: toasts } = useToasts();
   const [screen, setScreen] = useState("landing"); // landing | register | login | onboarding | app
   const [pendingName, setPendingName] = useState("");
+  const [authBusy, setAuthBusy] = useState(false);
+  const [authErr, setAuthErr] = useState("");
+  const [authUserId, setAuthUserId] = useState(null);
   const [user, setUser] = useState(DEFAULT_USER);
 
   const [tab, setTab] = useState("discover");
@@ -1077,6 +1081,57 @@ function App(){
     const t = setTimeout(()=>{ DB.saveSettings({ siteCfg, seo, ads }); }, 800);
     return ()=>clearTimeout(t);
   }, [siteCfg, seo, ads]);
+
+  // ---- Kimlik doğrulama (Supabase Auth) ----
+  const cevirHata = (m) => {
+    const x = String(m||"").toLowerCase();
+    if (x.includes("invalid login")) return "E-posta veya şifre hatalı.";
+    if (x.includes("already registered") || x.includes("already been registered") || x.includes("already exists")) return "Bu e-posta zaten kayıtlı. Giriş yapmayı dene.";
+    if (x.includes("at least 6") || (x.includes("password") && x.includes("6"))) return "Şifre en az 6 karakter olmalı.";
+    if (x.includes("unable to validate email") || (x.includes("email") && x.includes("invalid"))) return "Geçersiz e-posta adresi.";
+    if (x.includes("not confirmed") || x.includes("confirm")) return "E-postanı doğrulaman gerekiyor. Gelen kutunu kontrol et.";
+    if (x.includes("no-supabase")) return "Sunucu bağlantısı yok (demo modu).";
+    return m || "Bir hata oluştu.";
+  };
+  const COUNTRY_EMOJI = { "Türkiye":"🇹🇷","Almanya":"🇩🇪","Fransa":"🇫🇷","İngiltere":"🇬🇧","ABD":"🇺🇸","Diğer":"🌐" };
+  const doRegister = async (f) => {
+    setAuthErr("");
+    const country = COUNTRY_EMOJI[f.country] || "🇹🇷";
+    if (!DB || !DB.signUp) { setPendingName(f.name); setUser(u=>({ ...u, name:f.name||u.name, email:f.email, country, age:ageFromDob(f.dob)||u.age })); setScreen("onboarding"); return; }
+    setAuthBusy(true);
+    const res = await DB.signUp(f.email, f.pass, { name:f.name });
+    setAuthBusy(false);
+    if (res.error) { setAuthErr(cevirHata(res.error)); return; }
+    setPendingName(f.name);
+    setUser(u=>({ ...u, name:f.name||u.name, email:f.email, country, age:ageFromDob(f.dob)||u.age }));
+    if (res.session && res.user) { setAuthUserId(res.user.id); setScreen("onboarding"); }
+    else { setAuthErr("Hesabın oluşturuldu! E-postana gelen doğrulama bağlantısına tıkla, sonra giriş yap."); setScreen("login"); }
+  };
+  const doLogin = async (f) => {
+    setAuthErr("");
+    if (!DB || !DB.signIn) { setScreen("app"); setTab("discover"); return; }
+    setAuthBusy(true);
+    const res = await DB.signIn(f.email, f.pass);
+    setAuthBusy(false);
+    if (res.error) { setAuthErr(cevirHata(res.error)); return; }
+    setAuthUserId(res.user.id);
+    const prof = await DB.getMyProfile(res.user.id);
+    if (prof) { setUser({ ...prof, email: res.user.email }); setMyProfileId(prof.id); setScreen("app"); setTab("discover"); }
+    else { setScreen("onboarding"); }
+  };
+  const doLogout = async () => { if (DB && DB.signOut) await DB.signOut(); setAuthUserId(null); setMyProfileId(null); setUser(DEFAULT_USER); setScreen("landing"); };
+  useEffect(()=>{
+    if (!DB || !DB.getSession) return;
+    let active = true;
+    (async ()=>{
+      const session = await DB.getSession();
+      if (!active || !session || !session.user) return;
+      setAuthUserId(session.user.id);
+      const prof = await DB.getMyProfile(session.user.id);
+      if (active && prof) { setUser({ ...prof, email: session.user.email }); setMyProfileId(prof.id); setScreen("app"); }
+    })();
+    return ()=>{ active=false; };
+  }, []);
   const addComment = (pid,text,stars) => { setWalls(w=>({ ...w, [pid]:[{ id:"c"+Date.now(), author:user.name, text, stars, time:"şimdi", reported:false }, ...(w[pid]||[]) ] })); push("Yorumun yayınlandı","ok"); if(DB){ DB.addComment(pid,{author:user.name,text,stars}).then(()=>DB.getComments().then(w=>{ if(w) setWalls(w); })); } };
   const reportComment = (pid,cid) => {
     setWalls(w=>({ ...w, [pid]:(w[pid]||[]).map(c=>c.id===cid?{ ...c, reported:true }:c) }));
@@ -1117,18 +1172,18 @@ function App(){
   if (screen==="landing")
     return <Shell><Background/>
       <div className="landing-zoom" style={{ "--lz": siteCfg.landingScale }}>
-        <Landing onStart={()=>setScreen("register")} onLogin={()=>setScreen("login")} onInfo={()=>setScreen("pubinfo")} onBlog={()=>setScreen("pubblog")} siteCfg={siteCfg} />
+        <Landing onStart={()=>{ setAuthErr(""); setScreen("register"); }} onLogin={()=>{ setAuthErr(""); setScreen("login"); }} onInfo={()=>setScreen("pubinfo")} onBlog={()=>setScreen("pubblog")} siteCfg={siteCfg} />
         <div className="container" style={{ padding:"0 24px" }}><Footer text={siteCfg.footer} onNav={(p)=>setScreen("pub"+p)} /></div>
       </div>{toasts}</Shell>;
   if (screen==="register")
-    return <Shell><Background/><Register onBack={()=>setScreen("landing")}
-      onDone={(f)=>{ setPendingName(f.name); setUser(u=>({...u,name:f.name||u.name,email:f.email,age:ageFromDob(f.dob)||u.age})); setScreen("onboarding"); }} />{toasts}</Shell>;
+    return <Shell><Background/><Register onBack={()=>{ setAuthErr(""); setScreen("landing"); }}
+      onDone={doRegister} busy={authBusy} error={authErr} />{toasts}</Shell>;
   if (screen==="login")
-    return <Shell><Background/><Register login onBack={()=>setScreen("landing")}
-      onDone={()=>{ setScreen("app"); setTab("discover"); }} />{toasts}</Shell>;
+    return <Shell><Background/><Register login onBack={()=>{ setAuthErr(""); setScreen("landing"); }}
+      onDone={doLogin} busy={authBusy} error={authErr} />{toasts}</Shell>;
   if (screen==="onboarding")
     return <Shell><Background/><Onboarding initialName={pendingName}
-      onComplete={(data)=>{ setUser(u=>({...u, ...data})); if(DB){ DB.addProfile({ name:user.name, country:user.country, age:user.age, admin:false, devices:data.devices, bio:user.bio, tags:data.tags, socials:data.socials, games:data.games, times:data.times }).then(row=>{ if(row){ setMyProfileId(row.id); DB.getPlayers().then(r=>{ if(r&&r.length) setPlayers(r); }); } }); } setScreen("app"); push("Hoş geldin! Takım arkadaşlarını bulmaya başla","ok"); }} />{toasts}</Shell>;
+      onComplete={async (data)=>{ setUser(u=>({...u, ...data})); if(DB && DB.addProfile){ const row = await DB.addProfile({ name:user.name, country:user.country, age:user.age, admin:false, devices:data.devices, bio:user.bio, tags:data.tags, socials:data.socials, games:data.games, times:data.times, user_id:authUserId }); if(row){ setMyProfileId(row.id); if(DB.getPlayers){ const r=await DB.getPlayers(); if(r&&r.length) setPlayers(r); } } } setScreen("app"); push("Hoş geldin! Takım arkadaşlarını bulmaya başla","ok"); }} />{toasts}</Shell>;
   if (["pubinfo","pubblog","pubabout","pubprivacy","pubrules","pubcontact"].includes(screen))
     return <Shell><Background/>
       <div className="landing-zoom" style={{ position:"relative", zIndex:1, "--lz": siteCfg.landingScale }}>
@@ -1190,7 +1245,7 @@ function App(){
                 <div className="mono muted2" style={{ fontSize:10 }}>{user.country} {user.online!==false?"ONLINE":"OFFLINE"}</div>
               </div>
             </div>
-            <button className="nav-item" onClick={()=>{ setScreen("landing"); setUser(DEFAULT_USER); }}>
+            <button className="nav-item" onClick={doLogout}>
               <LogOut size={18} /> Çıkış Yap
             </button>
           </div>
@@ -1228,7 +1283,7 @@ function App(){
             {tab==="messages" && <MessagesView conversations={conversations} friends={friends} players={players} activeId={activeChat} setActiveId={setActiveChat} onSend={sendMessage} />}
             {tab==="profile" && <Profile user={user} setUser={setUser} push={push} ads={ads} />}
             {tab==="mygames" && <MyGames user={user} setUser={setUser} push={push} ads={ads} />}
-            {tab==="settings" && <SettingsView user={user} setUser={setUser} push={push} onLogout={()=>{ setScreen("landing"); setUser(DEFAULT_USER); }} />}
+            {tab==="settings" && <SettingsView user={user} setUser={setUser} push={push} onLogout={doLogout} />}
             {tab==="blog" && <BlogView ads={ads} onCTA={()=>setTab("discover")} />}
             {tab==="info" && <InfoView />}
             {tab==="admin" && user.admin && <AdminPanel banned={banned} onBan={banUser} onUnban={unbanUser} reports={commentReports} onDismissReport={dismissReport} onRemoveComment={removeComment} ads={ads} setAds={setAds} siteCfg={siteCfg} setSiteCfg={setSiteCfg} messages={contactMsgs} onMsgRead={markMsgRead} onMsgDelete={deleteMsg} seo={seo} setSeo={setSeo} players={players} />}

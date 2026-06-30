@@ -19,8 +19,10 @@ create table if not exists public.profiles (
   rating      numeric default 0,
   times       text[] default '{}',           -- aktif saatler: '19','20',...
   games       jsonb  default '[]'::jsonb,     -- [{ g, rank, role, roles, ps }]
+  user_id     uuid references auth.users(id), -- Supabase Auth kullanıcısı (kayıtlı kullanıcılar için)
   created_at  timestamptz default now()
 );
+create index if not exists profiles_user_id_idx on public.profiles(user_id);
 
 -- ----------- İletişim mesajları -----------
 create table if not exists public.contact_messages (
