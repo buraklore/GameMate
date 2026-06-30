@@ -135,8 +135,22 @@ a{color:inherit;text-decoration:none}
 .hours-presets{display:flex;flex-wrap:wrap;gap:7px;margin-top:13px}
 .hr-preset{padding:7px 14px;font-size:12px;background:var(--panel-2);border:1px solid var(--line);color:var(--muted);border-radius:999px;cursor:pointer;transition:all .12s}
 .hr-preset:hover{border-color:var(--cyan);color:var(--cyan)}
-.pcard{background:linear-gradient(150deg,#3a3a55,#1a1a28)!important;transition:transform .18s cubic-bezier(.2,.7,.3,1), box-shadow .22s ease}
-.pcard:hover{transform:translateY(-6px);background:linear-gradient(150deg,var(--gc,#7C3AED),#1a1a28)!important;box-shadow:0 26px 54px -20px var(--gc,rgba(139,92,246,.8)),0 0 40px -12px var(--gc,rgba(139,92,246,.5))}
+.pcard2{position:relative;border-radius:16px;background:linear-gradient(155deg,#34344e,#191926);padding:1px;transition:transform .18s cubic-bezier(.2,.7,.3,1), box-shadow .22s ease}
+.pcard2:hover{transform:translateY(-6px);box-shadow:0 26px 54px -20px var(--gc),0 0 42px -14px var(--gc)}
+.pcard2-banner{position:relative;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:13px 15px;border-radius:15px 15px 0 0;cursor:pointer;background:var(--gc);overflow:hidden}
+.pcard2-banner > *{position:relative;z-index:1}
+.pcard2-banner::before{content:"";position:absolute;inset:0;background:linear-gradient(112deg,rgba(15,15,24,.46),rgba(15,15,24,.93) 68%)}
+.pcard2-game{display:flex;align-items:center;gap:9px;min-width:0}
+.pcard2-gname{font-family:var(--ff-disp);font-weight:700;font-size:15px;color:#fff;letter-spacing:.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 1px 8px rgba(0,0,0,.5)}
+.pcard2-body{background:linear-gradient(180deg,#15151f,#0f0f18);border-radius:0 0 15px 15px;padding:14px 15px 15px}
+.pcard2-id{display:flex;align-items:center;gap:12px;margin-bottom:13px}
+.pcard2-name{font-weight:700;font-size:17px;color:#fff;cursor:pointer;letter-spacing:.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pcard2-meta{display:flex;align-items:center;gap:6px;margin-top:4px;font-family:var(--ff-mono);font-size:11px;color:var(--muted)}
+.pcard2-meta .dot{color:var(--muted-2)}
+.pcard2-status{flex-shrink:0;font-family:var(--ff-mono);font-size:8.5px;font-weight:700;letter-spacing:.09em;padding:3px 8px;border-radius:999px;align-self:flex-start}
+.pcard2-status.on{color:var(--volt);background:rgba(61,224,160,.13);border:1px solid rgba(61,224,160,.32)}
+.pcard2-status.off{color:var(--muted-2);background:rgba(255,255,255,.03);border:1px solid var(--line)}
+.pcard2-hours{display:flex;align-items:center;gap:7px;font-family:var(--ff-mono);font-size:11px;color:var(--muted);margin-bottom:13px}
 .pcard .pcard-head{position:relative}
 .pcard .pcard-head::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,var(--gc,var(--violet)),transparent 75%)}
 .pcard:hover .pcard-head::before{box-shadow:0 0 16px 1px var(--gc,var(--violet))}
@@ -162,6 +176,34 @@ select.input{appearance:none;background-image:linear-gradient(45deg,transparent 
 .nav-badge{margin-left:auto;font-family:var(--ff-mono);font-size:10px;background:var(--violet);color:#fff;padding:2px 6px;clip-path:var(--notch-sm)}
 .topbar{display:flex;align-items:center;gap:16px;padding:16px 28px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20;background:linear-gradient(180deg,rgba(13,13,22,.92),rgba(10,10,17,.78));backdrop-filter:blur(14px)}
 .main-area{padding:26px 28px 60px;min-height:100vh}
+
+/* ---- yeni yatay üst nav + tam genişlik ---- */
+.app-shell2{min-height:100vh;position:relative;z-index:1}
+.topnav{position:sticky;top:0;z-index:40;background:linear-gradient(180deg,rgba(13,13,21,.97),rgba(10,10,17,.9));backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.topnav-inner{max-width:1340px;margin:0 auto;padding:0 26px;height:64px;display:flex;align-items:center;gap:14px}
+.topnav-brand{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.topnav-links{display:flex;align-items:center;gap:2px}
+.tnav-item{display:flex;align-items:center;gap:7px;padding:8px 12px;font-size:13.5px;font-weight:500;color:var(--muted);background:transparent;border:none;border-radius:10px;cursor:pointer;transition:all .14s;white-space:nowrap;position:relative}
+.tnav-item:hover{color:var(--text);background:rgba(255,255,255,.05)}
+.tnav-item.active{color:#fff;background:linear-gradient(180deg,rgba(139,92,246,.18),rgba(139,92,246,.06))}
+.tnav-item.active::after{content:"";position:absolute;left:11px;right:11px;bottom:-1px;height:2px;border-radius:2px 2px 0 0;background:linear-gradient(90deg,var(--violet),var(--cyan));box-shadow:0 0 10px -1px var(--violet)}
+.tnav-item .nav-badge{margin-left:2px}
+.topnav-actions{display:flex;align-items:center;gap:7px;margin-left:auto;flex-shrink:0}
+.tn-user{gap:8px!important;padding-left:5px!important;padding-right:11px!important}
+.tn-badge{position:absolute;top:-4px;right:-4px;min-width:16px;height:16px;padding:0 4px;font-size:10px;background:var(--danger);color:#fff;display:grid;place-items:center;border-radius:999px;font-family:var(--ff-mono)}
+.tn-burger{display:none!important}
+.content-wrap{position:relative;z-index:1}
+.content-inner{max-width:1340px;margin:0 auto;padding:30px 26px 72px}
+.filter-search{position:relative}
+@media(max-width:1080px){
+  .tn-burger{display:inline-flex!important}
+  .topnav-links{position:absolute;top:64px;left:0;right:0;flex-direction:column;align-items:stretch;background:#0b0b14;border-bottom:1px solid var(--line);padding:10px;gap:3px;display:none;z-index:130;box-shadow:0 24px 50px -20px rgba(0,0,0,.7)}
+  .topnav-links.open{display:flex}
+  .tnav-item{padding:12px 14px;font-size:14.5px}
+  .tnav-item.active::after{display:none}
+  .hdr-uname{display:none}
+}
+@media(max-width:560px){ .topnav-inner,.content-inner{padding-left:16px;padding-right:16px} }
 
 /* logo */
 .logo{display:flex;align-items:center;gap:11px}
@@ -505,7 +547,7 @@ function RankBadge({ gameId, rank, sm }){
   );
 }
 
-const BUILD = "v4.0";
+const BUILD = "v6.0";
 const AVATARS = ["🎮","🕹️","👾","🤖","👽","🥷","🧙","🦊","🐺","🦅","🦉","🐉","🐲","🦈","🐙","🦁","🐯","🐆","🦂","🐸","🔥","⚡","💀","🛡️","⚔️","🎯","🏆","👑","🌟","🎲"];
 function hashCode(s){ let h=0; for(let i=0;i<s.length;i++){ h=(h<<5)-h+s.charCodeAt(i); h|=0; } return Math.abs(h); }
 function Avatar({ name, size=46, online, ring, avatar }){
@@ -1335,53 +1377,30 @@ function App(){
   return (
     <Shell>
       <Background/>
-      <div className="app-shell">
-        {/* sidebar */}
-        <aside className={`sidebar ${sidebarOpen?"open":""}`}>
-          <div className="flex" style={{ alignItems:"center", gap:8, padding:"0 6px 18px" }}><Logo size={34} /><span className="ver-badge">{BUILD}</span></div>
-          {nav.map(n => {
-            const I = n.Icon;
-            return (
-              <button key={n.id} className={`nav-item ${tab===n.id?"active":""}`}
-                onClick={()=>{ setTab(n.id); setSidebarOpen(false); }}>
-                <I size={18} /> {n.label}
-                {n.badge && <span className="nav-badge">{n.badge}</span>}
-              </button>
-            );
-          })}
-        </aside>
-
-        {/* main */}
-        <main>
-          <div className="topbar">
-            <button className="btn btn-ghost btn-sm mob-only" style={{display:"none"}} onClick={()=>setSidebarOpen(o=>!o)}><Menu size={16} /></button>
-            <span className="ver-badge" style={{ flexShrink:0 }}>{BUILD}</span>
-            <div className="tb-search" style={{ flex:1, position:"relative", maxWidth:420 }}>
-              <Search size={16} style={{ position:"absolute", left:13, top:13, color:"var(--muted)" }} />
-              <input className="input" style={{ paddingLeft:38 }} placeholder="Oyuncu, oyun veya etiket ara..." value={search} onChange={e=>{ setSearch(e.target.value); setTab("discover"); }} />
-            </div>
-            <div className="flex hdr-nav" style={{ gap:8 }}>
-              <button className="btn btn-ghost" onClick={()=>setTab("info")} style={tab==="info"?{ color:"var(--cyan)" }:undefined}><Globe size={17}/> Nasıl Çalışır</button>
-              <button className="btn btn-ghost" onClick={()=>setTab("blog")} style={tab==="blog"?{ color:"var(--cyan)" }:undefined}><MessageSquare size={17}/> Blog</button>
-            </div>
-            <HeaderAd ads={ads} />
-            <div className="flex" style={{ gap:8, marginLeft:"auto", alignItems:"center" }}>
-              <button className="btn btn-ghost btn-sm" onClick={()=>setTab("invites")} style={{ position:"relative" }}>
-                <Bell size={16} />
-                {incomingCount>0 && <span style={{ position:"absolute", top:-5, right:-5, width:16, height:16, fontSize:10, background:"var(--danger)", color:"#fff", display:"grid", placeItems:"center", clipPath:"var(--notch-sm)", fontFamily:"var(--ff-mono)" }}>{incomingCount}</span>}
-              </button>
-              <button className="btn btn-ghost btn-sm" onClick={()=>setTab("profile")} style={{ gap:8, paddingLeft:5, paddingRight:11 }} title="Profilim">
-                <Avatar name={user.name} avatar={user.avatar} size={25} online={user.online!==false} />
-                <span className="hdr-uname" style={{ fontSize:13, fontWeight:600, color:"#fff", maxWidth:130, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{user.name}</span>
-              </button>
+      <div className="app-shell2">
+        <header className="topnav">
+          <div className="topnav-inner">
+            <div className="topnav-brand"><Logo size={30} /><span className="ver-badge">{BUILD}</span></div>
+            <button className="btn btn-ghost btn-sm tn-burger" onClick={()=>setSidebarOpen(o=>!o)}><Menu size={16} /></button>
+            <nav className={`topnav-links ${sidebarOpen?"open":""}`}>
+              {nav.map(n => { const I = n.Icon; return (
+                <button key={n.id} className={`tnav-item ${tab===n.id?"active":""}`} onClick={()=>{ setTab(n.id); setSidebarOpen(false); }}>
+                  <I size={16} /> {n.label}{n.badge && <span className="nav-badge">{n.badge}</span>}
+                </button> ); })}
+            </nav>
+            <div className="topnav-actions">
+              <button className="btn btn-ghost btn-sm" onClick={()=>setTab("info")} style={tab==="info"?{ color:"var(--cyan)" }:undefined} title="Nasıl Çalışır"><Globe size={16}/></button>
+              <button className="btn btn-ghost btn-sm" onClick={()=>setTab("invites")} style={{ position:"relative" }} title="Davetler"><Bell size={16} />{incomingCount>0 && <span className="tn-badge">{incomingCount}</span>}</button>
+              <button className="btn btn-ghost btn-sm tn-user" onClick={()=>setTab("profile")} title="Profilim"><Avatar name={user.name} avatar={user.avatar} size={26} online={user.online!==false} /><span className="hdr-uname" style={{ fontSize:13, fontWeight:600, color:"#fff", maxWidth:120, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{user.name}</span></button>
               <button className="btn btn-ghost btn-sm" onClick={doLogout} title="Çıkış Yap"><LogOut size={16} /></button>
             </div>
           </div>
+        </header>
 
-          <div className="main-area">
+        <div className="content-wrap"><div className="content-inner">
             {tab==="discover" && <Discover user={user} outgoing={outgoing} friends={friends}
               onInvite={sendInvite} onView={setViewPlayer} simulateMatch={acceptOutgoingAsMatch}
-              query={search} banned={banned} ads={ads} players={players} excludeId={myProfileId} />}
+              query={search} onSearch={setSearch} banned={banned} ads={ads} players={players} excludeId={myProfileId} />}
             {tab==="invites" && <Invites incoming={incoming} outgoing={outgoing}
               onAccept={acceptInvite} onDecline={declineInvite} onCancel={cancelInvite} onView={setViewPlayer} ads={ads} players={players} />}
             {tab==="friends" && <Friends friends={friends} onChat={openChat} onView={setViewPlayer} ads={ads} players={players} />}
@@ -1397,8 +1416,7 @@ function App(){
             {tab==="rules" && <RulesView />}
             {tab==="contact" && <ContactView onSend={addContactMsg} prefillEmail={user.email} />}
             <Footer text={siteCfg.footer} onNav={(p)=>setTab(p)} />
-          </div>
-        </main>
+        </div></div>
       </div>
 
       {viewPlayer && <PlayerProfile pid={viewPlayer} matched={friends.includes(viewPlayer)}
@@ -2452,7 +2470,7 @@ function Footer({ text, onNav }){
 function Shell({ children }){ return <div className="gm-root"><style>{css}</style>{children}</div>; }
 
 /* ============================== DISCOVER (player finder) ============================== */
-function Discover({ user, outgoing, friends, onInvite, onView, simulateMatch, query="", banned=[], ads, players=[], excludeId=null }){
+function Discover({ user, outgoing, friends, onInvite, onView, simulateMatch, query="", onSearch, banned=[], ads, players=[], excludeId=null }){
   const [fDevices, setFDevices] = useState([]);
   const [fGames, setFGames] = useState([]);
   const [fRoles, setFRoles] = useState([]);
@@ -2496,6 +2514,10 @@ function Discover({ user, outgoing, friends, onInvite, onView, simulateMatch, qu
 
       {/* filters */}
       <Hud className="noclip" style={{ marginBottom:20 }}>
+        <div className="filter-search" style={{ marginBottom:16 }}>
+          <Search size={16} style={{ position:"absolute", left:14, top:13, color:"var(--muted)", zIndex:1 }} />
+          <input className="input" style={{ paddingLeft:40 }} placeholder="Oyuncu, oyun veya etiket ara..." value={query} onChange={e=>onSearch&&onSearch(e.target.value)} />
+        </div>
         <div style={{ marginBottom:16 }}>
           <label style={{ fontSize:12.5, color:"var(--muted)", display:"block", marginBottom:8 }}>1. Önce platform seç — PC / PS5</label>
           <DeviceToggle value={fDevices} onChange={setFDevices} />
@@ -2548,45 +2570,37 @@ function Discover({ user, outgoing, friends, onInvite, onView, simulateMatch, qu
 function PlayerCard({ p, entry, state, onInvite, onView }){
   const g = gameById(entry.g);
   return (
-    <Hud hover={false} className="pcard" pad={false} style={{ "--gc": g.color }}>
-      <div className="pcard-head">
-        <Avatar name={p.name} avatar={p.avatar} size={54} online={p.online} ring />
-        <div style={{ flex:1, minWidth:0 }}>
-          <div className="flex" style={{ alignItems:"center", gap:7 }}>
-            <span className="disp" style={{ fontWeight:700, fontSize:17.5, cursor:"pointer", letterSpacing:".01em" }} onClick={onView}>{p.name}</span>
-            <span style={{ fontSize:14 }}>{p.country}</span>
-          </div>
-          <div className="flex" style={{ alignItems:"center", gap:6, marginTop:3 }}>
-            <span className={`online-dot ${p.online?"":"off"}`} style={{ width:7, height:7 }} />
-            <span className="mono muted2" style={{ fontSize:11 }}>{p.online?"ONLINE":"OFFLINE"}</span>
-            <span className="muted2" style={{ fontSize:11 }}>•</span>
-            <Star size={11} style={{ color:"var(--gold)" }} />
-            <span className="mono" style={{ fontSize:11, color:"var(--gold)" }}>{p.rating.toFixed(1)}</span>
-            {p.age && <><span className="muted2" style={{ fontSize:11 }}>•</span><span className="mono muted2" style={{ fontSize:11 }}>{p.age} yaş</span></>}
-          </div>
+    <div className="pcard2" style={{ "--gc": g.color }}>
+      <div className="pcard2-banner" onClick={onView}>
+        <div className="pcard2-game">
+          <GameIcon gameId={g.id} size={22} />
+          <span className="pcard2-gname">{g.name}</span>
         </div>
+        <RankBadge gameId={g.id} rank={entry.rank} sm />
       </div>
-
-      <div style={{ padding:"0 16px 12px" }}>
-        <div className="gamechip" style={{ marginBottom:11 }}>
-          <GameIcon gameId={g.id} size={26} />
-          <div style={{ flex:1, minWidth:0 }}>
-            <div style={{ fontSize:13, fontWeight:600 }}>{g.name}</div>
-            <div className="mono muted2" style={{ fontSize:10.5 }}>{entry.role} • {entry.ps}</div>
+      <div className="pcard2-body">
+        <div className="pcard2-id">
+          <Avatar name={p.name} avatar={p.avatar} size={52} online={p.online} ring />
+          <div style={{ minWidth:0, flex:1 }}>
+            <div className="flex" style={{ alignItems:"center", gap:6 }}>
+              <span className="pcard2-name disp" onClick={onView}>{p.name}</span>
+              <span style={{ fontSize:13.5 }}>{p.country}</span>
+            </div>
+            <div className="pcard2-meta">
+              <Star size={11} style={{ color:"var(--gold)" }} />
+              <span style={{ color:"var(--gold)", fontWeight:600 }}>{p.rating.toFixed(1)}</span>
+              <span className="dot">·</span><span>{entry.role}</span>
+              {p.age ? <><span className="dot">·</span><span>{p.age} yaş</span></> : null}
+            </div>
           </div>
-          <RankBadge gameId={g.id} rank={entry.rank} sm />
+          <span className={`pcard2-status ${p.online?"on":"off"}`}>{p.online?"ONLINE":"OFFLINE"}</span>
         </div>
-
-        <div className="flex" style={{ gap:6, flexWrap:"wrap", marginBottom:10 }}>
+        <div className="flex" style={{ gap:6, flexWrap:"wrap", marginBottom:12 }}>
           {p.tags.slice(0,3).map(t=><TagPill key={t} id={t} sm />)}
         </div>
-        <div className="flex" style={{ gap:6, alignItems:"center", marginBottom:12 }}>
-          <Clock size={12} style={{ color:"var(--muted)" }} />
-          <span className="mono muted2" style={{ fontSize:10.5 }}>{p.times&&p.times.length ? formatHours(p.times) : "Belirtilmemiş"}</span>
-        </div>
-
+        <div className="pcard2-hours"><Clock size={12} /> {p.times&&p.times.length ? formatHours(p.times) : "Saat belirtilmemiş"}</div>
         {state==="friend" ? (
-          <button className="btn btn-block btn-sm" style={{ background:"rgba(52,211,153,.12)", color:"var(--volt)", border:"1px solid rgba(52,211,153,.35)" }} onClick={onView}>
+          <button className="btn btn-block btn-sm" style={{ background:"rgba(61,224,160,.12)", color:"var(--volt)", border:"1px solid rgba(61,224,160,.35)" }} onClick={onView}>
             <Check size={15} /> Arkadaşsınız — Profili Gör
           </button>
         ) : state==="sent" ? (
@@ -2597,9 +2611,10 @@ function PlayerCard({ p, entry, state, onInvite, onView }){
           </button>
         )}
       </div>
-    </Hud>
+    </div>
   );
 }
+
 
 /* ============================== INVITES ============================== */
 function Invites({ incoming, outgoing, onAccept, onDecline, onCancel, onView, ads, players=[] }){
