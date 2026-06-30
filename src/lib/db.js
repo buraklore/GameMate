@@ -11,6 +11,7 @@ function rowToPlayer(r) {
     admin: !!r.admin,
     devices: r.devices || ['PC'],
     bio: r.bio || '',
+    avatar: r.avatar || '',
     tags: r.tags || [],
     socials: r.socials || {},
     rating: typeof r.rating === 'number' ? r.rating : 0,
@@ -31,15 +32,37 @@ export async function getPlayers() {
 
 export async function addProfile(p) {
   if (!supaEnabled) return null
+  const base = {
+    name: p.name, country: p.country || '🇹🇷', age: p.age, online: true, admin: !!p.admin,
+    devices: p.devices || [], bio: p.bio || '', tags: p.tags || [], socials: p.socials || {},
+    rating: 0, times: p.times || [], games: p.games || [], user_id: p.user_id || null,
+  }
   try {
-    const { data, error } = await supabase.from('profiles').insert({
-      name: p.name, country: p.country || '🇹🇷', age: p.age, online: true, admin: !!p.admin,
-      devices: p.devices || [], bio: p.bio || '', tags: p.tags || [], socials: p.socials || {},
-      rating: 0, times: p.times || [], games: p.games || [], user_id: p.user_id || null,
-    }).select().single()
+    const { data, error } = await supabase.from('profiles').insert({ ...base, avatar: p.avatar || '🎮' }).select().single()
     if (error) throw error
     return rowToPlayer(data)
-  } catch (e) { console.warn('[db] addProfile', e.message); return null }
+  } catch (e) {
+    // avatar kolonu henüz eklenmediyse (migration çalışmadıysa) avatarsız tekrar dene
+    if (String(e.message || '').toLowerCase().includes('avatar')) {
+      try {
+        const { data, error } = await supabase.from('profiles').insert(base).select().single()
+        if (error) throw error
+        return rowToPlayer(data)
+      } catch (e2) { console.warn('[db] addProfile retry', e2.message); return null }
+    }
+    console.warn('[db] addProfile', e.message); return null
+  }
+}
+
+export async function updateProfile(userId, patch) {
+  if (!supaEnabled || !userId) return null
+  try {
+    const allowed = {}
+    ;['name','country','age','online','devices','bio','tags','socials','times','games','avatar'].forEach(k => { if (patch[k] !== undefined) allowed[k] = patch[k] })
+    const { data, error } = await supabase.from('profiles').update(allowed).eq('user_id', userId).select().single()
+    if (error) throw error
+    return rowToPlayer(data)
+  } catch (e) { console.warn('[db] updateProfile', e.message); return null }
 }
 
 /* ---------- İletişim mesajları ---------- */

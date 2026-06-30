@@ -114,19 +114,28 @@ a{color:inherit;text-decoration:none}
 
 /* ---------- inputs ---------- */
 .field{display:flex;flex-direction:column;gap:7px}
-.hours-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px}
-.hours-range{font-family:var(--ff-mono);font-size:14px;font-weight:600;color:var(--cyan)}
-.hours-tz{font-family:var(--ff-mono);font-size:10px;color:var(--muted-2);letter-spacing:.06em}
-.hours-grid{display:flex;flex-direction:column;gap:7px}
-.hours-row{display:flex;align-items:center;gap:10px}
-.hours-label{width:48px;flex-shrink:0;font-size:11px;color:var(--muted);text-align:right;letter-spacing:.02em}
-.hours-cells{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;flex:1}
-.hr-cell{padding:10px 0;font-family:var(--ff-mono);font-size:12.5px;text-align:center;background:var(--panel-2);border:1px solid var(--line);color:var(--muted);border-radius:9px;cursor:pointer;transition:all .12s;font-weight:500}
-.hr-cell:hover{border-color:var(--violet);color:var(--text);background:var(--panel-3)}
-.hr-cell.on{background:linear-gradient(135deg,var(--violet),#7C3AED);border-color:transparent;color:#fff;font-weight:700;box-shadow:0 3px 12px -4px rgba(124,58,237,.55)}
-.hours-presets{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
+.hours-selects{display:flex;align-items:flex-end;gap:11px}
+.hsel{flex:1;display:flex;flex-direction:column;gap:6px;min-width:0}
+.hsel label{font-size:11px;color:var(--muted);letter-spacing:.02em}
+.sel-wrap{position:relative}
+.sel-wrap::after{content:"";position:absolute;right:13px;top:50%;width:7px;height:7px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:translateY(-65%) rotate(45deg);pointer-events:none}
+.sel-wrap select{width:100%;appearance:none;-webkit-appearance:none;font-family:var(--ff-mono);font-size:14px;font-weight:600;color:var(--text);background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:11px 32px 11px 13px;cursor:pointer;transition:border-color .12s}
+.sel-wrap select:hover{border-color:var(--violet)}
+.sel-wrap select:focus{outline:none;border-color:var(--cyan)}
+.hours-arrow{color:var(--muted-2);margin-bottom:12px;flex-shrink:0}
+.hours-summary{display:flex;align-items:center;gap:8px;margin-top:13px;font-family:var(--ff-mono);font-size:13.5px;font-weight:600;color:var(--text)}
+.hours-badge{font-family:var(--ff-mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--cyan);background:rgba(34,211,238,.12);border:1px solid rgba(34,211,238,.3);padding:2px 8px;border-radius:999px}
+.hours-presets{display:flex;flex-wrap:wrap;gap:7px;margin-top:13px}
 .hr-preset{padding:7px 14px;font-size:12px;background:var(--panel-2);border:1px solid var(--line);color:var(--muted);border-radius:999px;cursor:pointer;transition:all .12s}
 .hr-preset:hover{border-color:var(--cyan);color:var(--cyan)}
+.pcard{transition:transform .16s ease, box-shadow .16s ease}
+.pcard:hover{transform:translateY(-4px);box-shadow:0 16px 34px -16px var(--gc,rgba(139,92,246,.6))}
+.pcard .pcard-head{position:relative}
+.pcard .pcard-head::before{content:"";position:absolute;left:16px;right:16px;top:0;height:2px;border-radius:2px;background:linear-gradient(90deg,var(--gc,var(--violet)),transparent 80%);opacity:.7}
+.av-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(46px,1fr));gap:8px}
+.av-opt{aspect-ratio:1;display:grid;place-items:center;font-size:22px;background:var(--panel-2);border:1px solid var(--line);border-radius:12px;cursor:pointer;transition:all .12s}
+.av-opt:hover{border-color:var(--violet);transform:translateY(-2px)}
+.av-opt.on{border-color:var(--violet);background:linear-gradient(135deg,rgba(139,92,246,.25),rgba(34,211,238,.12));box-shadow:0 0 0 1px var(--violet),0 4px 14px -4px rgba(139,92,246,.5)}
 .field>label{font-family:var(--ff-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
 .input{background:var(--panel-2);border:1px solid var(--line);color:var(--text);padding:12px 13px;font-size:14px;clip-path:var(--notch-sm);transition:border-color .15s,box-shadow .15s;width:100%}
 .input::placeholder{color:var(--muted-2)}
@@ -409,51 +418,51 @@ const CONTACT_FIELDS = [
 ];
 
 const PLAYERS = [
-  { id:1, age:23, devices:["PC"], name:"NyxStorm", country:"🇹🇷", online:true,  bio:"Gece oyuncusu, sakin takım arkadaşı arıyorum. Mic her zaman açık.",
+  { id:1, age:23, devices:["PC"], name:"NyxStorm", avatar:"🦉", country:"🇹🇷", online:true,  bio:"Gece oyuncusu, sakin takım arkadaşı arıyorum. Mic her zaman açık.",
     tags:["night","friendly"], times:["0","1","2","19","20","21","22","23"], rating:4.8,
     socials:{ discord:"nyxstorm#0021", steam:"nyx_storm", riot:"NyxStorm#TR1" },
     games:[{g:"valorant",rank:"Elmas",role:"Düellocu",ps:"Rekabetçi"},{g:"lol",rank:"Zümrüt",role:"Orta Koridor",ps:"Günlük"}] },
-  { id:2, age:28, devices:["PS5"], name:"FrostByte", country:"🇩🇪", online:true,  bio:"IGL main, shotcalling yaparım. Sıralı oynamayı severim.",
+  { id:2, age:28, devices:["PS5"], name:"FrostByte", avatar:"🐺", country:"🇩🇪", online:true,  bio:"IGL main, shotcalling yaparım. Sıralı oynamayı severim.",
     tags:["competitive","tryhard"], times:["19","20","21","22"], rating:4.6,
     socials:{ discord:"frostbyte#7788", steam:"frostbyte", riot:"Frost#EUW" },
     games:[{g:"cs2",rank:"Küresel Elit",role:"Takım Lideri",ps:"Rekabetçi"},{g:"valorant",rank:"Ölümsüz",role:"Kontrolcü",ps:"Rekabetçi"}] },
-  { id:3, age:33, devices:["PC","PS5"], name:"LunaPlays", country:"🇫🇷", online:false, bio:"Sakin destek oyuncusu. Toxic değilim, eğlenmeye geldim.",
+  { id:3, age:33, devices:["PC","PS5"], name:"LunaPlays", avatar:"🦊", country:"🇫🇷", online:false, bio:"Sakin destek oyuncusu. Toxic değilim, eğlenmeye geldim.",
     tags:["chill","friendly"], times:["8","9","10","11","19","20","21","22"], rating:4.9,
     socials:{ discord:"luna#1234", riot:"Luna#FR2" },
     games:[{g:"lol",rank:"Platin",role:"Destek",ps:"Günlük"},{g:"overwatch",rank:"Elmas",role:"Destek",ps:"Günlük"}] },
-  { id:4, age:22, devices:["PC"], name:"Krähe", country:"🇦🇹", online:true,  bio:"Aim diff. AWP main. Premier grind yoldaşı arıyorum.",
+  { id:4, age:22, devices:["PC"], name:"Krähe", avatar:"🦅", country:"🇦🇹", online:true,  bio:"Aim diff. AWP main. Premier grind yoldaşı arıyorum.",
     tags:["tryhard","competitive"], times:["0","1","2","23"], rating:4.4,
     socials:{ discord:"krahe#0009", steam:"krahe_awp" },
     games:[{g:"cs2",rank:"Premier 15K",role:"AWP'ci",ps:"Rekabetçi"}] },
-  { id:5, age:27, devices:["PS5"], name:"PixelPanda", country:"🇹🇷", online:true,  bio:"Build & survival. Birlikte server kuralım mı?",
+  { id:5, age:27, devices:["PS5"], name:"PixelPanda", avatar:"🐲", country:"🇹🇷", online:true,  bio:"Build & survival. Birlikte server kuralım mı?",
     tags:["chill","friendly"], times:["8","9","10","11","19","20","21","22"], rating:5.0,
     socials:{ discord:"panda#4040", steam:"pixelpanda" },
     games:[{g:"minecraft",rank:"İnşaatçı",role:"İnşaatçı",ps:"Günlük"},{g:"terraria",rank:"Zorlu Mod",role:"İnşaatçı",ps:"Günlük"}] },
-  { id:6, age:32, devices:["PC","PS5"], name:"VoidRunner", country:"🇬🇧", online:false, bio:"Apex predator push. Movement demon. Mic şart.",
+  { id:6, age:32, devices:["PC","PS5"], name:"VoidRunner", avatar:"👾", country:"🇬🇧", online:false, bio:"Apex predator push. Movement demon. Mic şart.",
     tags:["competitive","tryhard"], times:["0","1","2","19","20","21","22","23"], rating:4.5,
     socials:{ discord:"void#1010", steam:"voidrunner" },
     games:[{g:"apex",rank:"Üstat",role:"Vurucu",ps:"Rekabetçi"},{g:"valorant",rank:"Yükselen",role:"Düellocu",ps:"Rekabetçi"}] },
-  { id:7, age:21, devices:["PC"], name:"SakuraOW", country:"🇯🇵", online:true,  bio:"Tank main, frontline tutar. Sakin ve sabırlı.",
+  { id:7, age:21, devices:["PC"], name:"SakuraOW", avatar:"🦁", country:"🇯🇵", online:true,  bio:"Tank main, frontline tutar. Sakin ve sabırlı.",
     tags:["friendly","chill"], times:["8","9","10","11"], rating:4.7,
     socials:{ discord:"sakura#2222", riot:"Sakura#JP1" },
     games:[{g:"overwatch",rank:"Üstat",role:"Tank",ps:"Rekabetçi"},{g:"valorant",rank:"Platin",role:"Nöbetçi",ps:"Günlük"}] },
-  { id:8, age:26, devices:["PS5"], name:"TurboTito", country:"🇪🇸", online:true,  bio:"Rocket League SSL push + GTA heist crew. Hep gülerim.",
+  { id:8, age:26, devices:["PS5"], name:"TurboTito", avatar:"⚡", country:"🇪🇸", online:true,  bio:"Rocket League SSL push + GTA heist crew. Hep gülerim.",
     tags:["chill","friendly"], times:["0","1","2","19","20","21","22","23"], rating:4.8,
     socials:{ discord:"tito#5555", steam:"turbotito", psn:"TurboTito" },
     games:[{g:"rocketleague",rank:"Şampiyon",role:"Forvet",ps:"Günlük"},{g:"gta",rank:"Lv 300+",role:"Soyguncu",ps:"Günlük"}] },
-  { id:9, age:31, devices:["PC","PS5"], name:"GhostJin", country:"🇰🇷", online:false, bio:"Jungle diff. Macro odaklı oynarım. Soloq'tan bıktım.",
+  { id:9, age:31, devices:["PC","PS5"], name:"GhostJin", avatar:"🥷", country:"🇰🇷", online:false, bio:"Jungle diff. Macro odaklı oynarım. Soloq'tan bıktım.",
     tags:["competitive","tryhard"], times:["0","1","2","23"], rating:4.3,
     socials:{ discord:"jin#9090", riot:"GhostJin#KR" },
     games:[{g:"lol",rank:"Üstat",role:"Orman",ps:"Rekabetçi"},{g:"dota2",rank:"İlahi",role:"Orta Koridor",ps:"Rekabetçi"}] },
-  { id:10, age:20, devices:["PC"], name:"MileyM", country:"🇹🇷", online:true,  bio:"Sıradan gece kuşu. Among Us & PUBG severim. Drama yok.",
+  { id:10, age:20, devices:["PC"], name:"MileyM", avatar:"🌟", country:"🇹🇷", online:true,  bio:"Sıradan gece kuşu. Among Us & PUBG severim. Drama yok.",
     tags:["chill","night","friendly"], times:["0","1","2","23"], rating:4.9,
     socials:{ discord:"miley#3333", steam:"mileym" },
     games:[{g:"pubg",rank:"Elmas",role:"Keskin Nişancı",ps:"Günlük"},{g:"amongus",rank:"Sahtekar Uzmanı",role:"Sahtekar",ps:"Günlük"}] },
-  { id:11, age:25, devices:["PS5"], name:"DraknΩ", country:"🇵🇱", online:true,  bio:"R6 anchor + Dota support. Sabırlı, öğretmeyi severim.",
+  { id:11, age:25, devices:["PS5"], name:"DraknΩ", avatar:"🐉", country:"🇵🇱", online:true,  bio:"R6 anchor + Dota support. Sabırlı, öğretmeyi severim.",
     tags:["friendly","chill"], times:["19","20","21","22"], rating:4.6,
     socials:{ discord:"drakn#7070", steam:"draknomega" },
     games:[{g:"r6",rank:"Elmas",role:"Çapa",ps:"Rekabetçi"},{g:"dota2",rank:"Kadim",role:"Tam Destek",ps:"Günlük"}] },
-  { id:12, age:30, devices:["PC","PS5"], name:"AceBuilder", country:"🇨🇦", online:false, bio:"Fortnite zero-build & build. Scrim partner arıyorum.",
+  { id:12, age:30, devices:["PC","PS5"], name:"AceBuilder", avatar:"🛡️", country:"🇨🇦", online:false, bio:"Fortnite zero-build & build. Scrim partner arıyorum.",
     tags:["competitive","tryhard"], times:["0","1","2","19","20","21","22","23"], rating:4.4,
     socials:{ discord:"ace#1212", epic:"AceBuilderYT" },
     games:[{g:"fortnite",rank:"Şampiyon",role:"İnşaatçı",ps:"Rekabetçi"}] },
@@ -461,7 +470,7 @@ const PLAYERS = [
 
 /* current user (mutable via register/onboarding) */
 const DEFAULT_USER = {
-  name:"Komutan", country:"🇹🇷", email:"", age:24, online:true, admin:false, devices:["PC"], bio:"",
+  name:"Komutan", country:"🇹🇷", email:"", age:24, online:true, admin:false, avatar:"🎮", devices:["PC"], bio:"",
   tags:["friendly","competitive"], times:["19","20","21","22"],
   socials:{ discord:"", steam:"", steamUrl:"", riot:"", epic:"", psn:"", xbox:"" },
   games:[{g:"valorant",rank:"Altın",role:"Başlatıcı",ps:"Rekabetçi"}],
@@ -488,18 +497,20 @@ function RankBadge({ gameId, rank, sm }){
   );
 }
 
+const AVATARS = ["🎮","🕹️","👾","🤖","👽","🥷","🧙","🦊","🐺","🦅","🦉","🐉","🐲","🦈","🐙","🦁","🐯","🐆","🦂","🐸","🔥","⚡","💀","🛡️","⚔️","🎯","🏆","👑","🌟","🎲"];
 function hashCode(s){ let h=0; for(let i=0;i<s.length;i++){ h=(h<<5)-h+s.charCodeAt(i); h|=0; } return Math.abs(h); }
-function Avatar({ name, size=46, online, ring }){
-  const h = hashCode(name);
+function Avatar({ name, size=46, online, ring, avatar }){
+  const isEmoji = avatar && AVATARS.includes(avatar);
+  const h = hashCode(isEmoji ? avatar : (name||"GM"));
   const a = h % 360, b = (h*7) % 360;
-  const initials = name.replace(/[^A-Za-zÀ-ÿ0-9]/g,"").slice(0,2).toUpperCase() || "GM";
+  const initials = (name||"").replace(/[^A-Za-zÀ-ÿ0-9]/g,"").slice(0,2).toUpperCase() || "GM";
   return (
     <div className="avatar" style={{
-      width:size, height:size, fontSize:size*0.36,
-      background:`linear-gradient(135deg,hsl(${a} 70% 32%),hsl(${b} 75% 22%))`,
+      width:size, height:size, fontSize: isEmoji ? Math.round(size*0.54) : size*0.36,
+      background:`linear-gradient(135deg,hsl(${a} 62% 30%),hsl(${b} 70% 19%))`,
       boxShadow: ring ? "0 0 0 1.5px rgba(139,92,246,.5)" : "inset 0 0 0 1px rgba(255,255,255,.08)"
     }}>
-      {initials}
+      {isEmoji ? <span style={{ lineHeight:1 }}>{avatar}</span> : initials}
       {online !== undefined && (
         <span className="av-status" style={{ background: online ? "var(--volt)" : "var(--muted-2)" }} />
       )}
@@ -806,6 +817,7 @@ function Onboarding({ initialName, onComplete }){
   const [devices, setDevices] = useState([]);
   const [contact, setContact] = useState({ steam:"", steamUrl:"", discord:"", psn:"" });
   const [bio, setBio] = useState("");
+  const [avatar, setAvatar] = useState(AVATARS[Math.floor(Math.random()*AVATARS.length)]);
 
   const toggleGame = id => setPicked(p => p.includes(id) ? p.filter(x=>x!==id) : [...p, id]);
   const setCfgVal = (gid, k, v) => setCfg(c => ({ ...c, [gid]: { ...(c[gid]||{}), [k]:v } }));
@@ -824,7 +836,7 @@ function Onboarding({ initialName, onComplete }){
       role:(cfg[id].roles||[]).join(", "), roles:cfg[id].roles||[],
       ps:cfg[id].ps || "Rekabetçi",
     }));
-    onComplete({ games, tags, times: hours.length?hours:["20"], devices, bio: bio.trim(),
+    onComplete({ games, tags, times: hours.length?hours:["20"], devices, bio: bio.trim(), avatar,
       socials:{ discord:contact.discord, steam:contact.steam, steamUrl:contact.steamUrl, riot:"", epic:"", psn:contact.psn, xbox:"" } });
   };
 
@@ -925,6 +937,16 @@ function Onboarding({ initialName, onComplete }){
             <span className="eyebrow">// ADIM 3 / 3</span>
             <h2 className="disp" style={{ fontSize:30, fontWeight:700, margin:"8px 0 6px" }}>Oyun tarzın nasıl?</h2>
             <p className="muted" style={{ marginBottom:24 }}>Seni en iyi anlatan etiketleri seç (en fazla 4). Bunlar diğer oyuncuların seni bulmasına yardım eder.</p>
+            <Hud style={{ marginBottom:24 }}>
+              <h3 className="disp" style={{ fontSize:16, fontWeight:600, marginBottom:4 }}>Avatarını seç</h3>
+              <p className="muted" style={{ fontSize:13, marginBottom:14 }}>Profilinde görünecek avatarı seç. Daha sonra profil sayfandan değiştirebilirsin.</p>
+              <div className="av-grid">
+                {AVATARS.map(av=>(
+                  <button key={av} type="button" onClick={()=>setAvatar(av)} className={avatar===av?"av-opt on":"av-opt"}>{av}</button>
+                ))}
+              </div>
+            </Hud>
+            <div className="mono muted" style={{ fontSize:12, letterSpacing:".1em", marginBottom:12 }}>ETİKETLER</div>
             <div className="flex" style={{ gap:10, flexWrap:"wrap", marginBottom:30 }}>
               {TAGS.map(t => {
                 const on = tags.includes(t.id); const I = t.Icon;
@@ -960,7 +982,7 @@ function Onboarding({ initialName, onComplete }){
             </Hud>
             <Hud accent style={{ marginBottom:22 }}>
               <div className="flex" style={{ alignItems:"center", gap:12 }}>
-                <Avatar name={initialName||"Komutan"} size={50} online />
+                <Avatar name={initialName||"Komutan"} avatar={avatar} size={50} online />
                 <div>
                   <div className="disp" style={{ fontWeight:600, fontSize:18 }}>{initialName||"Komutan"}</div>
                   <div className="flex" style={{ gap:6, marginTop:6, flexWrap:"wrap" }}>
@@ -1187,6 +1209,7 @@ function App(){
     else { setScreen("onboarding"); }
   };
   const doLogout = async () => { if (DB && DB.signOut) await DB.signOut(); setAuthUserId(null); setMyProfileId(null); setUser(DEFAULT_USER); setScreen("landing"); };
+  const saveMyProfile = (patch) => { setUser(u=>({ ...u, ...patch })); if (DB && DB.updateProfile && authUserId) DB.updateProfile(authUserId, patch); };
   useEffect(()=>{
     if (!DB || !DB.getSession) { setSessionChecked(true); return; }
     let active = true;
@@ -1261,7 +1284,7 @@ function App(){
       onDone={doLogin} busy={authBusy} error={authErr} />{toasts}</Shell>;
   if (screen==="onboarding")
     return <Shell><Background/><Onboarding initialName={pendingName}
-      onComplete={async (data)=>{ setUser(u=>({...u, ...data})); if(DB && DB.addProfile){ const row = await DB.addProfile({ name:user.name, country:user.country, age:user.age, admin:false, devices:data.devices, bio:data.bio||"", tags:data.tags, socials:data.socials, games:data.games, times:data.times, user_id:authUserId }); if(row){ setMyProfileId(row.id); if(DB.getPlayers){ const r=await DB.getPlayers(); if(r&&r.length) setPlayers(r); } } } setScreen("app"); push("Hoş geldin! Takım arkadaşlarını bulmaya başla","ok"); }} />{toasts}</Shell>;
+      onComplete={async (data)=>{ setUser(u=>({...u, ...data})); if(DB && DB.addProfile){ const row = await DB.addProfile({ name:user.name, country:user.country, age:user.age, admin:false, avatar:data.avatar||"🎮", devices:data.devices, bio:data.bio||"", tags:data.tags, socials:data.socials, games:data.games, times:data.times, user_id:authUserId }); if(row){ setMyProfileId(row.id); if(DB.getPlayers){ const r=await DB.getPlayers(); if(r&&r.length) setPlayers(r); } } } setScreen("app"); push("Hoş geldin! Takım arkadaşlarını bulmaya başla","ok"); }} />{toasts}</Shell>;
   if (["pubinfo","pubblog","pubabout","pubprivacy","pubrules","pubcontact"].includes(screen))
     return <Shell><Background/>
       <div className="landing-zoom" style={{ position:"relative", zIndex:1, "--lz": siteCfg.landingScale }}>
@@ -1335,7 +1358,7 @@ function App(){
                 {incomingCount>0 && <span style={{ position:"absolute", top:-5, right:-5, width:16, height:16, fontSize:10, background:"var(--danger)", color:"#fff", display:"grid", placeItems:"center", clipPath:"var(--notch-sm)", fontFamily:"var(--ff-mono)" }}>{incomingCount}</span>}
               </button>
               <button className="btn btn-ghost btn-sm" onClick={()=>setTab("profile")} style={{ gap:8, paddingLeft:5, paddingRight:11 }} title="Profilim">
-                <Avatar name={user.name} size={25} online={user.online!==false} />
+                <Avatar name={user.name} avatar={user.avatar} size={25} online={user.online!==false} />
                 <span className="hdr-uname" style={{ fontSize:13, fontWeight:600, color:"#fff", maxWidth:130, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{user.name}</span>
               </button>
               <button className="btn btn-ghost btn-sm" onClick={doLogout} title="Çıkış Yap"><LogOut size={16} /></button>
@@ -1350,7 +1373,7 @@ function App(){
               onAccept={acceptInvite} onDecline={declineInvite} onCancel={cancelInvite} onView={setViewPlayer} ads={ads} players={players} />}
             {tab==="friends" && <Friends friends={friends} onChat={openChat} onView={setViewPlayer} ads={ads} players={players} />}
             {tab==="messages" && <MessagesView conversations={conversations} friends={friends} players={players} activeId={activeChat} setActiveId={setActiveChat} onSend={sendMessage} />}
-            {tab==="profile" && <Profile user={user} setUser={setUser} push={push} ads={ads} />}
+            {tab==="profile" && <Profile user={user} setUser={setUser} push={push} ads={ads} onPersist={saveMyProfile} />}
             {tab==="mygames" && <MyGames user={user} setUser={setUser} push={push} ads={ads} />}
             {tab==="settings" && <SettingsView user={user} setUser={setUser} push={push} onLogout={doLogout} />}
             {tab==="blog" && <BlogView ads={ads} onCTA={()=>setTab("discover")} />}
@@ -1417,38 +1440,55 @@ function formatHours(times){
 }
 
 function HoursPicker({ value=[], onChange }){
-  const sel = new Set((value||[]).map(String));
-  const toggle = h => { const k=String(h); const ns=new Set(sel); if(ns.has(k)) ns.delete(k); else ns.add(k); onChange([...ns].sort((a,b)=>Number(a)-Number(b))); };
-  const setHrs = arr => onChange(arr.map(String));
-  const PERIODS = [
-    { label:"Gece",  hours:[0,1,2,3,4,5] },
-    { label:"Sabah", hours:[6,7,8,9,10,11] },
-    { label:"Öğle",  hours:[12,13,14,15,16,17] },
-    { label:"Akşam", hours:[18,19,20,21,22,23] },
-  ];
+  const derive = () => {
+    const hrs = [...new Set((value||[]).map(Number).filter(n=>!isNaN(n)&&n>=0&&n<=23))].sort((a,b)=>a-b);
+    if(!hrs.length) return { s:19, e:23 };
+    let groups=[]; let st=hrs[0], p=hrs[0];
+    for(let i=1;i<hrs.length;i++){ if(hrs[i]===p+1){p=hrs[i];} else {groups.push([st,p]); st=hrs[i]; p=hrs[i];} }
+    groups.push([st,p]);
+    if(groups.length>1 && groups[0][0]===0 && groups[groups.length-1][1]===23){
+      const first=groups.shift(); const last=groups.pop(); return { s:last[0], e:first[1] };
+    }
+    return { s:groups[0][0], e:groups[0][1] };
+  };
+  const d = derive();
+  const [start, setStart] = useState(d.s);
+  const [end, setEnd] = useState(d.e);
+  const fill = (s,e) => { const arr=[]; let h=s; for(let i=0;i<24;i++){ arr.push(String(h)); if(h===e) break; h=(h+1)%24; } return arr; };
+  const apply = (s,e) => { setStart(s); setEnd(e); onChange(fill(s,e)); };
+  const fmt = h => String(h).padStart(2,"0")+":00";
+  const overnight = start>end;
   return (
     <div className="hours-pick">
-      <div className="hours-head">
-        <span className="hours-range">{value.length ? formatHours(value) : "Saat seçilmedi"}</span>
-        <span className="hours-tz">TSİ · çoklu seçim</span>
-      </div>
-      <div className="hours-grid">
-        {PERIODS.map(p=>(
-          <div className="hours-row" key={p.label}>
-            <span className="hours-label">{p.label}</span>
-            <div className="hours-cells">
-              {p.hours.map(h=>(
-                <button key={h} type="button" onClick={()=>toggle(h)} className={sel.has(String(h))?"hr-cell on":"hr-cell"}>{String(h).padStart(2,"0")}</button>
-              ))}
-            </div>
+      <div className="hours-selects">
+        <div className="hsel">
+          <label>Başlangıç</label>
+          <div className="sel-wrap">
+            <select value={start} onChange={e=>apply(Number(e.target.value), end)}>
+              {Array.from({length:24},(_,h)=><option key={h} value={h}>{fmt(h)}</option>)}
+            </select>
           </div>
-        ))}
+        </div>
+        <ArrowRight size={17} className="hours-arrow" />
+        <div className="hsel">
+          <label>Bitiş</label>
+          <div className="sel-wrap">
+            <select value={end} onChange={e=>apply(start, Number(e.target.value))}>
+              {Array.from({length:24},(_,h)=><option key={h} value={h}>{fmt(h)}</option>)}
+            </select>
+          </div>
+        </div>
+      </div>
+      <div className="hours-summary">
+        <Clock size={13} style={{ color:"var(--cyan)" }} />
+        <span>{value.length ? formatHours(value) : "—"}</span>
+        {overnight && <span className="hours-badge">gece aşırı</span>}
       </div>
       <div className="hours-presets">
-        <button type="button" className="hr-preset" onClick={()=>setHrs([19,20,21,22,23])}>Akşam 19–23</button>
-        <button type="button" className="hr-preset" onClick={()=>setHrs([19,20,21,22,23,0,1,2])}>Gece 19–02</button>
-        <button type="button" className="hr-preset" onClick={()=>setHrs([12,13,14,15,16,17,18])}>Gündüz 12–18</button>
-        <button type="button" className="hr-preset" onClick={()=>onChange([])}>Temizle</button>
+        <button type="button" className="hr-preset" onClick={()=>apply(19,23)}>Akşam 19–23</button>
+        <button type="button" className="hr-preset" onClick={()=>apply(19,2)}>Gece 19–02</button>
+        <button type="button" className="hr-preset" onClick={()=>apply(12,18)}>Gündüz 12–18</button>
+        <button type="button" className="hr-preset" onClick={()=>apply(0,23)}>Tüm gün</button>
       </div>
     </div>
   );
@@ -1490,7 +1530,7 @@ function PlayerProfile({ pid, matched, invited, comments=[], myRating=0, ads, on
 
         <Hud style={{ marginBottom:16 }}>
           <div className="flex" style={{ gap:16, alignItems:"flex-start", flexWrap:"wrap" }}>
-            <Avatar name={p.name} size={72} online={p.online} ring />
+            <Avatar name={p.name} avatar={p.avatar} size={72} online={p.online} ring />
             <div style={{ flex:1, minWidth:200 }}>
               <div className="flex" style={{ alignItems:"center", gap:10, flexWrap:"wrap" }}>
                 <h1 className="disp" style={{ fontSize:26, fontWeight:700 }}>{p.name}</h1>
@@ -1739,7 +1779,7 @@ function AdminPanel({ banned, onBan, onUnban, reports, onDismissReport, onRemove
           <div style={{ display:"grid", gap:8 }}>
             {list.map(p=>{ const isB=banned.includes(p.id); return (
               <div key={p.id} className="flex" style={{ alignItems:"center", gap:12, background:"var(--panel-2)", border:"1px solid var(--line)", clipPath:"var(--notch-sm)", padding:"10px 13px", opacity:isB?.6:1 }}>
-                <Avatar name={p.name} size={36} online={p.online} />
+                <Avatar name={p.name} avatar={p.avatar} size={36} online={p.online} />
                 <div style={{ flex:1, minWidth:0 }}>
                   <div className="flex" style={{ gap:8, alignItems:"center" }}>
                     <span className="disp" style={{ fontWeight:600, fontSize:14 }}>{p.name}</span>
@@ -2495,9 +2535,9 @@ function Discover({ user, outgoing, friends, onInvite, onView, simulateMatch, qu
 function PlayerCard({ p, entry, state, onInvite, onView }){
   const g = gameById(entry.g);
   return (
-    <Hud hover={false} className="" pad={false}>
+    <Hud hover={false} className="pcard" pad={false} style={{ "--gc": g.color }}>
       <div className="pcard-head">
-        <Avatar name={p.name} size={50} online={p.online} ring />
+        <Avatar name={p.name} avatar={p.avatar} size={50} online={p.online} ring />
         <div style={{ flex:1, minWidth:0 }}>
           <div className="flex" style={{ alignItems:"center", gap:7 }}>
             <span className="disp" style={{ fontWeight:600, fontSize:16, cursor:"pointer" }} onClick={onView}>{p.name}</span>
@@ -2568,7 +2608,7 @@ function Invites({ incoming, outgoing, onAccept, onDecline, onCancel, onView, ad
             return (
               <Hud key={pid}>
                 <div className="flex" style={{ alignItems:"center", gap:14, flexWrap:"wrap" }}>
-                  <Avatar name={p.name} size={48} online={p.online} ring />
+                  <Avatar name={p.name} avatar={p.avatar} size={48} online={p.online} ring />
                   <div style={{ flex:1, minWidth:180 }}>
                     <div style={{ fontSize:14.5 }}>
                       <b className="disp" style={{ cursor:"pointer" }} onClick={()=>onView(pid)}>{p.name}</b>
@@ -2604,7 +2644,7 @@ function Invites({ incoming, outgoing, onAccept, onDecline, onCancel, onView, ad
             return (
               <Hud key={pid}>
                 <div className="flex" style={{ alignItems:"center", gap:12 }}>
-                  <Avatar name={p.name} size={40} online={p.online} />
+                  <Avatar name={p.name} avatar={p.avatar} size={40} online={p.online} />
                   <div style={{ flex:1 }}>
                     <b className="disp" style={{ fontSize:14 }}>{p.name}</b>
                     <span className="muted" style={{ fontSize:13 }}> • {g.name}</span>
@@ -2640,7 +2680,7 @@ function Friends({ friends, onChat, onView, ads, players=[] }){
             return (
               <Hud key={pid} pad={false}>
                 <div className="pcard-head">
-                  <Avatar name={p.name} size={48} online={p.online} ring />
+                  <Avatar name={p.name} avatar={p.avatar} size={48} online={p.online} ring />
                   <div style={{ flex:1, minWidth:0 }}>
                     <div className="flex" style={{ gap:7, alignItems:"center" }}>
                       <b className="disp" style={{ fontSize:15.5, cursor:"pointer" }} onClick={()=>onView(pid)}>{p.name}</b>
@@ -2676,10 +2716,11 @@ function Friends({ friends, onChat, onView, ads, players=[] }){
 }
 
 /* ============================== PROFILE ============================== */
-function Profile({ user, setUser, push, ads }){
+function Profile({ user, setUser, push, ads, onPersist }){
   const [edit, setEdit] = useState(false);
   const [bio, setBio] = useState(user.bio);
-  const save = () => { setUser(u=>({...u,bio})); setEdit(false); push("Profil güncellendi","ok"); };
+  const [avSel, setAv] = useState(user.avatar||"🎮");
+  const save = () => { setUser(u=>({...u,bio,avatar:avSel})); setEdit(false); push("Profil güncellendi","ok"); if(onPersist) onPersist({ bio, avatar:avSel }); };
   return (
     <div>
       <span className="eyebrow">// PROFİLİN</span>
@@ -2687,7 +2728,7 @@ function Profile({ user, setUser, push, ads }){
 
       <Hud accent style={{ marginBottom:18 }}>
         <div className="flex" style={{ gap:18, alignItems:"flex-start", flexWrap:"wrap" }}>
-          <Avatar name={user.name} size={84} online ring />
+          <Avatar name={user.name} avatar={edit?avSel:user.avatar} size={84} online ring />
           <div style={{ flex:1, minWidth:220 }}>
             <div className="flex" style={{ alignItems:"center", gap:10, flexWrap:"wrap" }}>
               <h2 className="disp" style={{ fontSize:26, fontWeight:700 }}>{user.name}</h2>
@@ -2696,10 +2737,17 @@ function Profile({ user, setUser, push, ads }){
             </div>
             {edit ? (
               <div style={{ marginTop:10 }}>
-                <textarea className="input" rows={2} value={bio} onChange={e=>setBio(e.target.value)} />
-                <div className="flex" style={{ gap:8, marginTop:8 }}>
+                <div className="mono muted" style={{ fontSize:11, letterSpacing:".14em", marginBottom:8 }}>AVATAR SEÇ</div>
+                <div className="av-grid" style={{ marginBottom:15 }}>
+                  {AVATARS.map(av=>(
+                    <button key={av} type="button" onClick={()=>setAv(av)} className={av===avSel?"av-opt on":"av-opt"}>{av}</button>
+                  ))}
+                </div>
+                <div className="mono muted" style={{ fontSize:11, letterSpacing:".14em", marginBottom:8 }}>HAKKINDA</div>
+                <textarea className="input" rows={3} value={bio} onChange={e=>setBio(e.target.value)} placeholder="Kendinden bahset..." />
+                <div className="flex" style={{ gap:8, marginTop:10 }}>
                   <button className="btn btn-volt btn-sm" onClick={save}><Check size={14}/> Kaydet</button>
-                  <button className="btn btn-ghost btn-sm" onClick={()=>{setBio(user.bio);setEdit(false);}}>İptal</button>
+                  <button className="btn btn-ghost btn-sm" onClick={()=>{setBio(user.bio);setAv(user.avatar||"🎮");setEdit(false);}}>İptal</button>
                 </div>
               </div>
             ) : (
@@ -2905,7 +2953,7 @@ function MessagesView({ conversations, friends, players, activeId, setActiveId, 
           <div className={`msg-list ${active?"hide-mob":""}`}>
             {friends.map(pid=>{ const p=players.find(x=>x.id===pid); if(!p) return null; const last=lastOf(pid); return (
               <button key={pid} className={`msg-item ${activeId===pid?"on":""}`} onClick={()=>setActiveId(pid)}>
-                <Avatar name={p.name} size={42} online={p.online} />
+                <Avatar name={p.name} avatar={p.avatar} size={42} online={p.online} />
                 <div style={{ flex:1, minWidth:0 }}>
                   <div className="flex" style={{ justifyContent:"space-between", gap:8 }}>
                     <b className="disp" style={{ fontSize:14 }}>{p.name}</b>
@@ -2923,7 +2971,7 @@ function MessagesView({ conversations, friends, players, activeId, setActiveId, 
               <Hud pad={false} className="noclip">
                 <div className="flex" style={{ alignItems:"center", gap:11, padding:"12px 16px", borderBottom:"1px solid var(--line-soft)" }}>
                   <button className="btn btn-ghost btn-sm show-mob" onClick={()=>setActiveId(null)}><ChevronRight size={16} style={{ transform:"rotate(180deg)" }} /></button>
-                  <Avatar name={active.name} size={38} online={active.online} />
+                  <Avatar name={active.name} avatar={active.avatar} size={38} online={active.online} />
                   <div style={{ flex:1 }}>
                     <div className="disp" style={{ fontWeight:600, fontSize:15 }}>{active.name}</div>
                     <div className="mono muted2" style={{ fontSize:10 }}>{active.online?"ÇEVRİMİÇİ":"ÇEVRİMDIŞI"}</div>
@@ -2958,7 +3006,7 @@ function PlayerModal({ pid, matched, invited, onInvite, onClose }){
             <button className="btn btn-ghost btn-sm" onClick={onClose}><X size={15} /></button>
           </div>
           <div className="flex" style={{ gap:16, alignItems:"flex-start", flexWrap:"wrap" }}>
-            <Avatar name={p.name} size={72} online={p.online} ring />
+            <Avatar name={p.name} avatar={p.avatar} size={72} online={p.online} ring />
             <div style={{ flex:1, minWidth:200 }}>
               <div className="flex" style={{ gap:9, alignItems:"center", flexWrap:"wrap" }}>
                 <h2 className="disp" style={{ fontSize:24, fontWeight:700 }}>{p.name}</h2>
@@ -3036,7 +3084,7 @@ function ChatModal({ pid, onClose, players=[] }){
       <div className="modal" style={{ maxWidth:440 }} onClick={e=>e.stopPropagation()}>
         <Hud pad={false}>
           <div className="flex" style={{ alignItems:"center", gap:11, padding:"14px 16px", borderBottom:"1px solid var(--line-soft)" }}>
-            <Avatar name={p.name} size={38} online={p.online} />
+            <Avatar name={p.name} avatar={p.avatar} size={38} online={p.online} />
             <div style={{ flex:1 }}>
               <div className="disp" style={{ fontWeight:600, fontSize:15 }}>{p.name}</div>
               <div className="mono muted2" style={{ fontSize:10 }}>{p.online?"ÇEVRİMİÇİ":"ÇEVRİMDIŞI"}</div>

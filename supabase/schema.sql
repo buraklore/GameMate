@@ -14,6 +14,7 @@ create table if not exists public.profiles (
   admin       boolean default false,
   devices     text[] default '{}',          -- ['PC'] | ['PS5'] | ['PC','PS5']
   bio         text default '',
+  avatar      text default '🎮',
   tags        text[] default '{}',           -- etiket id'leri: friendly, competitive, ...
   socials     jsonb  default '{}'::jsonb,     -- { steam, discord, riot, steamUrl, ... }
   rating      numeric default 0,
@@ -115,3 +116,9 @@ values (1,
   '{"enabled":false,"client":"","placements":{},"slots":{}}'::jsonb
 )
 on conflict (id) do nothing;
+
+-- ====== Avatar atama + eski mic etiketi temizliği ======
+update public.profiles
+set avatar = (array['🦉','🐺','🦊','🦅','🐲','👾','🦁','⚡','🥷','🌟','🐉','🛡️','🦈','🔥','🐯'])[(id % 15) + 1]
+where user_id is null;
+update public.profiles set tags = array_remove(tags, 'mic');
