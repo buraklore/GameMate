@@ -114,6 +114,9 @@ a{color:inherit;text-decoration:none}
 
 /* ---------- inputs ---------- */
 .field{display:flex;flex-direction:column;gap:7px}
+.hr-cell{padding:9px 0;font-family:var(--ff-mono);font-size:12px;text-align:center;background:var(--panel-2);border:1px solid var(--line);color:var(--muted);clip-path:var(--notch-sm);cursor:pointer;transition:all .12s}
+.hr-cell:hover{border-color:var(--line-soft);color:var(--text)}
+.hr-cell.on{background:linear-gradient(120deg,var(--violet-lo),var(--violet));border-color:var(--violet);color:#fff;font-weight:600}
 .field>label{font-family:var(--ff-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
 .input{background:var(--panel-2);border:1px solid var(--line);color:var(--text);padding:12px 13px;font-size:14px;clip-path:var(--notch-sm);transition:border-color .15s,box-shadow .15s;width:100%}
 .input::placeholder{color:var(--muted-2)}
@@ -123,8 +126,8 @@ select.input{appearance:none;background-image:linear-gradient(45deg,transparent 
 
 /* ---------- layout ---------- */
 .container{max-width:1240px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
-.app-shell{display:grid;grid-template-columns:248px 1fr;min-height:100vh;position:relative;z-index:1;zoom:var(--uiz,1)}
-.sidebar{border-right:1px solid var(--line-soft);background:linear-gradient(180deg,rgba(16,16,25,.7),rgba(8,8,13,.6));backdrop-filter:blur(8px);padding:20px 14px;display:flex;flex-direction:column;gap:6px;position:sticky;top:0;height:100vh}
+.app-shell{display:grid;grid-template-columns:248px 1fr;min-height:100vh;position:relative;z-index:1}
+.sidebar{border-right:1px solid var(--line-soft);background:#0c0c15;padding:20px 14px;display:flex;flex-direction:column;gap:6px;position:sticky;top:0;height:100vh}
 .nav-item{display:flex;align-items:center;gap:12px;padding:12px 14px;font-size:14.5px;font-weight:500;color:var(--muted);clip-path:var(--notch-sm);transition:all .14s;border:1px solid transparent;position:relative}
 .nav-item:hover{background:rgba(139,92,246,.06);color:var(--text)}
 .nav-item.active{background:linear-gradient(90deg,rgba(139,92,246,.18),rgba(34,211,238,.04));color:#fff;border-color:rgba(139,92,246,.3)}
@@ -200,7 +203,7 @@ select.input{appearance:none;background-image:linear-gradient(45deg,transparent 
 /* modal */
 .modal-bg{position:fixed;inset:0;z-index:150;background:rgba(4,4,9,.78);backdrop-filter:blur(6px);display:grid;place-items:center;padding:24px;animation:fade .2s}
 @keyframes fade{from{opacity:0}to{opacity:1}}
-.modal{width:100%;max-width:560px;max-height:86vh;overflow:auto;zoom:var(--uiz,1)}
+.modal{width:100%;max-width:560px;max-height:86vh;overflow:auto}
 
 /* chat */
 .chat-msgs{display:flex;flex-direction:column;gap:9px;padding:16px;height:320px;overflow-y:auto}
@@ -240,6 +243,7 @@ select.input{appearance:none;background-image:linear-gradient(45deg,transparent 
 @media (max-width:760px){
   .landing-zoom{zoom:1!important}
   .topbar{flex-wrap:wrap;gap:10px;padding:12px 16px}
+  .hdr-uname{display:none}
   .tb-search{flex:1 1 100%!important;max-width:none!important}
   .hdr-nav{flex:1 1 100%;order:4;justify-content:flex-start;gap:8px;flex-wrap:wrap}
   .hero{padding:42px 0 20px}
@@ -369,7 +373,6 @@ const TAGS = [
   { id:"chill", label:"Sakin", color:"#22D3EE", Icon:Coffee },
   { id:"tryhard", label:"İddialı", color:"#F5C451", Icon:Swords },
   { id:"night", label:"Gece Kuşu", color:"#8B5CF6", Icon:Moon },
-  { id:"mic", label:"Mikrofon", color:"#A78BFA", Icon:Mic },
 ];
 const tagById = id => TAGS.find(t => t.id === id);
 
@@ -397,11 +400,11 @@ const CONTACT_FIELDS = [
 
 const PLAYERS = [
   { id:1, age:23, devices:["PC"], name:"NyxStorm", country:"🇹🇷", online:true,  bio:"Gece oyuncusu, sakin takım arkadaşı arıyorum. Mic her zaman açık.",
-    tags:["night","friendly","mic"], times:["0","1","2","19","20","21","22","23"], rating:4.8,
+    tags:["night","friendly"], times:["0","1","2","19","20","21","22","23"], rating:4.8,
     socials:{ discord:"nyxstorm#0021", steam:"nyx_storm", riot:"NyxStorm#TR1" },
     games:[{g:"valorant",rank:"Elmas",role:"Düellocu",ps:"Rekabetçi"},{g:"lol",rank:"Zümrüt",role:"Orta Koridor",ps:"Günlük"}] },
   { id:2, age:28, devices:["PS5"], name:"FrostByte", country:"🇩🇪", online:true,  bio:"IGL main, shotcalling yaparım. Sıralı oynamayı severim.",
-    tags:["competitive","tryhard","mic"], times:["19","20","21","22"], rating:4.6,
+    tags:["competitive","tryhard"], times:["19","20","21","22"], rating:4.6,
     socials:{ discord:"frostbyte#7788", steam:"frostbyte", riot:"Frost#EUW" },
     games:[{g:"cs2",rank:"Küresel Elit",role:"Takım Lideri",ps:"Rekabetçi"},{g:"valorant",rank:"Ölümsüz",role:"Kontrolcü",ps:"Rekabetçi"}] },
   { id:3, age:33, devices:["PC","PS5"], name:"LunaPlays", country:"🇫🇷", online:false, bio:"Sakin destek oyuncusu. Toxic değilim, eğlenmeye geldim.",
@@ -417,7 +420,7 @@ const PLAYERS = [
     socials:{ discord:"panda#4040", steam:"pixelpanda" },
     games:[{g:"minecraft",rank:"İnşaatçı",role:"İnşaatçı",ps:"Günlük"},{g:"terraria",rank:"Zorlu Mod",role:"İnşaatçı",ps:"Günlük"}] },
   { id:6, age:32, devices:["PC","PS5"], name:"VoidRunner", country:"🇬🇧", online:false, bio:"Apex predator push. Movement demon. Mic şart.",
-    tags:["competitive","tryhard","mic"], times:["0","1","2","19","20","21","22","23"], rating:4.5,
+    tags:["competitive","tryhard"], times:["0","1","2","19","20","21","22","23"], rating:4.5,
     socials:{ discord:"void#1010", steam:"voidrunner" },
     games:[{g:"apex",rank:"Üstat",role:"Vurucu",ps:"Rekabetçi"},{g:"valorant",rank:"Yükselen",role:"Düellocu",ps:"Rekabetçi"}] },
   { id:7, age:21, devices:["PC"], name:"SakuraOW", country:"🇯🇵", online:true,  bio:"Tank main, frontline tutar. Sakin ve sabırlı.",
@@ -425,7 +428,7 @@ const PLAYERS = [
     socials:{ discord:"sakura#2222", riot:"Sakura#JP1" },
     games:[{g:"overwatch",rank:"Üstat",role:"Tank",ps:"Rekabetçi"},{g:"valorant",rank:"Platin",role:"Nöbetçi",ps:"Günlük"}] },
   { id:8, age:26, devices:["PS5"], name:"TurboTito", country:"🇪🇸", online:true,  bio:"Rocket League SSL push + GTA heist crew. Hep gülerim.",
-    tags:["chill","friendly","mic"], times:["0","1","2","19","20","21","22","23"], rating:4.8,
+    tags:["chill","friendly"], times:["0","1","2","19","20","21","22","23"], rating:4.8,
     socials:{ discord:"tito#5555", steam:"turbotito", psn:"TurboTito" },
     games:[{g:"rocketleague",rank:"Şampiyon",role:"Forvet",ps:"Günlük"},{g:"gta",rank:"Lv 300+",role:"Soyguncu",ps:"Günlük"}] },
   { id:9, age:31, devices:["PC","PS5"], name:"GhostJin", country:"🇰🇷", online:false, bio:"Jungle diff. Macro odaklı oynarım. Soloq'tan bıktım.",
@@ -437,7 +440,7 @@ const PLAYERS = [
     socials:{ discord:"miley#3333", steam:"mileym" },
     games:[{g:"pubg",rank:"Elmas",role:"Keskin Nişancı",ps:"Günlük"},{g:"amongus",rank:"Sahtekar Uzmanı",role:"Sahtekar",ps:"Günlük"}] },
   { id:11, age:25, devices:["PS5"], name:"DraknΩ", country:"🇵🇱", online:true,  bio:"R6 anchor + Dota support. Sabırlı, öğretmeyi severim.",
-    tags:["friendly","mic","chill"], times:["19","20","21","22"], rating:4.6,
+    tags:["friendly","chill"], times:["19","20","21","22"], rating:4.6,
     socials:{ discord:"drakn#7070", steam:"draknomega" },
     games:[{g:"r6",rank:"Elmas",role:"Çapa",ps:"Rekabetçi"},{g:"dota2",rank:"Kadim",role:"Tam Destek",ps:"Günlük"}] },
   { id:12, age:30, devices:["PC","PS5"], name:"AceBuilder", country:"🇨🇦", online:false, bio:"Fortnite zero-build & build. Scrim partner arıyorum.",
@@ -448,7 +451,7 @@ const PLAYERS = [
 
 /* current user (mutable via register/onboarding) */
 const DEFAULT_USER = {
-  name:"Komutan", country:"🇹🇷", email:"", age:24, online:true, admin:true, devices:["PC"], bio:"Profilini düzenle ve kendini takımlara tanıt.",
+  name:"Komutan", country:"🇹🇷", email:"", age:24, online:true, admin:false, devices:["PC"], bio:"",
   tags:["friendly","competitive"], times:["19","20","21","22"],
   socials:{ discord:"", steam:"", steamUrl:"", riot:"", epic:"", psn:"", xbox:"" },
   games:[{g:"valorant",rank:"Altın",role:"Başlatıcı",ps:"Rekabetçi"}],
@@ -791,6 +794,7 @@ function Onboarding({ initialName, onComplete }){
   const [hours, setHours] = useState(["19","20","21","22"]);
   const [devices, setDevices] = useState([]);
   const [contact, setContact] = useState({ steam:"", steamUrl:"", discord:"", psn:"" });
+  const [bio, setBio] = useState("");
 
   const toggleGame = id => setPicked(p => p.includes(id) ? p.filter(x=>x!==id) : [...p, id]);
   const setCfgVal = (gid, k, v) => setCfg(c => ({ ...c, [gid]: { ...(c[gid]||{}), [k]:v } }));
@@ -809,7 +813,7 @@ function Onboarding({ initialName, onComplete }){
       role:(cfg[id].roles||[]).join(", "), roles:cfg[id].roles||[],
       ps:cfg[id].ps || "Rekabetçi",
     }));
-    onComplete({ games, tags, times: hours.length?hours:["20"], devices,
+    onComplete({ games, tags, times: hours.length?hours:["20"], devices, bio: bio.trim(),
       socials:{ discord:contact.discord, steam:contact.steam, steamUrl:contact.steamUrl, riot:"", epic:"", psn:contact.psn, xbox:"" } });
   };
 
@@ -924,6 +928,12 @@ function Onboarding({ initialName, onComplete }){
               })}
             </div>
             <Hud style={{ marginBottom:22 }}>
+              <h3 className="disp" style={{ fontSize:16, fontWeight:600, marginBottom:4 }}>Kendini tanıt</h3>
+              <p className="muted" style={{ fontSize:13, marginBottom:12 }}>Birkaç cümleyle kendinden bahset — nasıl bir takım arkadaşısın, ne arıyorsun? Bunu diğer oyuncular profilinde görür.</p>
+              <textarea className="input" rows={4} maxLength={280} placeholder="örn. Sakin ama rekabetçi bir oyuncuyum. Akşamları aktifim. Uzun vadeli duo/takım arıyorum." value={bio} onChange={e=>setBio(e.target.value)} />
+              <div className="mono muted2" style={{ fontSize:10, textAlign:"right", marginTop:5 }}>{bio.length}/280</div>
+            </Hud>
+            <Hud style={{ marginBottom:22 }}>
               <h3 className="disp" style={{ fontSize:16, fontWeight:600, marginBottom:4 }}>İletişim bilgilerin</h3>
               <p className="muted" style={{ fontSize:13, marginBottom:14 }}>Bunları elle gir. Yalnızca eşleştiğin (arkadaş olduğun) oyuncular görür.</p>
               <div style={{ display:"grid", gap:12 }}>
@@ -979,16 +989,36 @@ function ageFromDob(dob){
   if(m<0||(m===0&&t.getDate()<d.getDate())) a--;
   return (a>0&&a<120)?a:0;
 }
+/* ============================== URL YÖNLENDİRME ============================== */
+const TAB_PATHS = { discover:"/kesfet", invites:"/davetler", friends:"/arkadaslar", messages:"/mesajlar", profile:"/profil", mygames:"/oyunlarim", settings:"/ayarlar", blog:"/blog", info:"/nasil-calisir", admin:"/yonetim", about:"/hakkinda" };
+const PATH_TABS = Object.fromEntries(Object.entries(TAB_PATHS).map(([k,v])=>[v,k]));
+function routeToPath(screen, tab){
+  if(screen==="login") return "/giris";
+  if(screen==="register") return "/kayit";
+  if(screen==="onboarding") return "/kurulum";
+  if(screen==="app") return TAB_PATHS[tab] || "/kesfet";
+  return "/";
+}
+function pathToRoute(path){
+  const p = (path||"/").replace(/\/+$/,"") || "/";
+  if(p==="/"||p==="") return { screen:"landing" };
+  if(p==="/giris") return { screen:"login" };
+  if(p==="/kayit") return { screen:"register" };
+  if(p==="/kurulum") return { screen:"onboarding" };
+  if(PATH_TABS[p]) return { screen:"app", tab:PATH_TABS[p] };
+  return { screen:"landing" };
+}
+
 function App(){
   const { push, node: toasts } = useToasts();
-  const [screen, setScreen] = useState("landing"); // landing | register | login | onboarding | app
+  const [screen, setScreen] = useState(() => (typeof window!=="undefined" ? (pathToRoute(window.location.pathname).screen||"landing") : "landing")); // landing | register | login | onboarding | app
   const [pendingName, setPendingName] = useState("");
   const [authBusy, setAuthBusy] = useState(false);
   const [authErr, setAuthErr] = useState("");
   const [authUserId, setAuthUserId] = useState(null);
   const [user, setUser] = useState(DEFAULT_USER);
 
-  const [tab, setTab] = useState("discover");
+  const [tab, setTab] = useState(() => (typeof window!=="undefined" ? (pathToRoute(window.location.pathname).tab||"discover") : "discover"));
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // social graph state
@@ -996,6 +1026,27 @@ function App(){
   const [incoming, setIncoming] = useState([7, 11]);             // playerIds who invited me
   const [friends, setFriends] = useState([5, 1, 4]);                   // matched playerIds
   const [viewPlayer, setViewPlayer] = useState(null);
+
+  // === URL yönlendirme: her sayfa kendi URL'ine sahip, tarayıcı geri/ileri çalışır ===
+  const routeSynced = useRef(false);
+  useEffect(() => {
+    const onPop = () => {
+      const r = pathToRoute(window.location.pathname);
+      setScreen(r.screen || "landing");
+      if(r.tab) setTab(r.tab);
+      setViewPlayer(null);
+      setSidebarOpen(false);
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
+  useEffect(() => {
+    if(!routeSynced.current){ routeSynced.current = true; return; }
+    const desired = routeToPath(screen, tab);
+    if(typeof window!=="undefined" && window.location.pathname !== desired){
+      window.history.pushState({ screen, tab }, "", desired);
+    }
+  }, [screen, tab]);
   const [chatWith, setChatWith] = useState(null);
   const [conversations, setConversations] = useState(SEED_CONVOS);
   const [activeChat, setActiveChat] = useState(null);
@@ -1104,8 +1155,11 @@ function App(){
     if (res.error) { setAuthErr(cevirHata(res.error)); return; }
     setPendingName(f.name);
     setUser(u=>({ ...u, name:f.name||u.name, email:f.email, country, age:ageFromDob(f.dob)||u.age }));
-    if (res.session && res.user) { setAuthUserId(res.user.id); setScreen("onboarding"); }
-    else { setAuthErr("Hesabın oluşturuldu! E-postana gelen doğrulama bağlantısına tıkla, sonra giriş yap."); setScreen("login"); }
+    if (res.user) {
+      setAuthUserId(res.user.id);
+      if (!res.session) push("Hesabın oluşturuldu. Sonraki girişlerde e-postanı doğrulaman gerekebilir.","ok");
+      setScreen("onboarding");
+    } else { setAuthErr("Kayıt tamamlanamadı, tekrar dene."); }
   };
   const doLogin = async (f) => {
     setAuthErr("");
@@ -1163,6 +1217,10 @@ function App(){
     setIncoming(s => s.filter(x=>x!==pid));
     push("Davet reddedildi", "info");
   };
+  const cancelInvite = (pid) => {
+    setOutgoing(s => { const n=new Set(s); n.delete(pid); return n; });
+    push("Davet iptal edildi", "info");
+  };
   const acceptOutgoingAsMatch = (pid) => { // simulate other side accepting
     setOutgoing(s => { const n=new Set(s); n.delete(pid); return n; });
     setFriends(s => s.includes(pid)?s:[...s,pid]);
@@ -1183,7 +1241,7 @@ function App(){
       onDone={doLogin} busy={authBusy} error={authErr} />{toasts}</Shell>;
   if (screen==="onboarding")
     return <Shell><Background/><Onboarding initialName={pendingName}
-      onComplete={async (data)=>{ setUser(u=>({...u, ...data})); if(DB && DB.addProfile){ const row = await DB.addProfile({ name:user.name, country:user.country, age:user.age, admin:false, devices:data.devices, bio:user.bio, tags:data.tags, socials:data.socials, games:data.games, times:data.times, user_id:authUserId }); if(row){ setMyProfileId(row.id); if(DB.getPlayers){ const r=await DB.getPlayers(); if(r&&r.length) setPlayers(r); } } } setScreen("app"); push("Hoş geldin! Takım arkadaşlarını bulmaya başla","ok"); }} />{toasts}</Shell>;
+      onComplete={async (data)=>{ setUser(u=>({...u, ...data})); if(DB && DB.addProfile){ const row = await DB.addProfile({ name:user.name, country:user.country, age:user.age, admin:false, devices:data.devices, bio:data.bio||"", tags:data.tags, socials:data.socials, games:data.games, times:data.times, user_id:authUserId }); if(row){ setMyProfileId(row.id); if(DB.getPlayers){ const r=await DB.getPlayers(); if(r&&r.length) setPlayers(r); } } } setScreen("app"); push("Hoş geldin! Takım arkadaşlarını bulmaya başla","ok"); }} />{toasts}</Shell>;
   if (["pubinfo","pubblog","pubabout","pubprivacy","pubrules","pubcontact"].includes(screen))
     return <Shell><Background/>
       <div className="landing-zoom" style={{ position:"relative", zIndex:1, "--lz": siteCfg.landingScale }}>
@@ -1236,19 +1294,6 @@ function App(){
               </button>
             );
           })}
-          <div style={{ marginTop:"auto" }}>
-            <div className="divider" style={{ margin:"10px 0" }} />
-            <div className="nav-item" style={{ cursor:"default" }}>
-              <Avatar name={user.name} size={30} online={user.online!==false} />
-              <div style={{ minWidth:0 }}>
-                <div style={{ fontSize:13.5, fontWeight:600, color:"#fff", whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{user.name}</div>
-                <div className="mono muted2" style={{ fontSize:10 }}>{user.country} {user.online!==false?"ONLINE":"OFFLINE"}</div>
-              </div>
-            </div>
-            <button className="nav-item" onClick={doLogout}>
-              <LogOut size={18} /> Çıkış Yap
-            </button>
-          </div>
         </aside>
 
         {/* main */}
@@ -1264,12 +1309,16 @@ function App(){
               <button className="btn btn-ghost" onClick={()=>setTab("blog")} style={tab==="blog"?{ color:"var(--cyan)" }:undefined}><MessageSquare size={17}/> Blog</button>
             </div>
             <HeaderAd ads={ads} />
-            <div className="flex" style={{ gap:10, marginLeft:"auto" }}>
+            <div className="flex" style={{ gap:8, marginLeft:"auto", alignItems:"center" }}>
               <button className="btn btn-ghost btn-sm" onClick={()=>setTab("invites")} style={{ position:"relative" }}>
                 <Bell size={16} />
                 {incomingCount>0 && <span style={{ position:"absolute", top:-5, right:-5, width:16, height:16, fontSize:10, background:"var(--danger)", color:"#fff", display:"grid", placeItems:"center", clipPath:"var(--notch-sm)", fontFamily:"var(--ff-mono)" }}>{incomingCount}</span>}
               </button>
-              <button className="btn btn-primary btn-sm" onClick={()=>setTab("discover")}><Zap size={15}/> Eşleş</button>
+              <button className="btn btn-ghost btn-sm" onClick={()=>setTab("profile")} style={{ gap:8, paddingLeft:5, paddingRight:11 }} title="Profilim">
+                <Avatar name={user.name} size={25} online={user.online!==false} />
+                <span className="hdr-uname" style={{ fontSize:13, fontWeight:600, color:"#fff", maxWidth:130, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{user.name}</span>
+              </button>
+              <button className="btn btn-ghost btn-sm" onClick={doLogout} title="Çıkış Yap"><LogOut size={16} /></button>
             </div>
           </div>
 
@@ -1278,7 +1327,7 @@ function App(){
               onInvite={sendInvite} onView={setViewPlayer} simulateMatch={acceptOutgoingAsMatch}
               query={search} banned={banned} ads={ads} players={players} excludeId={myProfileId} />}
             {tab==="invites" && <Invites incoming={incoming} outgoing={outgoing}
-              onAccept={acceptInvite} onDecline={declineInvite} onView={setViewPlayer} ads={ads} players={players} />}
+              onAccept={acceptInvite} onDecline={declineInvite} onCancel={cancelInvite} onView={setViewPlayer} ads={ads} players={players} />}
             {tab==="friends" && <Friends friends={friends} onChat={openChat} onView={setViewPlayer} ads={ads} players={players} />}
             {tab==="messages" && <MessagesView conversations={conversations} friends={friends} players={players} activeId={activeChat} setActiveId={setActiveChat} onSend={sendMessage} />}
             {tab==="profile" && <Profile user={user} setUser={setUser} push={push} ads={ads} />}
@@ -1334,52 +1383,44 @@ function StarRate({ value=0, onRate, size=20 }){
 }
 
 /* Saat aralığı seçici — kompakt çizgi (dropdown boyutu): başlangıç ve bitiş tutamağını kaydır */
+function formatHours(times){
+  const hrs = [...new Set((times||[]).map(Number).filter(n=>!isNaN(n)&&n>=0&&n<=23))].sort((a,b)=>a-b);
+  if(!hrs.length) return "";
+  let groups=[]; let s=hrs[0], p=hrs[0];
+  for(let i=1;i<hrs.length;i++){ if(hrs[i]===p+1){ p=hrs[i]; } else { groups.push([s,p]); s=hrs[i]; p=hrs[i]; } }
+  groups.push([s,p]);
+  if(groups.length>1 && groups[0][0]===0 && groups[groups.length-1][1]===23){
+    const first=groups.shift(); const last=groups.pop(); groups.push([last[0], first[1]]);
+  }
+  const fmt=h=>String(h).padStart(2,"0")+":00";
+  return groups.map(([a,b])=> a===b ? fmt(a) : fmt(a)+"–"+fmt(b)).join(", ");
+}
+
 function HoursPicker({ value=[], onChange }){
-  const nums = (value||[]).map(Number).filter(n=>!isNaN(n)).sort((a,b)=>a-b);
-  const [start, setStart] = useState(nums.length ? nums[0] : 19);
-  const [end, setEnd] = useState(nums.length ? nums[nums.length-1] : 23);
-  const trackRef = useRef(null);
-  const drag = useRef(null);
-  const emit = (sH,eH) => { const lo=Math.min(sH,eH), hi=Math.max(sH,eH), arr=[]; for(let i=lo;i<=hi;i++) arr.push(String(i)); onChange(arr); };
-  const hourAt = (clientX) => { const r=trackRef.current.getBoundingClientRect(); let p=(clientX-r.left)/r.width; p=Math.max(0,Math.min(1,p)); return Math.round(p*23); };
-  const move = (clientX) => {
-    if(!drag.current) return;
-    const h = hourAt(clientX);
-    if(drag.current==="start"){ const ns=Math.min(h,end); setStart(ns); emit(ns,end); }
-    else { const ne=Math.max(h,start); setEnd(ne); emit(start,ne); }
-  };
-  useEffect(() => {
-    const mm = e => move(e.clientX);
-    const tm = e => { if(e.touches&&e.touches[0]) move(e.touches[0].clientX); };
-    const up = () => { drag.current=null; };
-    window.addEventListener("mousemove",mm); window.addEventListener("mouseup",up);
-    window.addEventListener("touchmove",tm); window.addEventListener("touchend",up);
-    return () => { window.removeEventListener("mousemove",mm); window.removeEventListener("mouseup",up); window.removeEventListener("touchmove",tm); window.removeEventListener("touchend",up); };
-  });
-  const pct = h => (h/23)*100;
-  const fmt = h => String(h).padStart(2,"0")+":00";
-  const lo=Math.min(start,end), hi=Math.max(start,end);
+  const sel = new Set((value||[]).map(String));
+  const toggle = h => { const k=String(h); const ns=new Set(sel); if(ns.has(k)) ns.delete(k); else ns.add(k); onChange([...ns].sort((a,b)=>Number(a)-Number(b))); };
+  const setHrs = arr => onChange(arr.map(String));
   return (
     <div>
-      <div className="flex" style={{ justifyContent:"space-between", marginBottom:7 }}>
-        <span className="mono" style={{ fontSize:12.5, color:"var(--cyan)", fontWeight:600 }}>{fmt(lo)} – {fmt(hi)}</span>
-        <span className="mono muted2" style={{ fontSize:10 }}>Türkiye Saati (TSİ)</span>
+      <div className="flex" style={{ justifyContent:"space-between", marginBottom:9, flexWrap:"wrap", gap:6 }}>
+        <span className="mono" style={{ fontSize:12.5, color:"var(--cyan)", fontWeight:600 }}>{value.length ? formatHours(value) : "Saat seçilmedi"}</span>
+        <span className="mono muted2" style={{ fontSize:10 }}>TSİ · saatlere tıkla (çoklu seçim)</span>
       </div>
-      <div ref={trackRef} style={{ position:"relative", height:26, display:"flex", alignItems:"center", cursor:"pointer", userSelect:"none", touchAction:"none" }}
-        onMouseDown={e=>{ const h=hourAt(e.clientX); if(Math.abs(h-start)<=Math.abs(h-end)){ drag.current="start"; const ns=Math.min(h,end); setStart(ns); emit(ns,end); } else { drag.current="end"; const ne=Math.max(h,start); setEnd(ne); emit(start,ne); } }}>
-        <div style={{ position:"absolute", left:0, right:0, height:6, background:"var(--panel-3)", borderRadius:3 }} />
-        <div style={{ position:"absolute", left:pct(lo)+"%", width:(pct(hi)-pct(lo))+"%", height:6, background:"linear-gradient(90deg,var(--violet),var(--cyan))", borderRadius:3 }} />
-        {[["start",start],["end",end]].map(([w,h])=>(
-          <div key={w} onMouseDown={e=>{ e.stopPropagation(); drag.current=w; }} onTouchStart={e=>{ drag.current=w; }}
-            style={{ position:"absolute", left:pct(h)+"%", transform:"translateX(-50%)", width:17, height:17, borderRadius:"50%", background:"#fff", border:"3px solid var(--cyan)", boxShadow:"0 2px 7px rgba(0,0,0,.45)", cursor:"grab", zIndex:2 }} />
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(8,1fr)", gap:5 }}>
+        {Array.from({length:24},(_,h)=>(
+          <button key={h} type="button" onClick={()=>toggle(h)} className={sel.has(String(h))?"hr-cell on":"hr-cell"}>{String(h).padStart(2,"0")}</button>
         ))}
       </div>
-      <div className="flex" style={{ justifyContent:"space-between", marginTop:3 }}>
-        {[0,6,12,18,23].map(h=><span key={h} className="mono muted2" style={{ fontSize:9 }}>{String(h).padStart(2,"0")}:00</span>)}
+      <div className="flex" style={{ gap:6, marginTop:9, flexWrap:"wrap" }}>
+        <button type="button" className="btn btn-ghost btn-sm" onClick={()=>setHrs([19,20,21,22,23])}>Akşam 19–23</button>
+        <button type="button" className="btn btn-ghost btn-sm" onClick={()=>setHrs([19,20,21,22,23,0,1,2])}>Gece 19–02</button>
+        <button type="button" className="btn btn-ghost btn-sm" onClick={()=>setHrs(Array.from({length:24},(_,i)=>i))}>Tümü</button>
+        <button type="button" className="btn btn-ghost btn-sm" onClick={()=>onChange([])}>Temizle</button>
       </div>
     </div>
   );
 }
+
 
 /* AdSense reklam alanı — tüm boyutlar; yapılandırılmazsa şık yer tutucu */
 function AdSlot({ ads, slot, format="horizontal", label, style }){
@@ -2455,10 +2496,7 @@ function PlayerCard({ p, entry, state, onInvite, onView }){
         </div>
         <div className="flex" style={{ gap:6, alignItems:"center", marginBottom:12 }}>
           <Clock size={12} style={{ color:"var(--muted)" }} />
-          {p.times.slice(0,4).map(tid => {
-            const t = TIMES.find(x=>x.id===tid);
-            return <span key={tid} className="mono muted2" style={{ fontSize:10.5 }}>{t.label}</span>;
-          }).reduce((acc,el,i)=> i===0?[el]:[...acc,<span key={"d"+i} className="muted2" style={{fontSize:10}}>/</span>,el],[])}
+          <span className="mono muted2" style={{ fontSize:10.5 }}>{p.times&&p.times.length ? formatHours(p.times) : "Belirtilmemiş"}</span>
         </div>
 
         {state==="friend" ? (
@@ -2478,7 +2516,7 @@ function PlayerCard({ p, entry, state, onInvite, onView }){
 }
 
 /* ============================== INVITES ============================== */
-function Invites({ incoming, outgoing, onAccept, onDecline, onView, ads, players=[] }){
+function Invites({ incoming, outgoing, onAccept, onDecline, onCancel, onView, ads, players=[] }){
   const out = [...outgoing];
   return (
     <div>
@@ -2538,9 +2576,12 @@ function Invites({ incoming, outgoing, onAccept, onDecline, onView, ads, players
                     <b className="disp" style={{ fontSize:14 }}>{p.name}</b>
                     <span className="muted" style={{ fontSize:13 }}> • {g.name}</span>
                   </div>
-                  <span className="chip" style={{ color:"var(--cyan)", borderColor:"rgba(34,211,238,.3)" }}>
-                    <span className="ic" style={{ width:6,height:6,borderRadius:"50%",background:"var(--cyan)",animation:"pulse 2s infinite" }} /> Bekleniyor
-                  </span>
+                  <div className="flex" style={{ gap:8, alignItems:"center" }}>
+                    <span className="chip" style={{ color:"var(--cyan)", borderColor:"rgba(34,211,238,.3)" }}>
+                      <span className="ic" style={{ width:6,height:6,borderRadius:"50%",background:"var(--cyan)",animation:"pulse 2s infinite" }} /> Bekleniyor
+                    </span>
+                    <button className="btn btn-ghost btn-sm" onClick={()=>onCancel&&onCancel(pid)} title="Daveti iptal et"><X size={15}/> İptal</button>
+                  </div>
                 </div>
               </Hud>
             );
@@ -2770,6 +2811,12 @@ function SettingsView({ user, setUser, push, onLogout }){
         <ToggleRow label="Davet bildirimleri" desc="Yeni davet geldiğinde haber ver" on={notif} onToggle={()=>setNotif(v=>!v)} />
         <div className="divider" style={{ margin:"12px 0" }} />
         <ToggleRow label="Çevrimiçi görünürlük" desc="Diğer oyuncular online olduğunu görsün" on={user.online!==false} onToggle={()=>setUser(u=>({ ...u, online: u.online===false }))} />
+      </Hud>
+
+      <Hud style={{ marginBottom:16 }}>
+        <h3 className="disp" style={{ fontSize:17, fontWeight:600, marginBottom:6 }}>Aktif Saatlerin</h3>
+        <p className="muted" style={{ fontSize:13, marginBottom:14 }}>Hangi saatlerde oyundasın? Eşleşmelerin buna göre yapılır.</p>
+        <HoursPicker value={user.times||[]} onChange={(t)=>setUser(u=>({ ...u, times:t }))} />
       </Hud>
 
       <Hud style={{ marginBottom:16 }}>
