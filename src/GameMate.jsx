@@ -547,7 +547,7 @@ function RankBadge({ gameId, rank, sm }){
   );
 }
 
-const BUILD = "v6.0";
+const BUILD = "v7.0";
 const AVATARS = ["🎮","🕹️","👾","🤖","👽","🥷","🧙","🦊","🐺","🦅","🦉","🐉","🐲","🦈","🐙","🦁","🐯","🐆","🦂","🐸","🔥","⚡","💀","🛡️","⚔️","🎯","🏆","👑","🌟","🎲"];
 function hashCode(s){ let h=0; for(let i=0;i<s.length;i++){ h=(h<<5)-h+s.charCodeAt(i); h|=0; } return Math.abs(h); }
 function Avatar({ name, size=46, online, ring, avatar }){
@@ -1377,27 +1377,30 @@ function App(){
   return (
     <Shell>
       <Background/>
-      <div className="app-shell2">
-        <header className="topnav">
-          <div className="topnav-inner">
-            <div className="topnav-brand"><Logo size={30} /><span className="ver-badge">{BUILD}</span></div>
-            <button className="btn btn-ghost btn-sm tn-burger" onClick={()=>setSidebarOpen(o=>!o)}><Menu size={16} /></button>
-            <nav className={`topnav-links ${sidebarOpen?"open":""}`}>
-              {nav.map(n => { const I = n.Icon; return (
-                <button key={n.id} className={`tnav-item ${tab===n.id?"active":""}`} onClick={()=>{ setTab(n.id); setSidebarOpen(false); }}>
-                  <I size={16} /> {n.label}{n.badge && <span className="nav-badge">{n.badge}</span>}
-                </button> ); })}
-            </nav>
-            <div className="topnav-actions">
+      <div className="app-shell">
+        <aside className={`sidebar ${sidebarOpen?"open":""}`}>
+          <div className="flex" style={{ alignItems:"center", gap:8, padding:"2px 6px 16px" }}><Logo size={32} /><span className="ver-badge">{BUILD}</span></div>
+          {nav.map(n => { const I = n.Icon; return (
+            <button key={n.id} className={`nav-item ${tab===n.id?"active":""}`} onClick={()=>{ setTab(n.id); setSidebarOpen(false); }}>
+              <I size={18} /> {n.label}{n.badge && <span className="nav-badge">{n.badge}</span>}
+            </button> ); })}
+        </aside>
+        <main>
+          <div className="topbar">
+            <button className="btn btn-ghost btn-sm mob-only" style={{display:"none"}} onClick={()=>setSidebarOpen(o=>!o)}><Menu size={16} /></button>
+            <div className="tb-search" style={{ flex:1, position:"relative", maxWidth:460 }}>
+              <Search size={16} style={{ position:"absolute", left:13, top:13, color:"var(--muted)", zIndex:1 }} />
+              <input className="input" style={{ paddingLeft:38 }} placeholder="Oyuncu, oyun veya etiket ara..." value={search} onChange={e=>{ setSearch(e.target.value); setTab("discover"); }} />
+            </div>
+            <div className="flex" style={{ gap:8, marginLeft:"auto", alignItems:"center" }}>
               <button className="btn btn-ghost btn-sm" onClick={()=>setTab("info")} style={tab==="info"?{ color:"var(--cyan)" }:undefined} title="Nasıl Çalışır"><Globe size={16}/></button>
               <button className="btn btn-ghost btn-sm" onClick={()=>setTab("invites")} style={{ position:"relative" }} title="Davetler"><Bell size={16} />{incomingCount>0 && <span className="tn-badge">{incomingCount}</span>}</button>
-              <button className="btn btn-ghost btn-sm tn-user" onClick={()=>setTab("profile")} title="Profilim"><Avatar name={user.name} avatar={user.avatar} size={26} online={user.online!==false} /><span className="hdr-uname" style={{ fontSize:13, fontWeight:600, color:"#fff", maxWidth:120, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{user.name}</span></button>
+              <button className="btn btn-ghost btn-sm tn-user" onClick={()=>setTab("profile")} title="Profilim"><Avatar name={user.name} avatar={user.avatar} size={26} online={user.online!==false} /><span className="hdr-uname" style={{ fontSize:13, fontWeight:600, color:"#fff", maxWidth:130, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{user.name}</span></button>
               <button className="btn btn-ghost btn-sm" onClick={doLogout} title="Çıkış Yap"><LogOut size={16} /></button>
             </div>
           </div>
-        </header>
 
-        <div className="content-wrap"><div className="content-inner">
+          <div className="main-area">
             {tab==="discover" && <Discover user={user} outgoing={outgoing} friends={friends}
               onInvite={sendInvite} onView={setViewPlayer} simulateMatch={acceptOutgoingAsMatch}
               query={search} onSearch={setSearch} banned={banned} ads={ads} players={players} excludeId={myProfileId} />}
@@ -1416,7 +1419,8 @@ function App(){
             {tab==="rules" && <RulesView />}
             {tab==="contact" && <ContactView onSend={addContactMsg} prefillEmail={user.email} />}
             <Footer text={siteCfg.footer} onNav={(p)=>setTab(p)} />
-        </div></div>
+          </div>
+        </main>
       </div>
 
       {viewPlayer && <PlayerProfile pid={viewPlayer} matched={friends.includes(viewPlayer)}
@@ -2514,10 +2518,6 @@ function Discover({ user, outgoing, friends, onInvite, onView, simulateMatch, qu
 
       {/* filters */}
       <Hud className="noclip" style={{ marginBottom:20 }}>
-        <div className="filter-search" style={{ marginBottom:16 }}>
-          <Search size={16} style={{ position:"absolute", left:14, top:13, color:"var(--muted)", zIndex:1 }} />
-          <input className="input" style={{ paddingLeft:40 }} placeholder="Oyuncu, oyun veya etiket ara..." value={query} onChange={e=>onSearch&&onSearch(e.target.value)} />
-        </div>
         <div style={{ marginBottom:16 }}>
           <label style={{ fontSize:12.5, color:"var(--muted)", display:"block", marginBottom:8 }}>1. Önce platform seç — PC / PS5</label>
           <DeviceToggle value={fDevices} onChange={setFDevices} />
