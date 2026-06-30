@@ -15,13 +15,14 @@ const css = `
 @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
 
 :root{
-  --void:#08080D; --panel:#101019; --panel-2:#16161F; --panel-3:#1C1C28;
-  --line:#272739; --line-soft:#1E1E2C;
-  --violet:#8B5CF6; --violet-hi:#A78BFA; --violet-lo:#6D28D9;
-  --cyan:#22D3EE; --cyan-hi:#67E8F9;
-  --volt:#34D399; --volt-hi:#6EE7B7;
+  --void:#070710; --panel:#0F0F1A; --panel-2:#16161F; --panel-3:#1E1E2C;
+  --line:#2B2B40; --line-soft:#1E1E2D;
+  --violet:#8B5CF6; --violet-hi:#B7A6FF; --violet-lo:#6D28D9;
+  --cyan:#26D8F0; --cyan-hi:#7DE9FA;
+  --volt:#3DE0A0; --volt-hi:#6EE7B7;
+  --text:#F1F1F9;
   --gold:#F5C451; --rose:#F0529C; --danger:#FB5C6B;
-  --text:#ECECF4; --muted:#8585A0; --muted-2:#5C5C73;
+  --muted:#8B8BA8; --muted-2:#5E5E78;
   --notch:polygon(14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%,0 14px);
   --notch-sm:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px);
   --ff-disp:"Chakra Petch","Rajdhani",system-ui,sans-serif;
@@ -51,7 +52,12 @@ a{color:inherit;text-decoration:none}
   mask-image:radial-gradient(ellipse 90% 70% at 50% 0%,#000 5%,transparent 75%);
   animation:drift 32s linear infinite}
 @keyframes drift{to{background-position:46px 46px}}
-.bg-glow{position:absolute;border-radius:50%;filter:blur(80px);opacity:.5}
+.ver-badge{font-family:var(--ff-mono);font-size:10px;font-weight:700;letter-spacing:.06em;color:var(--cyan);background:rgba(34,211,238,.13);border:1px solid rgba(34,211,238,.4);padding:3px 8px;border-radius:999px;box-shadow:0 0 14px -4px rgba(34,211,238,.5)}
+@keyframes floaty{0%,100%{transform:translate(0,0)}50%{transform:translate(26px,34px)}}
+.bg-glow{position:absolute;border-radius:50%;filter:blur(78px);opacity:.62}
+.bg-glow.a,.bg-glow.b,.bg-glow.c{animation:floaty 22s ease-in-out infinite}
+.bg-glow.b{animation-duration:27s;animation-direction:reverse}
+.bg-glow.c{animation-duration:31s}
 .bg-glow.a{width:520px;height:520px;background:radial-gradient(circle,rgba(124,58,237,.5),transparent 70%);top:-160px;left:-120px}
 .bg-glow.b{width:460px;height:460px;background:radial-gradient(circle,rgba(34,211,238,.32),transparent 70%);top:5%;right:-140px}
 .bg-glow.c{width:600px;height:600px;background:radial-gradient(circle,rgba(109,40,217,.28),transparent 70%);bottom:-280px;left:30%}
@@ -60,10 +66,10 @@ a{color:inherit;text-decoration:none}
 
 /* ---------- HUD card ---------- */
 .hud-frame{position:relative;background:var(--line);padding:1px;clip-path:var(--notch)}
-.hud-frame.accent{background:linear-gradient(135deg,var(--violet) 0%,var(--cyan) 100%);box-shadow:0 10px 50px -12px rgba(124,58,237,.45)}
+.hud-frame.accent{background:linear-gradient(135deg,var(--violet) 0%,var(--cyan) 100%);box-shadow:0 14px 60px -14px rgba(124,58,237,.55)}
 .hud-frame.volt{background:linear-gradient(135deg,var(--volt),var(--cyan))}
-.hud-body{position:relative;background:var(--panel);clip-path:var(--notch);height:100%}
-.hud-body.pad{padding:18px}
+.hud-body{position:relative;background:linear-gradient(165deg,#1d1d2c 0%,#121220 55%,#0e0e18 100%);clip-path:var(--notch);height:100%;box-shadow:inset 0 1px 0 rgba(255,255,255,.06)}
+.hud-body.pad{padding:20px}
 .hud-frame.hover{transition:transform .18s ease, box-shadow .25s ease, background .25s ease}
 .hud-frame.hover:hover{transform:translateY(-3px);background:linear-gradient(135deg,var(--violet),var(--cyan));box-shadow:0 16px 50px -16px rgba(124,58,237,.55)}
 .hud-frame.noclip,.hud-frame.noclip .hud-body{clip-path:none}
@@ -79,7 +85,7 @@ a{color:inherit;text-decoration:none}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:600;font-size:14px;
   padding:11px 18px;clip-path:var(--notch-sm);border:none;transition:all .16s ease;letter-spacing:.2px;white-space:nowrap}
 .btn:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
-.btn-primary{background:linear-gradient(120deg,var(--violet),#7C3AED 55%,var(--cyan));color:#fff;box-shadow:0 6px 22px -8px rgba(124,58,237,.7)}
+.btn-primary{background:linear-gradient(110deg,#7C3AED,#8B5CF6 45%,#22D3EE);color:#fff;box-shadow:0 10px 28px -10px rgba(124,58,237,.9),inset 0 1px 0 rgba(255,255,255,.22)}
 .btn-primary:hover{filter:brightness(1.12);box-shadow:0 8px 30px -8px rgba(34,211,238,.55)}
 .btn-primary:active{transform:translateY(1px)}
 .btn-ghost{background:rgba(255,255,255,.02);border:1px solid var(--line);color:var(--text)}
@@ -109,7 +115,7 @@ a{color:inherit;text-decoration:none}
 
 /* rank badge */
 .rankbadge{display:inline-flex;align-items:center;gap:7px;padding:5px 11px 5px 9px;clip-path:var(--notch-sm);
-  border:1px solid;font-family:var(--ff-disp);font-weight:600;font-size:13px;letter-spacing:.02em}
+  border:1px solid;font-family:var(--ff-disp);font-weight:700;font-size:13px;letter-spacing:.02em}
 .rankbadge .rk-tier{width:7px;height:18px;clip-path:polygon(0 0,100% 18%,100% 82%,0 100%)}
 
 /* ---------- inputs ---------- */
@@ -128,10 +134,11 @@ a{color:inherit;text-decoration:none}
 .hours-presets{display:flex;flex-wrap:wrap;gap:7px;margin-top:13px}
 .hr-preset{padding:7px 14px;font-size:12px;background:var(--panel-2);border:1px solid var(--line);color:var(--muted);border-radius:999px;cursor:pointer;transition:all .12s}
 .hr-preset:hover{border-color:var(--cyan);color:var(--cyan)}
-.pcard{transition:transform .16s ease, box-shadow .16s ease}
-.pcard:hover{transform:translateY(-4px);box-shadow:0 16px 34px -16px var(--gc,rgba(139,92,246,.6))}
+.pcard{background:linear-gradient(150deg,#3a3a55,#1a1a28)!important;transition:transform .18s cubic-bezier(.2,.7,.3,1), box-shadow .22s ease}
+.pcard:hover{transform:translateY(-6px);background:linear-gradient(150deg,var(--gc,#7C3AED),#1a1a28)!important;box-shadow:0 26px 54px -20px var(--gc,rgba(139,92,246,.8)),0 0 40px -12px var(--gc,rgba(139,92,246,.5))}
 .pcard .pcard-head{position:relative}
-.pcard .pcard-head::before{content:"";position:absolute;left:16px;right:16px;top:0;height:2px;border-radius:2px;background:linear-gradient(90deg,var(--gc,var(--violet)),transparent 80%);opacity:.7}
+.pcard .pcard-head::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,var(--gc,var(--violet)),transparent 75%)}
+.pcard:hover .pcard-head::before{box-shadow:0 0 16px 1px var(--gc,var(--violet))}
 .av-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(46px,1fr));gap:8px}
 .av-opt{aspect-ratio:1;display:grid;place-items:center;font-size:22px;background:var(--panel-2);border:1px solid var(--line);border-radius:12px;cursor:pointer;transition:all .12s}
 .av-opt:hover{border-color:var(--violet);transform:translateY(-2px)}
@@ -139,7 +146,7 @@ a{color:inherit;text-decoration:none}
 .field>label{font-family:var(--ff-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
 .input{background:var(--panel-2);border:1px solid var(--line);color:var(--text);padding:12px 13px;font-size:14px;clip-path:var(--notch-sm);transition:border-color .15s,box-shadow .15s;width:100%}
 .input::placeholder{color:var(--muted-2)}
-.input:focus{outline:none;border-color:var(--violet);box-shadow:0 0 0 3px rgba(139,92,246,.14)}
+.input:focus{outline:none;border-color:var(--violet);box-shadow:0 0 0 3px rgba(139,92,246,.18),0 4px 16px -8px rgba(139,92,246,.4)}
 select.input{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 18px) 18px,calc(100% - 13px) 18px;background-size:5px 5px,5px 5px;background-repeat:no-repeat;padding-right:34px}
 .checkrow{display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;font-size:13.5px;color:var(--muted)}
 
@@ -149,10 +156,10 @@ select.input{appearance:none;background-image:linear-gradient(45deg,transparent 
 .sidebar{border-right:1px solid var(--line-soft);background:#0c0c15;padding:20px 14px;display:flex;flex-direction:column;gap:6px;position:sticky;top:0;height:100vh}
 .nav-item{display:flex;align-items:center;gap:12px;padding:12px 14px;font-size:14.5px;font-weight:500;color:var(--muted);clip-path:var(--notch-sm);transition:all .14s;border:1px solid transparent;position:relative}
 .nav-item:hover{background:rgba(139,92,246,.06);color:var(--text)}
-.nav-item.active{background:linear-gradient(90deg,rgba(139,92,246,.18),rgba(34,211,238,.04));color:#fff;border-color:rgba(139,92,246,.3)}
+.nav-item.active{background:linear-gradient(90deg,rgba(139,92,246,.22),rgba(34,211,238,.05));color:#fff;border-color:rgba(139,92,246,.4);box-shadow:inset 0 0 0 1px rgba(139,92,246,.12)}
 .nav-item.active::before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:3px;background:linear-gradient(var(--violet),var(--cyan))}
 .nav-badge{margin-left:auto;font-family:var(--ff-mono);font-size:10px;background:var(--violet);color:#fff;padding:2px 6px;clip-path:var(--notch-sm)}
-.topbar{display:flex;align-items:center;gap:16px;padding:16px 28px;border-bottom:1px solid var(--line-soft);position:sticky;top:0;z-index:20;background:rgba(8,8,13,.72);backdrop-filter:blur(12px)}
+.topbar{display:flex;align-items:center;gap:16px;padding:16px 28px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20;background:linear-gradient(180deg,rgba(13,13,22,.92),rgba(10,10,17,.78));backdrop-filter:blur(14px)}
 .main-area{padding:26px 28px 60px;min-height:100vh}
 
 /* logo */
@@ -170,7 +177,7 @@ select.input{appearance:none;background-image:linear-gradient(45deg,transparent 
 .pcard-head{display:flex;gap:13px;align-items:center;padding:16px 16px 12px}
 .avatar{position:relative;flex:0 0 auto;display:grid;place-items:center;font-family:var(--ff-disp);font-weight:700;color:#fff;clip-path:var(--notch-sm)}
 .avatar .av-status{position:absolute;bottom:-2px;right:-2px;width:13px;height:13px;border-radius:50%;border:2.5px solid var(--panel)}
-.gamechip{display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--panel-2);border:1px solid var(--line);clip-path:var(--notch-sm)}
+.gamechip{display:flex;align-items:center;gap:9px;padding:9px 12px;background:linear-gradient(180deg,#222232,#15151f);border:1px solid var(--line);clip-path:var(--notch-sm)}
 .gamechip .gi{width:26px;height:26px;display:grid;place-items:center;clip-path:var(--notch-sm)}
 
 .divider{height:1px;background:var(--line-soft);margin:0}
@@ -497,6 +504,7 @@ function RankBadge({ gameId, rank, sm }){
   );
 }
 
+const BUILD = "v3.0";
 const AVATARS = ["🎮","🕹️","👾","🤖","👽","🥷","🧙","🦊","🐺","🦅","🦉","🐉","🐲","🦈","🐙","🦁","🐯","🐆","🦂","🐸","🔥","⚡","💀","🛡️","⚔️","🎯","🏆","👑","🌟","🎲"];
 function hashCode(s){ let h=0; for(let i=0;i<s.length;i++){ h=(h<<5)-h+s.charCodeAt(i); h|=0; } return Math.abs(h); }
 function Avatar({ name, size=46, online, ring, avatar }){
@@ -612,7 +620,10 @@ function Landing({ onStart, onLogin, onInfo, onBlog, siteCfg={ logoSize:42 } }){
     <div style={{ position:"relative", zIndex:1 }}>
       {/* nav */}
       <div className="container" style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"22px 24px" }}>
-        <Logo size={siteCfg.logoSize} />
+        <div className="flex" style={{ alignItems:"center", gap:9 }}>
+          <Logo size={siteCfg.logoSize} />
+          <span className="ver-badge">{BUILD}</span>
+        </div>
         <div className="flex" style={{ gap:10, alignItems:"center" }}>
           <button className="btn btn-ghost btn-sm" onClick={onInfo}>Nasıl Çalışır</button>
           <button className="btn btn-ghost btn-sm" onClick={onBlog}>Blog</button>
@@ -1326,7 +1337,7 @@ function App(){
       <div className="app-shell">
         {/* sidebar */}
         <aside className={`sidebar ${sidebarOpen?"open":""}`}>
-          <div style={{ padding:"0 6px 18px" }}><Logo size={34} /></div>
+          <div className="flex" style={{ alignItems:"center", gap:8, padding:"0 6px 18px" }}><Logo size={34} /><span className="ver-badge">{BUILD}</span></div>
           {nav.map(n => {
             const I = n.Icon;
             return (
@@ -1343,6 +1354,7 @@ function App(){
         <main>
           <div className="topbar">
             <button className="btn btn-ghost btn-sm mob-only" style={{display:"none"}} onClick={()=>setSidebarOpen(o=>!o)}><Menu size={16} /></button>
+            <span className="ver-badge" style={{ flexShrink:0 }}>{BUILD}</span>
             <div className="tb-search" style={{ flex:1, position:"relative", maxWidth:420 }}>
               <Search size={16} style={{ position:"absolute", left:13, top:13, color:"var(--muted)" }} />
               <input className="input" style={{ paddingLeft:38 }} placeholder="Oyuncu, oyun veya etiket ara..." value={search} onChange={e=>{ setSearch(e.target.value); setTab("discover"); }} />
@@ -2473,7 +2485,7 @@ function Discover({ user, outgoing, friends, onInvite, onView, simulateMatch, qu
       <div className="flex" style={{ justifyContent:"space-between", alignItems:"flex-end", flexWrap:"wrap", gap:12, marginBottom:18 }}>
         <div>
           <span className="eyebrow">// EŞLEŞME</span>
-          <h1 className="disp" style={{ fontSize:28, fontWeight:700, marginTop:4 }}>Takım arkadaşı bul</h1>
+          <h1 className="disp" style={{ fontSize:34, fontWeight:700, marginTop:5, letterSpacing:"-.01em" }}>Takım arkadaşı bul</h1>
           <p className="muted" style={{ fontSize:14 }}>Senin seviyene ve oyun tarzına uygun oyuncular.</p>
         </div>
         <span className="chip" style={{ color:"var(--cyan)", borderColor:"rgba(34,211,238,.3)", padding:"7px 12px" }}>
@@ -2537,10 +2549,10 @@ function PlayerCard({ p, entry, state, onInvite, onView }){
   return (
     <Hud hover={false} className="pcard" pad={false} style={{ "--gc": g.color }}>
       <div className="pcard-head">
-        <Avatar name={p.name} avatar={p.avatar} size={50} online={p.online} ring />
+        <Avatar name={p.name} avatar={p.avatar} size={54} online={p.online} ring />
         <div style={{ flex:1, minWidth:0 }}>
           <div className="flex" style={{ alignItems:"center", gap:7 }}>
-            <span className="disp" style={{ fontWeight:600, fontSize:16, cursor:"pointer" }} onClick={onView}>{p.name}</span>
+            <span className="disp" style={{ fontWeight:700, fontSize:17.5, cursor:"pointer", letterSpacing:".01em" }} onClick={onView}>{p.name}</span>
             <span style={{ fontSize:14 }}>{p.country}</span>
           </div>
           <div className="flex" style={{ alignItems:"center", gap:6, marginTop:3 }}>
