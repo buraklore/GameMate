@@ -23,8 +23,9 @@ const css = `
   --text:#F1F1F9;
   --gold:#F5C451; --rose:#F0529C; --danger:#FB5C6B;
   --muted:#8B8BA8; --muted-2:#5E5E78;
-  --notch:polygon(14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%,0 14px);
-  --notch-sm:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px);
+  --notch:inset(0 round 16px);
+  --notch-sm:inset(0 round 10px);
+  --r-lg:18px; --r-md:13px; --r-sm:10px;
   --ff-disp:"Chakra Petch","Rajdhani",system-ui,sans-serif;
   --ff-body:"Inter",system-ui,-apple-system,sans-serif;
   --ff-mono:"JetBrains Mono",ui-monospace,"SF Mono",monospace;
@@ -153,11 +154,11 @@ select.input{appearance:none;background-image:linear-gradient(45deg,transparent 
 /* ---------- layout ---------- */
 .container{max-width:1240px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
 .app-shell{display:grid;grid-template-columns:248px 1fr;min-height:100vh;position:relative;z-index:1}
-.sidebar{border-right:1px solid var(--line-soft);background:#0c0c15;padding:20px 14px;display:flex;flex-direction:column;gap:6px;position:sticky;top:0;height:100vh}
-.nav-item{display:flex;align-items:center;gap:12px;padding:12px 14px;font-size:14.5px;font-weight:500;color:var(--muted);clip-path:var(--notch-sm);transition:all .14s;border:1px solid transparent;position:relative}
-.nav-item:hover{background:rgba(139,92,246,.06);color:var(--text)}
-.nav-item.active{background:linear-gradient(90deg,rgba(139,92,246,.22),rgba(34,211,238,.05));color:#fff;border-color:rgba(139,92,246,.4);box-shadow:inset 0 0 0 1px rgba(139,92,246,.12)}
-.nav-item.active::before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:3px;background:linear-gradient(var(--violet),var(--cyan))}
+.sidebar{border-right:1px solid var(--line-soft);background:#0a0a12;padding:18px 13px;display:flex;flex-direction:column;gap:4px;position:sticky;top:0;height:100vh}
+.nav-item{display:flex;align-items:center;gap:12px;padding:11px 13px;font-size:14.5px;font-weight:500;color:var(--muted);border-radius:11px;transition:all .14s;border:none;position:relative;background:transparent}
+.nav-item:hover{background:rgba(255,255,255,.045);color:var(--text)}
+.nav-item.active{background:linear-gradient(90deg,rgba(139,92,246,.20),rgba(139,92,246,.03));color:#fff}
+.nav-item.active::before{content:'';position:absolute;left:-1px;top:9px;bottom:9px;width:3px;border-radius:0 3px 3px 0;background:linear-gradient(var(--violet),var(--cyan));box-shadow:0 0 12px -1px var(--violet)}
 .nav-badge{margin-left:auto;font-family:var(--ff-mono);font-size:10px;background:var(--violet);color:#fff;padding:2px 6px;clip-path:var(--notch-sm)}
 .topbar{display:flex;align-items:center;gap:16px;padding:16px 28px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20;background:linear-gradient(180deg,rgba(13,13,22,.92),rgba(10,10,17,.78));backdrop-filter:blur(14px)}
 .main-area{padding:26px 28px 60px;min-height:100vh}
@@ -504,7 +505,7 @@ function RankBadge({ gameId, rank, sm }){
   );
 }
 
-const BUILD = "v3.0";
+const BUILD = "v4.0";
 const AVATARS = ["🎮","🕹️","👾","🤖","👽","🥷","🧙","🦊","🐺","🦅","🦉","🐉","🐲","🦈","🐙","🦁","🐯","🐆","🦂","🐸","🔥","⚡","💀","🛡️","⚔️","🎯","🏆","👑","🌟","🎲"];
 function hashCode(s){ let h=0; for(let i=0;i<s.length;i++){ h=(h<<5)-h+s.charCodeAt(i); h|=0; } return Math.abs(h); }
 function Avatar({ name, size=46, online, ring, avatar }){
