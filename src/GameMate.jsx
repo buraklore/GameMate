@@ -114,9 +114,19 @@ a{color:inherit;text-decoration:none}
 
 /* ---------- inputs ---------- */
 .field{display:flex;flex-direction:column;gap:7px}
-.hr-cell{padding:9px 0;font-family:var(--ff-mono);font-size:12px;text-align:center;background:var(--panel-2);border:1px solid var(--line);color:var(--muted);clip-path:var(--notch-sm);cursor:pointer;transition:all .12s}
-.hr-cell:hover{border-color:var(--line-soft);color:var(--text)}
-.hr-cell.on{background:linear-gradient(120deg,var(--violet-lo),var(--violet));border-color:var(--violet);color:#fff;font-weight:600}
+.hours-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px}
+.hours-range{font-family:var(--ff-mono);font-size:14px;font-weight:600;color:var(--cyan)}
+.hours-tz{font-family:var(--ff-mono);font-size:10px;color:var(--muted-2);letter-spacing:.06em}
+.hours-grid{display:flex;flex-direction:column;gap:7px}
+.hours-row{display:flex;align-items:center;gap:10px}
+.hours-label{width:48px;flex-shrink:0;font-size:11px;color:var(--muted);text-align:right;letter-spacing:.02em}
+.hours-cells{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;flex:1}
+.hr-cell{padding:10px 0;font-family:var(--ff-mono);font-size:12.5px;text-align:center;background:var(--panel-2);border:1px solid var(--line);color:var(--muted);border-radius:9px;cursor:pointer;transition:all .12s;font-weight:500}
+.hr-cell:hover{border-color:var(--violet);color:var(--text);background:var(--panel-3)}
+.hr-cell.on{background:linear-gradient(135deg,var(--violet),#7C3AED);border-color:transparent;color:#fff;font-weight:700;box-shadow:0 3px 12px -4px rgba(124,58,237,.55)}
+.hours-presets{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
+.hr-preset{padding:7px 14px;font-size:12px;background:var(--panel-2);border:1px solid var(--line);color:var(--muted);border-radius:999px;cursor:pointer;transition:all .12s}
+.hr-preset:hover{border-color:var(--cyan);color:var(--cyan)}
 .field>label{font-family:var(--ff-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
 .input{background:var(--panel-2);border:1px solid var(--line);color:var(--text);padding:12px 13px;font-size:14px;clip-path:var(--notch-sm);transition:border-color .15s,box-shadow .15s;width:100%}
 .input::placeholder{color:var(--muted-2)}
@@ -259,7 +269,7 @@ select.input{appearance:none;background-image:linear-gradient(45deg,transparent 
 
 /* ============================== DATA ============================== */
 
-const DB = (typeof window!=="undefined" && window.__GM_DB) || null;
+/* DB, App() içinde render anında okunur (modül yükleme sırası sorununu önler) */
 
 const GAMES = [
   { id:"valorant", name:"VALORANT", short:"VAL", cat:"competitive", color:"#FF4655", Icon:Crosshair,
@@ -734,7 +744,8 @@ function Landing({ onStart, onLogin, onInfo, onBlog, siteCfg={ logoSize:42 } }){
 function Register({ onDone, onBack, login, busy=false, error="" }){
   const [f, setF] = useState({ name:"", email:"", pass:"", dob:"", country:"Türkiye", city:"" });
   const set = (k,v) => setF(s => ({ ...s, [k]:v }));
-  const valid = login ? (f.email && f.pass) : (f.name && f.email && f.pass && f.dob);
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email||"");
+  const valid = login ? (emailOk && f.pass.length>=1) : (f.name.trim() && emailOk && f.pass.length>=6 && f.dob);
   return (
     <div className="auth-wrap">
       <div className="auth-card">
@@ -753,7 +764,7 @@ function Register({ onDone, onBack, login, busy=false, error="" }){
             )}
             <div className="field"><label>Email</label>
               <input className="input" type="email" placeholder="sen@oyuncu.gg" value={f.email} onChange={e=>set("email",e.target.value)} /></div>
-            <div className="field"><label>Şifre</label>
+            <div className="field"><label>Şifre {!login && <span className="muted2">(en az 6 karakter)</span>}</label>
               <input className="input" type="password" placeholder="••••••••" value={f.pass} onChange={e=>set("pass",e.target.value)} /></div>
             {!login && (
               <>
@@ -1010,10 +1021,12 @@ function pathToRoute(path){
 }
 
 function App(){
+  const DB = (typeof window!=="undefined" && window.__GM_DB) || null;
   const { push, node: toasts } = useToasts();
   const [screen, setScreen] = useState(() => (typeof window!=="undefined" ? (pathToRoute(window.location.pathname).screen||"landing") : "landing")); // landing | register | login | onboarding | app
   const [pendingName, setPendingName] = useState("");
   const [authBusy, setAuthBusy] = useState(false);
+  const [sessionChecked, setSessionChecked] = useState(false);
   const [authErr, setAuthErr] = useState("");
   const [authUserId, setAuthUserId] = useState(null);
   const [user, setUser] = useState(DEFAULT_USER);
@@ -1163,7 +1176,7 @@ function App(){
   };
   const doLogin = async (f) => {
     setAuthErr("");
-    if (!DB || !DB.signIn) { setScreen("app"); setTab("discover"); return; }
+    if (!DB || !DB.signIn) { setAuthErr("Sunucuya bağlanılamadı. Giriş için kayıtlı bir hesap gerekir."); return; }
     setAuthBusy(true);
     const res = await DB.signIn(f.email, f.pass);
     setAuthBusy(false);
@@ -1175,17 +1188,24 @@ function App(){
   };
   const doLogout = async () => { if (DB && DB.signOut) await DB.signOut(); setAuthUserId(null); setMyProfileId(null); setUser(DEFAULT_USER); setScreen("landing"); };
   useEffect(()=>{
-    if (!DB || !DB.getSession) return;
+    if (!DB || !DB.getSession) { setSessionChecked(true); return; }
     let active = true;
     (async ()=>{
       const session = await DB.getSession();
-      if (!active || !session || !session.user) return;
-      setAuthUserId(session.user.id);
-      const prof = await DB.getMyProfile(session.user.id);
-      if (active && prof) { setUser({ ...prof, email: session.user.email }); setMyProfileId(prof.id); setScreen("app"); }
+      if (!active) return;
+      if (session && session.user) {
+        setAuthUserId(session.user.id);
+        const prof = await DB.getMyProfile(session.user.id);
+        if (active && prof) { setUser({ ...prof, email: session.user.email }); setMyProfileId(prof.id); setScreen("app"); }
+      }
+      if (active) setSessionChecked(true);
     })();
     return ()=>{ active=false; };
   }, []);
+  // Gerçek backend'de giriş yapmadan uygulama sayfalarına (URL ile) erişimi engelle
+  useEffect(()=>{
+    if (DB && sessionChecked && screen==="app" && !authUserId) { setScreen("landing"); }
+  }, [sessionChecked, screen, authUserId]);
   const addComment = (pid,text,stars) => { setWalls(w=>({ ...w, [pid]:[{ id:"c"+Date.now(), author:user.name, text, stars, time:"şimdi", reported:false }, ...(w[pid]||[]) ] })); push("Yorumun yayınlandı","ok"); if(DB){ DB.addComment(pid,{author:user.name,text,stars}).then(()=>DB.getComments().then(w=>{ if(w) setWalls(w); })); } };
   const reportComment = (pid,cid) => {
     setWalls(w=>({ ...w, [pid]:(w[pid]||[]).map(c=>c.id===cid?{ ...c, reported:true }:c) }));
@@ -1400,22 +1420,35 @@ function HoursPicker({ value=[], onChange }){
   const sel = new Set((value||[]).map(String));
   const toggle = h => { const k=String(h); const ns=new Set(sel); if(ns.has(k)) ns.delete(k); else ns.add(k); onChange([...ns].sort((a,b)=>Number(a)-Number(b))); };
   const setHrs = arr => onChange(arr.map(String));
+  const PERIODS = [
+    { label:"Gece",  hours:[0,1,2,3,4,5] },
+    { label:"Sabah", hours:[6,7,8,9,10,11] },
+    { label:"Öğle",  hours:[12,13,14,15,16,17] },
+    { label:"Akşam", hours:[18,19,20,21,22,23] },
+  ];
   return (
-    <div>
-      <div className="flex" style={{ justifyContent:"space-between", marginBottom:9, flexWrap:"wrap", gap:6 }}>
-        <span className="mono" style={{ fontSize:12.5, color:"var(--cyan)", fontWeight:600 }}>{value.length ? formatHours(value) : "Saat seçilmedi"}</span>
-        <span className="mono muted2" style={{ fontSize:10 }}>TSİ · saatlere tıkla (çoklu seçim)</span>
+    <div className="hours-pick">
+      <div className="hours-head">
+        <span className="hours-range">{value.length ? formatHours(value) : "Saat seçilmedi"}</span>
+        <span className="hours-tz">TSİ · çoklu seçim</span>
       </div>
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(8,1fr)", gap:5 }}>
-        {Array.from({length:24},(_,h)=>(
-          <button key={h} type="button" onClick={()=>toggle(h)} className={sel.has(String(h))?"hr-cell on":"hr-cell"}>{String(h).padStart(2,"0")}</button>
+      <div className="hours-grid">
+        {PERIODS.map(p=>(
+          <div className="hours-row" key={p.label}>
+            <span className="hours-label">{p.label}</span>
+            <div className="hours-cells">
+              {p.hours.map(h=>(
+                <button key={h} type="button" onClick={()=>toggle(h)} className={sel.has(String(h))?"hr-cell on":"hr-cell"}>{String(h).padStart(2,"0")}</button>
+              ))}
+            </div>
+          </div>
         ))}
       </div>
-      <div className="flex" style={{ gap:6, marginTop:9, flexWrap:"wrap" }}>
-        <button type="button" className="btn btn-ghost btn-sm" onClick={()=>setHrs([19,20,21,22,23])}>Akşam 19–23</button>
-        <button type="button" className="btn btn-ghost btn-sm" onClick={()=>setHrs([19,20,21,22,23,0,1,2])}>Gece 19–02</button>
-        <button type="button" className="btn btn-ghost btn-sm" onClick={()=>setHrs(Array.from({length:24},(_,i)=>i))}>Tümü</button>
-        <button type="button" className="btn btn-ghost btn-sm" onClick={()=>onChange([])}>Temizle</button>
+      <div className="hours-presets">
+        <button type="button" className="hr-preset" onClick={()=>setHrs([19,20,21,22,23])}>Akşam 19–23</button>
+        <button type="button" className="hr-preset" onClick={()=>setHrs([19,20,21,22,23,0,1,2])}>Gece 19–02</button>
+        <button type="button" className="hr-preset" onClick={()=>setHrs([12,13,14,15,16,17,18])}>Gündüz 12–18</button>
+        <button type="button" className="hr-preset" onClick={()=>onChange([])}>Temizle</button>
       </div>
     </div>
   );
