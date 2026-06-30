@@ -168,8 +168,8 @@ select.input{appearance:none;background-image:linear-gradient(45deg,transparent 
 
 /* marquee */
 .marquee{display:flex;gap:12px;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
-.marquee-track{display:flex;gap:12px;animation:scrollx 28s linear infinite;flex:0 0 auto}
-@keyframes scrollx{to{transform:translateX(-50%)}}
+.marquee-track{display:flex;width:max-content;animation:scrollx 32s linear infinite;flex:0 0 auto;will-change:transform}
+@keyframes scrollx{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
 /* section */
 .section{padding:54px 0}
@@ -653,15 +653,13 @@ function Landing({ onStart, onLogin, onInfo, onBlog, siteCfg={ logoSize:42 } }){
       <div className="container" style={{ padding:"30px 24px" }}>
         <div className="eyebrow" style={{ textAlign:"center", marginBottom:16 }}>// DESTEKLENEN OYUNLAR</div>
         <div className="marquee">
-          {[0,1].map(dup => (
-            <div className="marquee-track" key={dup} aria-hidden={dup===1}>
-              {GAMES.map(g => (
-                <div className="chip" key={g.id+dup} style={{ padding:"9px 14px", fontSize:13, color:"var(--text)" }}>
-                  <GameIcon gameId={g.id} size={20} /> {g.name}
-                </div>
-              ))}
-            </div>
-          ))}
+          <div className="marquee-track">
+            {[0,1].map(dup => GAMES.map(g => (
+              <div className="chip" key={g.id+"-"+dup} aria-hidden={dup===1} style={{ padding:"9px 14px", fontSize:13, color:"var(--text)", flex:"0 0 auto", marginRight:12 }}>
+                <GameIcon gameId={g.id} size={20} /> {g.name}
+              </div>
+            )))}
+          </div>
         </div>
       </div>
 
