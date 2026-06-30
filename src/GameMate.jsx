@@ -137,20 +137,26 @@ a{color:inherit;text-decoration:none}
 .hr-preset:hover{border-color:var(--cyan);color:var(--cyan)}
 .pcard2{position:relative;border-radius:16px;background:linear-gradient(155deg,#34344e,#191926);padding:1px;transition:transform .18s cubic-bezier(.2,.7,.3,1), box-shadow .22s ease}
 .pcard2:hover{transform:translateY(-6px);box-shadow:0 26px 54px -20px var(--gc),0 0 42px -14px var(--gc)}
-.pcard2-banner{position:relative;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:13px 15px;border-radius:15px 15px 0 0;cursor:pointer;background:var(--gc);overflow:hidden}
+.pcard2-banner{position:relative;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:15px 17px;border-radius:15px 15px 0 0;cursor:pointer;background:var(--gc);overflow:hidden}
 .pcard2-banner > *{position:relative;z-index:1}
 .pcard2-banner::before{content:"";position:absolute;inset:0;background:linear-gradient(112deg,rgba(15,15,24,.46),rgba(15,15,24,.93) 68%)}
 .pcard2-game{display:flex;align-items:center;gap:9px;min-width:0}
-.pcard2-gname{font-family:var(--ff-disp);font-weight:700;font-size:15px;color:#fff;letter-spacing:.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 1px 8px rgba(0,0,0,.5)}
-.pcard2-body{background:linear-gradient(180deg,#15151f,#0f0f18);border-radius:0 0 15px 15px;padding:14px 15px 15px}
+.pcard2-gname{font-family:var(--ff-disp);font-weight:700;font-size:16px;color:#fff;letter-spacing:.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 1px 8px rgba(0,0,0,.5)}
+.pcard2-body{background:linear-gradient(180deg,#15151f,#0f0f18);border-radius:0 0 15px 15px;padding:17px 17px 17px}
 .pcard2-id{display:flex;align-items:center;gap:12px;margin-bottom:13px}
-.pcard2-name{font-weight:700;font-size:17px;color:#fff;cursor:pointer;letter-spacing:.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.pcard2-meta{display:flex;align-items:center;gap:6px;margin-top:4px;font-family:var(--ff-mono);font-size:11px;color:var(--muted)}
+.pcard2-name{font-weight:700;font-size:18.5px;color:#fff;cursor:pointer;letter-spacing:.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pcard2-meta{display:flex;align-items:center;gap:6px;margin-top:5px;font-family:var(--ff-mono);font-size:12px;color:var(--muted)}
 .pcard2-meta .dot{color:var(--muted-2)}
 .pcard2-status{flex-shrink:0;font-family:var(--ff-mono);font-size:8.5px;font-weight:700;letter-spacing:.09em;padding:3px 8px;border-radius:999px;align-self:flex-start}
 .pcard2-status.on{color:var(--volt);background:rgba(61,224,160,.13);border:1px solid rgba(61,224,160,.32)}
 .pcard2-status.off{color:var(--muted-2);background:rgba(255,255,255,.03);border:1px solid var(--line)}
-.pcard2-hours{display:flex;align-items:center;gap:7px;font-family:var(--ff-mono);font-size:11px;color:var(--muted);margin-bottom:13px}
+.pcard2-hours{display:inline-flex;align-items:center;gap:7px;font-family:var(--ff-mono);font-size:12.5px;color:var(--text);background:rgba(255,255,255,.045);border:1px solid var(--line);border-radius:9px;padding:6px 11px;margin-bottom:14px}
+.pcard2-hours svg{color:var(--cyan);flex-shrink:0}
+.pcard2-hours-lbl{color:var(--muted-2);font-size:9px;letter-spacing:.08em;text-transform:uppercase;margin-right:1px}
+.pp-stats{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+.pp-stat{background:linear-gradient(180deg,#1a1a28,#13131e);border:1px solid var(--line);border-radius:12px;padding:11px 18px;min-width:84px}
+.pp-stat b{font-family:var(--ff-disp);font-size:22px;font-weight:700;display:block;line-height:1.1}
+.pp-stat span{font-family:var(--ff-mono);font-size:9.5px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
 .pcard .pcard-head{position:relative}
 .pcard .pcard-head::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,var(--gc,var(--violet)),transparent 75%)}
 .pcard:hover .pcard-head::before{box-shadow:0 0 16px 1px var(--gc,var(--violet))}
@@ -213,7 +219,7 @@ select.input{appearance:none;background-image:linear-gradient(45deg,transparent 
 
 /* grids */
 .grid-feat{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
-.grid-players{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.grid-players{display:grid;grid-template-columns:repeat(auto-fill,minmax(322px,1fr));gap:18px}
 .grid-games{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
 
 /* player card */
@@ -547,7 +553,7 @@ function RankBadge({ gameId, rank, sm }){
   );
 }
 
-const BUILD = "v8.0";
+const BUILD = "v9.0";
 const AVATARS = ["🎮","🕹️","👾","🤖","👽","🥷","🧙","🦊","🐺","🦅","🦉","🐉","🐲","🦈","🐙","🦁","🐯","🐆","🦂","🐸","🔥","⚡","💀","🛡️","⚔️","🎯","🏆","👑","🌟","🎲"];
 function hashCode(s){ let h=0; for(let i=0;i<s.length;i++){ h=(h<<5)-h+s.charCodeAt(i); h|=0; } return Math.abs(h); }
 function Avatar({ name, size=46, online, ring, avatar }){
@@ -587,17 +593,8 @@ function TagPill({ id, sm }){
   </span>;
 }
 function GameIcon({ gameId, size=26 }){
-  const g = gameById(gameId); if(!g) return null;
-  if (g.logo) {
-    const hex = (g.color||"#8B5CF6").replace("#","");
-    const src = g.logo.startsWith("http") ? g.logo : `https://cdn.simpleicons.org/${g.logo}/${hex}`;
-    const d = Math.round(size*0.62);
-    return <span className="gi" style={{ width:size, height:size, background:g.color+"22" }}>
-      <img src={src} alt={g.name} width={d} height={d} loading="lazy" style={{ display:"block", objectFit:"contain" }} />
-    </span>;
-  }
-  const I = g.Icon;
-  return <span className="gi" style={{ width:size, height:size, background:g.color+"22", color:g.color }}><I size={size*0.55} /></span>;
+  const g = gameById(gameId); if(!g) return null; const I = g.Icon;
+  return <span className="gi" style={{ width:size, height:size, background:g.color+"22", color:g.color }}><I size={size*0.58} /></span>;
 }
 
 function Logo({ size=38 }){
@@ -1088,11 +1085,11 @@ function ageFromDob(dob){
 /* ============================== URL YÖNLENDİRME ============================== */
 const TAB_PATHS = { discover:"/kesfet", invites:"/davetler", friends:"/arkadaslar", messages:"/mesajlar", profile:"/profil", mygames:"/oyunlarim", settings:"/ayarlar", blog:"/blog", info:"/nasil-calisir", admin:"/yonetim", about:"/hakkinda" };
 const PATH_TABS = Object.fromEntries(Object.entries(TAB_PATHS).map(([k,v])=>[v,k]));
-function routeToPath(screen, tab){
+function routeToPath(screen, tab, post){
   if(screen==="login") return "/giris";
   if(screen==="register") return "/kayit";
   if(screen==="onboarding") return "/kurulum";
-  if(screen==="app") return TAB_PATHS[tab] || "/kesfet";
+  if(screen==="app"){ if(tab==="blog" && post) return "/blog/"+post; return TAB_PATHS[tab] || "/kesfet"; }
   return "/";
 }
 function pathToRoute(path){
@@ -1101,6 +1098,7 @@ function pathToRoute(path){
   if(p==="/giris") return { screen:"login" };
   if(p==="/kayit") return { screen:"register" };
   if(p==="/kurulum") return { screen:"onboarding" };
+  if(p.indexOf("/blog/")===0){ const slug=p.slice(6); if(slug) return { screen:"app", tab:"blog", post:slug }; }
   if(PATH_TABS[p]) return { screen:"app", tab:PATH_TABS[p] };
   return { screen:"landing" };
 }
@@ -1124,6 +1122,7 @@ function App(){
   const [incoming, setIncoming] = useState([7, 11]);             // playerIds who invited me
   const [friends, setFriends] = useState([5, 1, 4]);                   // matched playerIds
   const [viewPlayer, setViewPlayer] = useState(null);
+  const [blogPost, setBlogPost] = useState(() => (typeof window!=="undefined" ? (pathToRoute(window.location.pathname).post||null) : null));
 
   // === URL yönlendirme: her sayfa kendi URL'ine sahip, tarayıcı geri/ileri çalışır ===
   const routeSynced = useRef(false);
@@ -1132,6 +1131,7 @@ function App(){
       const r = pathToRoute(window.location.pathname);
       setScreen(r.screen || "landing");
       if(r.tab) setTab(r.tab);
+      setBlogPost(r.post||null);
       setViewPlayer(null);
       setSidebarOpen(false);
     };
@@ -1140,11 +1140,12 @@ function App(){
   }, []);
   useEffect(() => {
     if(!routeSynced.current){ routeSynced.current = true; return; }
-    const desired = routeToPath(screen, tab);
+    const desired = routeToPath(screen, tab, blogPost);
     if(typeof window!=="undefined" && window.location.pathname !== desired){
-      window.history.pushState({ screen, tab }, "", desired);
+      window.history.pushState({ screen, tab, blogPost }, "", desired);
     }
-  }, [screen, tab]);
+  }, [screen, tab, blogPost]);
+  useEffect(()=>{ if(tab!=="blog" && blogPost) setBlogPost(null); }, [tab]);
   const [chatWith, setChatWith] = useState(null);
   const [conversations, setConversations] = useState(SEED_CONVOS);
   const [activeChat, setActiveChat] = useState(null);
@@ -1215,6 +1216,41 @@ function App(){
     if(!ldEl){ ldEl=document.createElement("script"); ldEl.type="application/ld+json"; ldEl.id="gm-jsonld"; document.head.appendChild(ldEl); }
     ldEl.textContent = JSON.stringify(ld);
   }, [seo]);
+  useEffect(()=>{
+    if(typeof document==="undefined") return;
+    const post = (tab==="blog" && blogPost) ? BLOG_POSTS.find(b=>b.id===blogPost) : null;
+    const setM=(sel,attr,key,val)=>{ let el=document.head.querySelector(sel); if(!el){el=document.createElement("meta");el.setAttribute(attr,key);document.head.appendChild(el);} el.setAttribute("content",val||""); };
+    const setCanon=(href)=>{ let l=document.head.querySelector('link[rel="canonical"]'); if(!l){l=document.createElement("link");l.setAttribute("rel","canonical");document.head.appendChild(l);} l.setAttribute("href",href||""); };
+    let artEl=document.getElementById("gm-jsonld-article");
+    if(post){
+      const base=(seo.canonical||"https://gamemate.gg/").replace(/\/$/,"");
+      const url=base+"/blog/"+post.id;
+      document.title=post.title+" — GameMate Blog";
+      setM('meta[name="description"]','name','description',post.excerpt);
+      setM('meta[name="keywords"]','name','keywords',post.cat+", "+post.title+", oyun arkadaşı bul, gamemate");
+      setM('meta[property="og:title"]','property','og:title',post.title);
+      setM('meta[property="og:description"]','property','og:description',post.excerpt);
+      setM('meta[property="og:type"]','property','og:type','article');
+      setM('meta[property="og:url"]','property','og:url',url);
+      setM('meta[name="twitter:title"]','name','twitter:title',post.title);
+      setM('meta[name="twitter:description"]','name','twitter:description',post.excerpt);
+      setCanon(url);
+      const art={ "@context":"https://schema.org","@type":"BlogPosting","headline":post.title,"description":post.excerpt,"datePublished":post.date,"articleSection":post.cat,"inLanguage":"tr-TR","author":{"@type":"Organization","name":"GameMate"},"publisher":{"@type":"Organization","name":"GameMate","url":base+"/"},"mainEntityOfPage":{"@type":"WebPage","@id":url} };
+      if(!artEl){artEl=document.createElement("script");artEl.type="application/ld+json";artEl.id="gm-jsonld-article";document.head.appendChild(artEl);}
+      artEl.textContent=JSON.stringify(art);
+    } else {
+      document.title=seo.title||"GameMate";
+      setM('meta[name="description"]','name','description',seo.desc);
+      setM('meta[property="og:title"]','property','og:title',seo.title);
+      setM('meta[property="og:description"]','property','og:description',seo.desc);
+      setM('meta[property="og:type"]','property','og:type','website');
+      setM('meta[property="og:url"]','property','og:url',seo.canonical);
+      setM('meta[name="twitter:title"]','name','twitter:title',seo.title);
+      setM('meta[name="twitter:description"]','name','twitter:description',seo.desc);
+      setCanon(seo.canonical);
+      if(artEl) artEl.remove();
+    }
+  }, [tab, blogPost, seo]);
   useEffect(()=>{
     if(!DB) return;
     DB.getPlayers().then(r=>{ if(r && r.length) setPlayers(r); });
@@ -1401,8 +1437,11 @@ function App(){
               <Search size={16} style={{ position:"absolute", left:13, top:13, color:"var(--muted)", zIndex:1 }} />
               <input className="input" style={{ paddingLeft:38 }} placeholder="Oyuncu, oyun veya etiket ara..." value={search} onChange={e=>{ setSearch(e.target.value); setTab("discover"); }} />
             </div>
+            <div className="flex hdr-nav" style={{ gap:6, marginLeft:14 }}>
+              <button className="btn btn-ghost btn-sm" onClick={()=>setTab("info")} style={tab==="info"?{ color:"var(--cyan)" }:undefined}><Globe size={15}/> Nasıl Çalışır</button>
+              <button className="btn btn-ghost btn-sm" onClick={()=>setTab("blog")} style={tab==="blog"?{ color:"var(--cyan)" }:undefined}><MessageSquare size={15}/> Blog</button>
+            </div>
             <div className="flex" style={{ gap:8, marginLeft:"auto", alignItems:"center" }}>
-              <button className="btn btn-ghost btn-sm" onClick={()=>setTab("info")} style={tab==="info"?{ color:"var(--cyan)" }:undefined} title="Nasıl Çalışır"><Globe size={16}/></button>
               <button className="btn btn-ghost btn-sm" onClick={()=>setTab("invites")} style={{ position:"relative" }} title="Davetler"><Bell size={16} />{incomingCount>0 && <span className="tn-badge">{incomingCount}</span>}</button>
               <button className="btn btn-ghost btn-sm tn-user" onClick={()=>setTab("profile")} title="Profilim"><Avatar name={user.name} avatar={user.avatar} size={26} online={user.online!==false} /><span className="hdr-uname" style={{ fontSize:13, fontWeight:600, color:"#fff", maxWidth:130, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{user.name}</span></button>
               <button className="btn btn-ghost btn-sm" onClick={doLogout} title="Çıkış Yap"><LogOut size={16} /></button>
@@ -1420,7 +1459,7 @@ function App(){
             {tab==="profile" && <Profile user={user} setUser={setUser} push={push} ads={ads} onPersist={saveMyProfile} />}
             {tab==="mygames" && <MyGames user={user} setUser={setUser} push={push} ads={ads} />}
             {tab==="settings" && <SettingsView user={user} setUser={setUser} push={push} onLogout={doLogout} />}
-            {tab==="blog" && <BlogView ads={ads} onCTA={()=>setTab("discover")} />}
+            {tab==="blog" && <BlogView ads={ads} onCTA={()=>setTab("discover")} slug={blogPost} onOpen={(id)=>{ setTab("blog"); setBlogPost(id); }} onBack={()=>setBlogPost(null)} />}
             {tab==="info" && <InfoView />}
             {tab==="admin" && user.admin && <AdminPanel banned={banned} onBan={banUser} onUnban={unbanUser} reports={commentReports} onDismissReport={dismissReport} onRemoveComment={removeComment} ads={ads} setAds={setAds} siteCfg={siteCfg} setSiteCfg={setSiteCfg} messages={contactMsgs} onMsgRead={markMsgRead} onMsgDelete={deleteMsg} seo={seo} setSeo={setSeo} players={players} />}
             {tab==="about" && <AboutView />}
@@ -1569,26 +1608,30 @@ function PlayerProfile({ pid, matched, invited, comments=[], myRating=0, ads, on
   return (
     <div style={{ position:"fixed", inset:0, zIndex:130, overflow:"auto", background:"var(--void)" }}>
       <Background/>
-      <div className="container" style={{ position:"relative", zIndex:1, maxWidth:900, padding:"18px 22px 70px" }}>
+      <div className="container" style={{ position:"relative", zIndex:1, maxWidth:1040, padding:"22px 26px 80px" }}>
         <button className="btn btn-ghost btn-sm" onClick={onClose} style={{ marginBottom:14 }}>← Geri</button>
 
         <Hud style={{ marginBottom:16 }}>
-          <div className="flex" style={{ gap:16, alignItems:"flex-start", flexWrap:"wrap" }}>
-            <Avatar name={p.name} avatar={p.avatar} size={72} online={p.online} ring />
+          <div className="flex" style={{ gap:18, alignItems:"flex-start", flexWrap:"wrap" }}>
+            <Avatar name={p.name} avatar={p.avatar} size={92} online={p.online} ring />
             <div style={{ flex:1, minWidth:200 }}>
               <div className="flex" style={{ alignItems:"center", gap:10, flexWrap:"wrap" }}>
-                <h1 className="disp" style={{ fontSize:26, fontWeight:700 }}>{p.name}</h1>
+                <h1 className="disp" style={{ fontSize:32, fontWeight:700, letterSpacing:"-.01em" }}>{p.name}</h1>
                 <span style={{ fontSize:18 }}>{p.country}</span>
                 <span className={`online-dot ${p.online?"":"off"}`} />
                 <span className="mono muted2" style={{ fontSize:11 }}>{p.online?"ONLINE":"OFFLINE"}</span>
               </div>
-              <div className="flex" style={{ gap:14, marginTop:8, flexWrap:"wrap" }}>
-                <span className="chip" style={{ color:"var(--gold)", borderColor:"rgba(245,196,81,.3)" }}><Star size={12}/> {p.rating.toFixed(1)} puan</span>
-                {p.age && <span className="chip">{p.age} yaş</span>}
-                {(p.devices||[]).map(d=><span key={d} className="chip" style={{ color:"var(--cyan)", borderColor:"rgba(34,211,238,.3)" }}>{d}</span>)}
-                {p.tags.slice(0,3).map(t=><TagPill key={t} id={t} sm />)}
+              <div className="flex" style={{ gap:7, marginTop:11, flexWrap:"wrap" }}>
+                {(p.devices||["PC"]).map(d=><span key={d} className="chip" style={{ color:"var(--cyan)", borderColor:"rgba(34,211,238,.3)" }}>{d}</span>)}
+                {p.tags.slice(0,4).map(t=><TagPill key={t} id={t} sm />)}
               </div>
-              <p className="muted" style={{ marginTop:12, fontSize:14 }}>{p.bio}</p>
+              {p.bio && <p className="muted" style={{ marginTop:13, fontSize:14.5, lineHeight:1.6, maxWidth:640 }}>{p.bio}</p>}
+              <div className="pp-stats">
+                <div className="pp-stat"><b style={{ color:"var(--gold)" }}>{p.rating.toFixed(1)}</b><span>Puan</span></div>
+                <div className="pp-stat"><b>{p.games.length}</b><span>Oyun</span></div>
+                {p.age ? <div className="pp-stat"><b>{p.age}</b><span>Yaş</span></div> : null}
+                <div className="pp-stat"><b>{p.online?"Aktif":"Çevrimdışı"}</b><span>Durum</span></div>
+              </div>
             </div>
           </div>
         </Hud>
@@ -2332,14 +2375,15 @@ const BLOG_POSTS=[
     ] },
 ];
 
-function BlogView({ ads, onCTA }){
-  const [open, setOpen] = useState(null);
+function BlogView({ ads, onCTA, slug, onOpen, onBack }){
+  const open = slug || null;
   const renderBody = body => body.map((para,i)=> para.indexOf("## ")===0
     ? <h2 key={i} className="disp" style={{ fontSize:19, fontWeight:600, margin:"22px 0 8px" }}>{para.slice(3)}</h2>
     : <p key={i} className="muted" style={{ fontSize:15, lineHeight:1.7, marginBottom:14 }}>{para}</p>);
-  if (open){ const post=BLOG_POSTS.find(b=>b.id===open); const rel=(post.related||[]).map(id=>BLOG_POSTS.find(b=>b.id===id)).filter(Boolean); return (
+  const post = open ? BLOG_POSTS.find(b=>b.id===open) : null;
+  if (post){ const rel=(post.related||[]).map(id=>BLOG_POSTS.find(b=>b.id===id)).filter(Boolean); return (
     <div style={{ maxWidth:760 }}>
-      <button className="btn btn-ghost btn-sm" onClick={()=>setOpen(null)} style={{ marginBottom:14 }}>← Tüm yazılar</button>
+      <button className="btn btn-ghost btn-sm" onClick={onBack} style={{ marginBottom:14 }}>← Tüm yazılar</button>
       <span className="chip" style={{ color:"var(--cyan)", borderColor:"rgba(34,211,238,.3)" }}>{post.cat}</span>
       <h1 className="disp" style={{ fontSize:30, fontWeight:700, margin:"12px 0 8px" }}>{post.title}</h1>
       <div className="mono muted2" style={{ fontSize:11.5, marginBottom:20 }}>{post.date} · {post.read} dk okuma</div>
@@ -2354,7 +2398,7 @@ function BlogView({ ads, onCTA }){
         <h3 className="disp" style={{ fontSize:16, fontWeight:600, marginBottom:12 }}>İlgili yazılar</h3>
         <div style={{ display:"grid", gap:8 }}>
           {rel.map(r=>(
-            <button key={r.id} className="msg-item" onClick={()=>{ setOpen(r.id); if(typeof window!=="undefined") window.scrollTo(0,0); }} style={{ justifyContent:"space-between" }}>
+            <button key={r.id} className="msg-item" onClick={()=>{ onOpen(r.id); if(typeof window!=="undefined") window.scrollTo(0,0); }} style={{ justifyContent:"space-between" }}>
               <span style={{ minWidth:0 }}><b className="disp" style={{ fontSize:13.5 }}>{r.title}</b><div className="muted" style={{ fontSize:12, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{r.excerpt}</div></span>
               <ChevronRight size={16} style={{ color:"var(--muted)", flexShrink:0 }} />
             </button>
@@ -2371,7 +2415,7 @@ function BlogView({ ads, onCTA }){
       <div className="grid-players">
         {BLOG_POSTS.map(b=>(
           <Hud key={b.id} hover>
-            <div style={{ cursor:"pointer" }} onClick={()=>{ setOpen(b.id); if(typeof window!=="undefined") window.scrollTo(0,0); }}>
+            <div style={{ cursor:"pointer" }} onClick={()=>{ onOpen(b.id); if(typeof window!=="undefined") window.scrollTo(0,0); }}>
               <span className="chip" style={{ fontSize:10.5, color:"var(--cyan)", borderColor:"rgba(34,211,238,.3)" }}>{b.cat}</span>
               <h3 className="disp" style={{ fontSize:17, fontWeight:600, margin:"10px 0 6px" }}>{b.title}</h3>
               <p className="muted" style={{ fontSize:13 }}>{b.excerpt}</p>
@@ -2589,7 +2633,7 @@ function PlayerCard({ p, entry, state, onInvite, onView }){
       </div>
       <div className="pcard2-body">
         <div className="pcard2-id">
-          <Avatar name={p.name} avatar={p.avatar} size={52} online={p.online} ring />
+          <Avatar name={p.name} avatar={p.avatar} size={56} online={p.online} ring />
           <div style={{ minWidth:0, flex:1 }}>
             <div className="flex" style={{ alignItems:"center", gap:6 }}>
               <span className="pcard2-name disp" onClick={onView}>{p.name}</span>
@@ -2607,7 +2651,7 @@ function PlayerCard({ p, entry, state, onInvite, onView }){
         <div className="flex" style={{ gap:6, flexWrap:"wrap", marginBottom:12 }}>
           {p.tags.slice(0,3).map(t=><TagPill key={t} id={t} sm />)}
         </div>
-        <div className="pcard2-hours"><Clock size={12} /> {p.times&&p.times.length ? formatHours(p.times) : "Saat belirtilmemiş"}</div>
+        <div className="pcard2-hours"><Clock size={13} /><span className="pcard2-hours-lbl">Saat</span> {p.times&&p.times.length ? formatHours(p.times) : "Belirtilmemiş"}</div>
         {state==="friend" ? (
           <button className="btn btn-block btn-sm" style={{ background:"rgba(61,224,160,.12)", color:"var(--volt)", border:"1px solid rgba(61,224,160,.35)" }} onClick={onView}>
             <Check size={15} /> Arkadaşsınız — Profili Gör
