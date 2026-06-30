@@ -331,16 +331,16 @@ select.input{appearance:none;background-image:linear-gradient(45deg,transparent 
 /* DB, App() içinde render anında okunur (modül yükleme sırası sorununu önler) */
 
 const GAMES = [
-  { id:"valorant", name:"VALORANT", short:"VAL", cat:"competitive", color:"#FF4655", Icon:Crosshair,
+  { id:"valorant", name:"VALORANT", short:"VAL", cat:"competitive", color:"#FF4655", logo:"valorant", Icon:Crosshair,
     ranks:["Demir","Bronz","Gümüş","Altın","Platin","Elmas","Yükselen","Ölümsüz","Radyant"],
     roles:["Düellocu","Kontrolcü","Nöbetçi","Başlatıcı"] },
-  { id:"lol", name:"League of Legends", short:"LoL", cat:"competitive", color:"#C8AA6E", Icon:Swords,
+  { id:"lol", name:"League of Legends", short:"LoL", cat:"competitive", color:"#C8AA6E", logo:"leagueoflegends", Icon:Swords,
     ranks:["Demir","Bronz","Gümüş","Altın","Platin","Zümrüt","Elmas","Üstat","Baş Üstat","Şampiyon Adayı"],
     roles:["Üst Koridor","Orman","Orta Koridor","Nişancı","Destek"] },
-  { id:"cs2", name:"Counter-Strike 2", short:"CS2", cat:"competitive", color:"#F0A500", Icon:Crosshair,
+  { id:"cs2", name:"Counter-Strike 2", short:"CS2", cat:"competitive", color:"#F0A500", logo:"counterstrike", Icon:Crosshair,
     ranks:["Gümüş","Altın Nova","Usta Muhafız","Efsanevi Kartal","Yüce","Küresel Elit","Premier 10K","Premier 15K","Premier 20K+"],
     roles:["Giriş","AWP'ci","Destek","Takım Lideri","Pusucu"] },
-  { id:"dota2", name:"Dota 2", short:"DOTA", cat:"competitive", color:"#C23C2A", Icon:Swords,
+  { id:"dota2", name:"Dota 2", short:"DOTA", cat:"competitive", color:"#C23C2A", logo:"dota2", Icon:Swords,
     ranks:["Haberci","Muhafız","Haçlı","Arkon","Efsane","Kadim","İlahi","Ölümsüz"],
     roles:["Taşıyıcı","Orta Koridor","Offlane","Yumuşak Destek","Tam Destek"] },
   { id:"overwatch", name:"Overwatch 2", short:"OW2", cat:"competitive", color:"#F99E1A", Icon:Shield,
@@ -352,16 +352,16 @@ const GAMES = [
   { id:"apex", name:"Apex Legends", short:"APEX", cat:"competitive", color:"#DA292A", Icon:Crosshair,
     ranks:["Çaylak","Bronz","Gümüş","Altın","Platin","Elmas","Üstat","Avcı"],
     roles:["Vurucu","Destek","Takım Lideri","Keşif"] },
-  { id:"fortnite", name:"Fortnite", short:"FN", cat:"competitive", color:"#7B68EE", Icon:Zap,
+  { id:"fortnite", name:"Fortnite", short:"FN", cat:"competitive", color:"#7B68EE", logo:"fortnite", Icon:Zap,
     ranks:["Bronz","Gümüş","Altın","Platin","Elmas","Elit","Şampiyon","Gerçeküstü"],
     roles:["İnşaatçı","Vurucu","Takım Lideri"] },
   { id:"minecraft", name:"Minecraft", short:"MC", cat:"casual", color:"#6AA84F", Icon:Gamepad2,
     ranks:["Günlük","İnşaatçı","Redstone","Survival Uzmanı","Hardcore"], roles:["İnşaatçı","Redstone","Kaşif","PvP"] },
-  { id:"gta", name:"GTA Online", short:"GTA", cat:"casual", color:"#79C300", Icon:Gamepad2,
+  { id:"gta", name:"GTA Online", short:"GTA", cat:"casual", color:"#79C300", logo:"rockstargames", Icon:Gamepad2,
     ranks:["Lv 1-50","Lv 50-100","Lv 100-300","Lv 300+"], roles:["Soyguncu","Yarışçı","Grindci","Rol Yapma"] },
   { id:"rocketleague", name:"Rocket League", short:"RL", cat:"casual", color:"#1F8FFF", Icon:Zap,
     ranks:["Bronz","Gümüş","Altın","Platin","Elmas","Şampiyon","Büyük Şampiyon","SSL"], roles:["Forvet","Orta Saha","Kaleci"] },
-  { id:"pubg", name:"PUBG", short:"PUBG", cat:"casual", color:"#F2A900", Icon:Crosshair,
+  { id:"pubg", name:"PUBG", short:"PUBG", cat:"casual", color:"#F2A900", logo:"pubg", Icon:Crosshair,
     ranks:["Bronz","Gümüş","Altın","Platin","Elmas","Üstat","Fatih"], roles:["Vurucu","Destek","Sürücü","Keskin Nişancı"] },
   { id:"amongus", name:"Among Us", short:"AU", cat:"casual", color:"#C51111", Icon:Gamepad2,
     ranks:["Mürettebat","Dedektif","Sahtekar Uzmanı","Galaksi Beyni"], roles:["Mürettebat","Sahtekar"] },
@@ -391,11 +391,11 @@ const GAMES = [
     ranks:["Demir","Bronz","Gümüş","Altın","Platin","Elmas","Usta"], roles:["Dövüşçü"] },
   { id:"gt7", name:"Gran Turismo 7", short:"GT7", cat:"competitive", color:"#1B59C4", Icon:Zap,
     ranks:["E","D","C","B","A","S"], roles:["Pilot"] },
-  { id:"eafc", name:"EA Sports FC 26", short:"FC26", cat:"competitive", color:"#1D9BF0", Icon:Trophy,
+  { id:"eafc", name:"EA Sports FC 26", short:"FC26", cat:"competitive", color:"#1D9BF0", logo:"ea", Icon:Trophy,
     ranks:["Div 10","Div 7","Div 5","Div 3","Div 1","Elit"], roles:["Forvet","Orta Saha","Defans","Kaleci","Kanat"] },
   { id:"nba2k", name:"NBA 2K26", short:"2K", cat:"competitive", color:"#C8102E", Icon:Trophy,
     ranks:["Çaylak","Yıldız","All-Star","Efsane"], roles:["Oyun Kurucu","Şutör","Pivot","Forvet"] },
-  { id:"fivem", name:"FiveM (GTA V Rol Yapma)", short:"FiveM", cat:"casual", color:"#F79E1B", Icon:Gamepad2,
+  { id:"fivem", name:"FiveM (GTA V Rol Yapma)", short:"FiveM", cat:"casual", color:"#F79E1B", logo:"rockstargames", Icon:Gamepad2,
     ranks:["Yeni","Vatandaş","Esnaf","Çete Üyesi","Veteran"], roles:["Rol Yapma","Polis","Çete","Şoför","Esnaf"] },
   { id:"helldivers", name:"Helldivers 2", short:"HD2", cat:"casual", color:"#E8C400", Icon:Shield,
     ranks:["Çaylak","Asker","Komando","Kahraman","Efsane"], roles:["Ağır Silah","Destek","Keşif","Sağlık"] },
@@ -421,13 +421,13 @@ const GAMES = [
     ranks:["Sürgün","Kâşif","Viking","Efsane"], roles:["İnşaatçı","Savaşçı","Kâşif","Çiftçi"] },
   { id:"stardew", name:"Stardew Valley", short:"SDV", cat:"casual", color:"#8FBC5A", Icon:Gamepad2,
     ranks:["Yeni Çiftçi","Çiftçi","Usta","Efsane"], roles:["Çiftçi","Madenci","Balıkçı","Toplayıcı"] },
-  { id:"roblox", name:"Roblox", short:"RBLX", cat:"casual", color:"#E2231A", Icon:Gamepad2,
+  { id:"roblox", name:"Roblox", short:"RBLX", cat:"casual", color:"#E2231A", logo:"roblox", Icon:Gamepad2,
     ranks:["Yeni","Oyuncu","Yaratıcı","Veteran"], roles:["Oyuncu","Yaratıcı","Rol Yapma"] },
   { id:"fallguys", name:"Fall Guys", short:"FALL", cat:"casual", color:"#FF5FA2", Icon:Sparkles,
     ranks:["Fasulye","Yarışmacı","Finalist","Şampiyon"], roles:["Yarışmacı","Takım"] },
   { id:"ffxiv", name:"Final Fantasy XIV", short:"FF14", cat:"casual", color:"#2E4FA3", Icon:Crown,
     ranks:["Maceracı","Savaşçı","Veteran","Efsane"], roles:["Tank","Şifacı","Hasar"] },
-  { id:"rust", name:"Rust", short:"RUST", cat:"casual", color:"#CE412B", Icon:Flame,
+  { id:"rust", name:"Rust", short:"RUST", cat:"casual", color:"#CE412B", logo:"rust", Icon:Flame,
     ranks:["Çıplak","Hayatta Kalan","Kabile","Raider","Veteran"], roles:["Toplayıcı","Raider","İnşaatçı","Nişancı"] },
 ];
 const gameById = id => GAMES.find(g => g.id === id);
@@ -547,7 +547,7 @@ function RankBadge({ gameId, rank, sm }){
   );
 }
 
-const BUILD = "v7.0";
+const BUILD = "v8.0";
 const AVATARS = ["🎮","🕹️","👾","🤖","👽","🥷","🧙","🦊","🐺","🦅","🦉","🐉","🐲","🦈","🐙","🦁","🐯","🐆","🦂","🐸","🔥","⚡","💀","🛡️","⚔️","🎯","🏆","👑","🌟","🎲"];
 function hashCode(s){ let h=0; for(let i=0;i<s.length;i++){ h=(h<<5)-h+s.charCodeAt(i); h|=0; } return Math.abs(h); }
 function Avatar({ name, size=46, online, ring, avatar }){
@@ -587,7 +587,16 @@ function TagPill({ id, sm }){
   </span>;
 }
 function GameIcon({ gameId, size=26 }){
-  const g = gameById(gameId); if(!g) return null; const I = g.Icon;
+  const g = gameById(gameId); if(!g) return null;
+  if (g.logo) {
+    const hex = (g.color||"#8B5CF6").replace("#","");
+    const src = g.logo.startsWith("http") ? g.logo : `https://cdn.simpleicons.org/${g.logo}/${hex}`;
+    const d = Math.round(size*0.62);
+    return <span className="gi" style={{ width:size, height:size, background:g.color+"22" }}>
+      <img src={src} alt={g.name} width={d} height={d} loading="lazy" style={{ display:"block", objectFit:"contain" }} />
+    </span>;
+  }
+  const I = g.Icon;
   return <span className="gi" style={{ width:size, height:size, background:g.color+"22", color:g.color }}><I size={size*0.55} /></span>;
 }
 
