@@ -170,6 +170,13 @@ a{color:inherit;text-decoration:none}
 .input:focus{outline:none;border-color:var(--violet);box-shadow:0 0 0 3px rgba(139,92,246,.18),0 4px 16px -8px rgba(139,92,246,.4)}
 select.input{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 18px) 18px,calc(100% - 13px) 18px;background-size:5px 5px,5px 5px;background-repeat:no-repeat;padding-right:34px}
 .checkrow{display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;font-size:13.5px;color:var(--muted)}
+.filter-card .hud-body{padding:15px 17px}
+.filt-lbl{font-family:var(--ff-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.filter-card .field{gap:5px}
+.filter-card .sel-wrap select{padding:9px 30px 9px 12px}
+.filter-card .hours-selects{gap:9px}
+.filter-card .hours-summary{margin-top:8px;font-size:12.5px}
+.filter-card .hours-presets{margin-top:8px;gap:6px}
 
 /* ---------- layout ---------- */
 .container{max-width:1240px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
@@ -578,7 +585,7 @@ function RankBadge({ gameId, rank, sm }){
   );
 }
 
-const BUILD = "v9.6";
+const BUILD = "v9.7";
 const AVATARS = ["🎮","🕹️","👾","🤖","👽","🥷","🧙","🦊","🐺","🦅","🦉","🐉","🐲","🦈","🐙","🦁","🐯","🐆","🦂","🐸","🔥","⚡","💀","🛡️","⚔️","🎯","🏆","👑","🌟","🎲"];
 function hashCode(s){ let h=0; for(let i=0;i<s.length;i++){ h=(h<<5)-h+s.charCodeAt(i); h|=0; } return Math.abs(h); }
 function Avatar({ name, size=46, online, ring, avatar }){
@@ -2646,28 +2653,30 @@ function Discover({ user, outgoing, friends, onInvite, onView, simulateMatch, qu
         </span>
       </div>
 
-      {/* filters */}
-      <Hud className="noclip" style={{ marginBottom:20 }}>
-        <div style={{ marginBottom:16 }}>
-          <label style={{ fontSize:12.5, color:"var(--muted)", display:"block", marginBottom:8 }}>Platform</label>
-          <DeviceToggle value={fDevices} onChange={setFDevices} compact />
+      {/* filters — kompakt */}
+      <Hud className="noclip filter-card" style={{ marginBottom:18 }}>
+        <div className="flex filt-top" style={{ justifyContent:"space-between", alignItems:"center", gap:12, flexWrap:"wrap", marginBottom:12 }}>
+          <div className="flex" style={{ alignItems:"center", gap:11, flexWrap:"wrap" }}>
+            <span className="filt-lbl">Platform</span>
+            <DeviceToggle value={fDevices} onChange={setFDevices} compact />
+          </div>
+          <label className="checkrow" style={{ fontSize:13 }}>
+            <input type="checkbox" checked={onlyOnline} onChange={e=>setOnlyOnline(e.target.checked)} />
+            <span className="online-dot" /> Sadece online
+          </label>
         </div>
-        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))", gap:12, alignItems:"end" }}>
-          <div className="field"><label>Oyun (çoklu — tikle)</label>
+        <div className="filt-grid" style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(150px,1fr))", gap:10, marginBottom:12 }}>
+          <div className="field"><label>Oyun</label>
             <MultiSelect options={GAMES.filter(g=>gameOnDevices(g.id, fDevices)).map(g=>g.id)} value={fGames} onChange={setFGames} placeholder="Tüm oyunlar" labelOf={id=>{const g=gameById(id);return g?g.name:id;}} searchable searchPlaceholder="Oyun ara..." /></div>
-          <div className="field"><label>Rol (çoklu — tikle)</label>
+          <div className="field"><label>Rol</label>
             <MultiSelect options={roleOpts} value={fRoles} onChange={setFRoles} placeholder="Tüm roller" /></div>
-          <div className="field"><label>Etiket (çoklu — tikle)</label>
+          <div className="field"><label>Etiket</label>
             <MultiSelect options={TAGS.map(t=>t.id)} value={fTags} onChange={setFTags} placeholder="Tüm tarzlar" labelOf={id=>{const t=tagById(id);return t?t.label:id;}} /></div>
         </div>
-        <div style={{ marginTop:16 }}>
-          <label style={{ fontSize:12.5, color:"var(--muted)", display:"block", marginBottom:8 }}>Oyun Saati Aralığı (TSİ) — istediğin aralığı seç</label>
+        <div>
+          <label className="filt-lbl" style={{ display:"block", marginBottom:7 }}>Oyun Saati (TSİ)</label>
           <HoursPicker value={fTimes} onChange={setFTimes} />
         </div>
-        <label className="checkrow" style={{ marginTop:14 }}>
-          <input type="checkbox" checked={onlyOnline} onChange={e=>setOnlyOnline(e.target.checked)} />
-          <span className="online-dot" /> Sadece online oyuncular
-        </label>
       </Hud>
 
       {ads && <AdSlot ads={ads} slot="discoverTop" format="leaderboard" style={{ marginBottom:18 }} />}
