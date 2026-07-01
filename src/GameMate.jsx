@@ -196,7 +196,19 @@ select.input{appearance:none;background-image:linear-gradient(45deg,transparent 
 .tnav-item .nav-badge{margin-left:2px}
 .topnav-actions{display:flex;align-items:center;gap:7px;margin-left:auto;flex-shrink:0}
 .tn-user{gap:8px!important;padding-left:5px!important;padding-right:11px!important}
-.tn-badge{position:absolute;top:-4px;right:-4px;min-width:16px;height:16px;padding:0 4px;font-size:10px;background:var(--danger);color:#fff;display:grid;place-items:center;border-radius:999px;font-family:var(--ff-mono)}
+.tn-badge{position:absolute;top:-5px;right:-5px;min-width:17px;height:17px;padding:0 4px;font-size:10px;font-weight:700;background:var(--danger);color:#fff;display:grid;place-items:center;border-radius:999px;font-family:var(--ff-mono);border:2px solid #0d0d16;pointer-events:none}
+.usermenu{position:absolute;right:0;top:calc(100% + 8px);z-index:70;min-width:194px;background:linear-gradient(180deg,#1b1b28,#141420);border:1px solid var(--line);border-radius:12px;padding:6px;box-shadow:0 22px 55px rgba(0,0,0,.6);display:flex;flex-direction:column;gap:2px;animation:menuIn .14s ease}
+@keyframes menuIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.usermenu-item{display:flex;align-items:center;gap:10px;padding:10px 12px;font-size:13.5px;font-weight:600;color:var(--text);background:transparent;border:none;border-radius:8px;cursor:pointer;text-align:left;transition:background .12s;width:100%}
+.usermenu-item:hover{background:rgba(255,255,255,.05)}
+.usermenu-item.danger{color:#ff6b6b}
+.usermenu-item.danger:hover{background:rgba(255,80,80,.1)}
+.usermenu-sep{height:1px;background:var(--line);margin:4px 6px}
+.uname-link{transition:color .12s}
+.uname-link:hover{color:var(--cyan)}
+.pp-close{position:fixed;top:16px;right:18px;z-index:5;width:42px;height:42px;display:grid;place-items:center;border-radius:50%;background:rgba(22,22,32,.9);border:1px solid var(--line);color:var(--text);cursor:pointer;backdrop-filter:blur(8px);transition:all .15s}
+.pp-close:hover{background:rgba(255,80,80,.16);border-color:rgba(255,80,80,.45);color:#ff6b6b;transform:rotate(90deg)}
+.save-bar{position:sticky;bottom:0;z-index:8;margin-top:20px;padding:14px 0 10px;background:linear-gradient(180deg,rgba(8,8,13,0),var(--void) 45%);display:flex;align-items:center;gap:14px;flex-wrap:wrap}
 .tn-burger{display:none!important}
 .content-wrap{position:relative;z-index:1}
 .content-inner{max-width:1340px;margin:0 auto;padding:30px 26px 72px}
@@ -224,8 +236,9 @@ select.input{appearance:none;background-image:linear-gradient(45deg,transparent 
 
 /* player card */
 .pcard-head{display:flex;gap:13px;align-items:center;padding:16px 16px 12px}
-.avatar{position:relative;flex:0 0 auto;display:grid;place-items:center;font-family:var(--ff-disp);font-weight:700;color:#fff;clip-path:var(--notch-sm)}
-.avatar .av-status{position:absolute;bottom:-2px;right:-2px;width:13px;height:13px;border-radius:50%;border:2.5px solid var(--panel)}
+.avatar-wrap{position:relative;flex:0 0 auto;display:inline-grid;place-items:center;vertical-align:middle}
+.avatar{display:grid;place-items:center;font-family:var(--ff-disp);font-weight:700;color:#fff;clip-path:var(--notch-sm);width:100%;height:100%}
+.avatar-wrap .av-status{position:absolute;bottom:-1px;right:-1px;border-radius:50%;border:2px solid #12121c;box-shadow:0 0 0 1px rgba(0,0,0,.3)}
 .gamechip{display:flex;align-items:center;gap:9px;padding:9px 12px;background:linear-gradient(180deg,#222232,#15151f);border:1px solid var(--line);clip-path:var(--notch-sm)}
 .gamechip .gi{width:26px;height:26px;display:grid;place-items:center;clip-path:var(--notch-sm)}
 
@@ -317,17 +330,37 @@ select.input{appearance:none;background-image:linear-gradient(45deg,transparent 
 .landing-zoom{zoom:var(--lz,1)}
 @media (max-width:760px){
   .landing-zoom{zoom:1!important}
-  .topbar{flex-wrap:wrap;gap:10px;padding:12px 16px}
+  .topbar{flex-wrap:wrap;gap:9px;padding:11px 14px}
   .hdr-uname{display:none}
-  .tb-search{flex:1 1 100%!important;max-width:none!important}
-  .hdr-nav{flex:1 1 100%;order:4;justify-content:flex-start;gap:8px;flex-wrap:wrap}
+  .tb-search{order:4;flex:1 1 100%!important;max-width:none!important}
+  .hdr-nav{order:5;flex:1 1 100%;justify-content:flex-start;gap:6px;flex-wrap:wrap}
+  .hdr-actions{margin-left:auto}
   .hero{padding:42px 0 20px}
-  .modal-bg{padding:14px}
+  .modal-bg{padding:12px}
   .modal{max-height:92vh}
   .profile-grid{grid-template-columns:1fr!important}
   .main-area{padding:18px 14px 48px}
-  .sidebar{width:min(86vw,300px)}
+  .sidebar{width:min(86vw,320px)}
   .statline .s b{font-size:21px}
+  .grid-players{grid-template-columns:1fr;gap:14px}
+  .grid-games{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}
+  .pp-overlay .container{padding:18px 14px 70px!important}
+  .pp-close{top:12px;right:12px;width:38px;height:38px}
+  .pcard2-banner{padding:13px 14px}
+  .pcard2-body{padding:15px 14px}
+  .btn-sm{padding:9px 13px}
+  .pp-stats{gap:8px}
+}
+@media (max-width:640px){
+  .hdr-lbl{display:none}
+  .hdr-nav .btn-sm{padding:7px 10px;font-size:12px}
+  .save-bar .btn{flex:1}
+  .eyebrow{font-size:10px}
+}
+@media (max-width:400px){
+  .grid-games{grid-template-columns:1fr 1fr}
+  .main-area{padding:16px 12px 44px}
+  .pcard2-name{max-width:150px}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 `;
@@ -545,7 +578,7 @@ function RankBadge({ gameId, rank, sm }){
   );
 }
 
-const BUILD = "v9.4";
+const BUILD = "v9.5";
 const AVATARS = ["🎮","🕹️","👾","🤖","👽","🥷","🧙","🦊","🐺","🦅","🦉","🐉","🐲","🦈","🐙","🦁","🐯","🐆","🦂","🐸","🔥","⚡","💀","🛡️","⚔️","🎯","🏆","👑","🌟","🎲"];
 function hashCode(s){ let h=0; for(let i=0;i<s.length;i++){ h=(h<<5)-h+s.charCodeAt(i); h|=0; } return Math.abs(h); }
 function Avatar({ name, size=46, online, ring, avatar }){
@@ -553,17 +586,20 @@ function Avatar({ name, size=46, online, ring, avatar }){
   const h = hashCode(isEmoji ? avatar : (name||"GM"));
   const a = h % 360, b = (h*7) % 360;
   const initials = (name||"").replace(/[^A-Za-zÀ-ÿ0-9]/g,"").slice(0,2).toUpperCase() || "GM";
+  const dotSz = Math.max(9, Math.round(size*0.24));
   return (
-    <div className="avatar" style={{
-      width:size, height:size, fontSize: isEmoji ? Math.round(size*0.54) : size*0.36,
-      background:`linear-gradient(135deg,hsl(${a} 62% 30%),hsl(${b} 70% 19%))`,
-      boxShadow: ring ? "0 0 0 1.5px rgba(139,92,246,.5)" : "inset 0 0 0 1px rgba(255,255,255,.08)"
-    }}>
-      {isEmoji ? <span style={{ lineHeight:1 }}>{avatar}</span> : initials}
+    <span className="avatar-wrap" style={{ width:size, height:size }}>
+      <span className="avatar" style={{
+        width:size, height:size, fontSize: isEmoji ? Math.round(size*0.54) : size*0.36,
+        background:`linear-gradient(135deg,hsl(${a} 62% 30%),hsl(${b} 70% 19%))`,
+        boxShadow: ring ? "0 0 0 1.5px rgba(139,92,246,.5)" : "inset 0 0 0 1px rgba(255,255,255,.08)"
+      }}>
+        {isEmoji ? <span style={{ lineHeight:1 }}>{avatar}</span> : initials}
+      </span>
       {online !== undefined && (
-        <span className="av-status" style={{ background: online ? "var(--volt)" : "var(--muted-2)" }} />
+        <span className="av-status" style={{ width:dotSz, height:dotSz, background: online ? "var(--volt)" : "var(--muted-2)" }} />
       )}
-    </div>
+    </span>
   );
 }
 
@@ -1082,6 +1118,10 @@ function routeToPath(screen, tab, post){
   if(screen==="login") return "/giris";
   if(screen==="register") return "/kayit";
   if(screen==="onboarding") return "/kurulum";
+  if(screen==="pubblog") return post ? "/blog/"+post : "/blog";
+  if(screen==="pubinfo") return "/nasil-calisir";
+  if(screen==="pubabout") return "/hakkinda";
+  if(screen==="pubcontact") return "/iletisim";
   if(screen==="app"){ if(tab==="blog" && post) return "/blog/"+post; return TAB_PATHS[tab] || "/kesfet"; }
   return "/";
 }
@@ -1091,7 +1131,8 @@ function pathToRoute(path){
   if(p==="/giris") return { screen:"login" };
   if(p==="/kayit") return { screen:"register" };
   if(p==="/kurulum") return { screen:"onboarding" };
-  if(p.indexOf("/blog/")===0){ const slug=p.slice(6); if(slug) return { screen:"app", tab:"blog", post:slug }; }
+  if(p==="/blog") return { screen:"pubblog", tab:"blog" };
+  if(p.indexOf("/blog/")===0){ const slug=p.slice(6); if(slug) return { screen:"pubblog", tab:"blog", post:slug }; }
   if(PATH_TABS[p]) return { screen:"app", tab:PATH_TABS[p] };
   return { screen:"landing" };
 }
@@ -1111,6 +1152,7 @@ function App(){
 
   const [tab, setTab] = useState(() => (typeof window!=="undefined" ? (pathToRoute(window.location.pathname).tab||"discover") : "discover"));
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [userMenu, setUserMenu] = useState(false);
 
   // social graph state
   const [outgoing, setOutgoing] = useState(new Set());           // playerIds I invited
@@ -1321,8 +1363,13 @@ function App(){
   }, []);
   // Gerçek backend'de giriş yapmadan uygulama sayfalarına (URL ile) erişimi engelle
   useEffect(()=>{
-    if (DB && sessionChecked && screen==="app" && !authUserId) { setScreen("landing"); }
-  }, [sessionChecked, screen, authUserId]);
+    if (DB && sessionChecked && screen==="app" && !authUserId) {
+      const pub = { blog:"pubblog", info:"pubinfo", about:"pubabout", privacy:"pubprivacy", rules:"pubrules", contact:"pubcontact" };
+      setScreen(pub[tab] || "landing");
+    }
+  }, [sessionChecked, screen, authUserId, tab]);
+  // Her sayfa/görünüm değişiminde en üste kaydır
+  useEffect(()=>{ if(typeof window!=="undefined"){ try{ window.scrollTo(0,0); }catch(e){} } }, [tab, blogPost, screen, viewPlayer]);
   const addComment = (pid,text,stars) => { setWalls(w=>({ ...w, [pid]:[{ id:"c"+Date.now(), author:user.name, text, stars, time:"şimdi", reported:false }, ...(w[pid]||[]) ] })); push("Yorumun yayınlandı","ok"); if(DB){ DB.addComment(pid,{author:user.name,text,stars}).then(()=>DB.getComments().then(w=>{ if(w) setWalls(w); })); } };
   const reportComment = (pid,cid) => {
     setWalls(w=>({ ...w, [pid]:(w[pid]||[]).map(c=>c.id===cid?{ ...c, reported:true }:c) }));
@@ -1393,7 +1440,7 @@ function App(){
         </div>
         <div className="container" style={{ padding:"6px 24px 30px" }}>
           {screen==="pubinfo" ? <InfoView />
-            : screen==="pubblog" ? <BlogView ads={ads} onCTA={()=>setScreen("register")} />
+            : screen==="pubblog" ? <BlogView ads={ads} onCTA={()=>setScreen("register")} slug={blogPost} onOpen={(id)=>setBlogPost(id)} onBack={()=>setBlogPost(null)} />
             : screen==="pubabout" ? <AboutView />
             : screen==="pubprivacy" ? <PrivacyView />
             : screen==="pubrules" ? <RulesView />
@@ -1437,10 +1484,28 @@ function App(){
               <button className="btn btn-ghost btn-sm" onClick={()=>setTab("info")} style={tab==="info"?{ color:"var(--cyan)" }:undefined}><Globe size={15}/> Nasıl Çalışır</button>
               <button className="btn btn-ghost btn-sm" onClick={()=>setTab("blog")} style={tab==="blog"?{ color:"var(--cyan)" }:undefined}><MessageSquare size={15}/> Blog</button>
             </div>
-            <div className="flex" style={{ gap:8, marginLeft:"auto", alignItems:"center" }}>
-              <button className="btn btn-ghost btn-sm" onClick={()=>setTab("invites")} style={{ position:"relative" }} title="Davetler"><Bell size={16} />{incomingCount>0 && <span className="tn-badge">{incomingCount}</span>}</button>
-              <button className="btn btn-ghost btn-sm tn-user" onClick={()=>setTab("profile")} title="Profilim"><Avatar name={user.name} avatar={user.avatar} size={26} online={user.online!==false} /><span className="hdr-uname" style={{ fontSize:13, fontWeight:600, color:"#fff", maxWidth:130, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{user.name}</span></button>
-              <button className="btn btn-ghost btn-sm" onClick={doLogout} title="Çıkış Yap"><LogOut size={16} /></button>
+            <div className="flex hdr-actions" style={{ gap:8, marginLeft:"auto", alignItems:"center" }}>
+              <button className="btn btn-ghost btn-sm" onClick={()=>setTab("contact")} style={tab==="contact"?{ color:"var(--cyan)" }:undefined} title="İletişim"><Send size={16} /><span className="hdr-lbl">İletişim</span></button>
+              <span className="tn-wrap" style={{ position:"relative", display:"inline-flex" }}>
+                <button className="btn btn-ghost btn-sm" onClick={()=>setTab("invites")} title="Davetler"><Bell size={16} /></button>
+                {incomingCount>0 && <span className="tn-badge">{incomingCount}</span>}
+              </span>
+              <div style={{ position:"relative" }}>
+                <button className="btn btn-ghost btn-sm tn-user" onClick={()=>setUserMenu(o=>!o)} title="Menü" aria-haspopup="true" aria-expanded={userMenu}>
+                  <Avatar name={user.name} avatar={user.avatar} size={26} online={user.online!==false} />
+                  <span className="hdr-uname" style={{ fontSize:13, fontWeight:600, color:"#fff", maxWidth:130, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{user.name}</span>
+                  <Menu size={14} style={{ color:"var(--muted)", flexShrink:0 }} />
+                </button>
+                {userMenu && (<>
+                  <div onClick={()=>setUserMenu(false)} style={{ position:"fixed", inset:0, zIndex:60 }} />
+                  <div className="usermenu">
+                    <button className="usermenu-item" onClick={()=>{ setTab("profile"); setUserMenu(false); }}><User size={15}/> Profil</button>
+                    <button className="usermenu-item" onClick={()=>{ setTab("settings"); setUserMenu(false); }}><Settings size={15}/> Ayarlar</button>
+                    <div className="usermenu-sep" />
+                    <button className="usermenu-item danger" onClick={()=>{ setUserMenu(false); doLogout(); }}><LogOut size={15}/> Çıkış Yap</button>
+                  </div>
+                </>)}
+              </div>
             </div>
           </div>
 
@@ -1452,9 +1517,9 @@ function App(){
               onAccept={acceptInvite} onDecline={declineInvite} onCancel={cancelInvite} onView={setViewPlayer} ads={ads} players={players} />}
             {tab==="friends" && <Friends friends={friends} onChat={openChat} onView={setViewPlayer} ads={ads} players={players} />}
             {tab==="messages" && <MessagesView conversations={conversations} friends={friends} players={players} activeId={activeChat} setActiveId={setActiveChat} onSend={sendMessage} />}
-            {tab==="profile" && <Profile user={user} setUser={setUser} push={push} ads={ads} onPersist={saveMyProfile} />}
+            {tab==="profile" && <Profile user={user} setUser={setUser} push={push} ads={ads} onPersist={saveMyProfile} onGoSettings={()=>setTab("settings")} />}
             {tab==="mygames" && <MyGames user={user} setUser={setUser} push={push} ads={ads} />}
-            {tab==="settings" && <SettingsView user={user} setUser={setUser} push={push} onLogout={doLogout} />}
+            {tab==="settings" && <SettingsView user={user} setUser={setUser} push={push} onLogout={doLogout} onPersist={saveMyProfile} />}
             {tab==="blog" && <BlogView ads={ads} onCTA={()=>setTab("discover")} slug={blogPost} onOpen={(id)=>{ setTab("blog"); setBlogPost(id); }} onBack={()=>setBlogPost(null)} />}
             {tab==="info" && <InfoView />}
             {tab==="admin" && user.admin && <AdminPanel banned={banned} onBan={banUser} onUnban={unbanUser} reports={commentReports} onDismissReport={dismissReport} onRemoveComment={removeComment} ads={ads} setAds={setAds} siteCfg={siteCfg} setSiteCfg={setSiteCfg} messages={contactMsgs} onMsgRead={markMsgRead} onMsgDelete={deleteMsg} seo={seo} setSeo={setSeo} players={players} />}
@@ -1602,8 +1667,9 @@ function PlayerProfile({ pid, matched, invited, comments=[], myRating=0, ads, on
   if (!p) return null;
   const submit = () => { if(!text.trim()) return; onAddComment(pid, text.trim(), stars); setText(""); setStars(0); };
   return (
-    <div style={{ position:"fixed", inset:0, zIndex:130, overflow:"auto", background:"var(--void)" }}>
+    <div className="pp-overlay" style={{ position:"fixed", inset:0, zIndex:130, overflow:"auto", background:"rgba(6,6,11,.97)" }}>
       <Background/>
+      <button onClick={onClose} className="pp-close" title="Kapat" aria-label="Kapat"><X size={20}/></button>
       <div className="container" style={{ position:"relative", zIndex:1, maxWidth:1040, padding:"22px 26px 80px" }}>
         <button className="btn btn-ghost btn-sm" onClick={onClose} style={{ marginBottom:14 }}>← Geri</button>
 
@@ -2733,9 +2799,12 @@ function Invites({ incoming, outgoing, onAccept, onDecline, onCancel, onView, ad
               <Hud key={pid}>
                 <div className="flex" style={{ alignItems:"center", gap:12 }}>
                   <Avatar name={p.name} avatar={p.avatar} size={40} online={p.online} />
-                  <div style={{ flex:1 }}>
-                    <b className="disp" style={{ fontSize:14 }}>{p.name}</b>
-                    <span className="muted" style={{ fontSize:13 }}> • {g.name}</span>
+                  <div style={{ flex:1, minWidth:0 }}>
+                    <div className="flex" style={{ alignItems:"center", gap:8, flexWrap:"wrap" }}>
+                      <b className="disp uname-link" style={{ fontSize:14, cursor:"pointer" }} onClick={()=>onView(pid)}>{p.name}</b>
+                      <span className="muted" style={{ fontSize:13 }}>{g.name}</span>
+                      <RankBadge gameId={g.id} rank={e.rank} sm />
+                    </div>
                   </div>
                   <div className="flex" style={{ gap:8, alignItems:"center" }}>
                     <span className="chip" style={{ color:"var(--cyan)", borderColor:"rgba(34,211,238,.3)" }}>
@@ -2804,7 +2873,7 @@ function Friends({ friends, onChat, onView, ads, players=[] }){
 }
 
 /* ============================== PROFILE ============================== */
-function Profile({ user, setUser, push, ads, onPersist }){
+function Profile({ user, setUser, push, ads, onPersist, onGoSettings }){
   const [edit, setEdit] = useState(false);
   const [bio, setBio] = useState(user.bio);
   const [avSel, setAv] = useState(user.avatar||"🎮");
@@ -2879,9 +2948,12 @@ function Profile({ user, setUser, push, ads, onPersist }){
       {ads && <AdSlot ads={ads} slot="profilePage" format="horizontal" style={{ marginBottom:18 }} />}
       <span className="eyebrow">// İLETİŞİM BİLGİLERİM</span>
       <Hud style={{ marginTop:12 }}>
-        <p className="muted" style={{ fontSize:13, marginBottom:14 }}>
-          <Lock size={12} style={{ verticalAlign:"-1px" }} /> Yalnızca eşleştiğin oyuncular görür. Düzenlemek için <b style={{ color:"var(--text)" }}>Ayarlar</b> sayfasına git.
-        </p>
+        <div className="flex" style={{ alignItems:"center", justifyContent:"space-between", gap:12, marginBottom:14, flexWrap:"wrap" }}>
+          <p className="muted" style={{ fontSize:13, margin:0 }}>
+            <Lock size={12} style={{ verticalAlign:"-1px" }} /> Yalnızca eşleştiğin oyuncular görür.
+          </p>
+          <button className="btn btn-ghost btn-sm" onClick={onGoSettings}><Settings size={14}/> Ayarlar'da Düzenle</button>
+        </div>
         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))", gap:12 }}>
           {CONTACT_FIELDS.map(f => (
             <div key={f.id} className="kv" style={{ background:"var(--panel-2)", border:"1px solid var(--line)", clipPath:"var(--notch-sm)", padding:"10px 12px" }}>
@@ -2900,11 +2972,16 @@ function Profile({ user, setUser, push, ads, onPersist }){
 /* ============================== MY GAMES ============================== */
 function MyGames({ user, setUser, push, ads }){
   const [adding, setAdding] = useState(false);
+  const [pick, setPick] = useState(null);
+  const [pickRank, setPickRank] = useState("");
+  const [pickRoles, setPickRoles] = useState([]);
   const owned = new Set(user.games.map(x=>x.g));
-  const addGame = (gid) => {
-    const g = gameById(gid);
-    setUser(u=>({ ...u, games:[...u.games, { g:gid, rank:g.ranks[0], role:g.roles[0], roles:[g.roles[0]], ps:"Günlük" }] }));
-    setAdding(false); push(`${g.name} eklendi`, "ok");
+  const openAdd = () => { setPick(null); setPickRank(""); setPickRoles([]); setAdding(true); };
+  const choose = (gid) => { const g=gameById(gid); setPick(gid); setPickRank(g.ranks[0]); setPickRoles([g.roles[0]]); };
+  const confirmAdd = () => {
+    const g = gameById(pick); const rl = pickRoles.length?pickRoles:[g.roles[0]];
+    setUser(u=>({ ...u, games:[...u.games, { g:pick, rank:pickRank||g.ranks[0], role:rl.join(", "), roles:rl, ps:"Günlük" }] }));
+    setAdding(false); setPick(null); push(`${g.name} eklendi`, "ok");
   };
   const removeGame = (gid) => { setUser(u=>({...u, games:u.games.filter(x=>x.g!==gid)})); push("Oyun kaldırıldı","info"); };
   const updateGame = (gid, k, v) => setUser(u=>({ ...u, games:u.games.map(x=>{ if(x.g!==gid) return x; const nx={...x,[k]:v}; if(k==="roles") nx.role=(v||[]).join(", "); return nx; }) }));
@@ -2914,7 +2991,7 @@ function MyGames({ user, setUser, push, ads }){
       <div className="flex" style={{ justifyContent:"space-between", alignItems:"center", marginBottom:22, flexWrap:"wrap", gap:12 }}>
         <div><span className="eyebrow">// KÜTÜPHANE</span>
           <h1 className="disp" style={{ fontSize:28, fontWeight:700, marginTop:4 }}>Oyunlarım</h1></div>
-        <button className="btn btn-primary btn-sm" onClick={()=>setAdding(true)}><Plus size={15} /> Oyun Ekle</button>
+        <button className="btn btn-primary btn-sm" onClick={openAdd}><Plus size={15} /> Oyun Ekle</button>
       </div>
 
       {ads && <AdSlot ads={ads} slot="gamesTop" format="horizontal" style={{ marginBottom:18 }} />}
@@ -2950,15 +3027,36 @@ function MyGames({ user, setUser, push, ads }){
           <div className="modal" onClick={e=>e.stopPropagation()}>
             <Hud ticks>
               <div className="flex" style={{ justifyContent:"space-between", marginBottom:16 }}>
-                <h3 className="disp" style={{ fontSize:20, fontWeight:600 }}>Oyun Ekle</h3>
+                <h3 className="disp" style={{ fontSize:20, fontWeight:600 }}>{pick ? "Rank & Rol Seç" : "Oyun Ekle"}</h3>
                 <button className="btn btn-ghost btn-sm" onClick={()=>setAdding(false)}><X size={15} /></button>
               </div>
-              <div className="grid-games">
-                {GAMES.filter(g=>!owned.has(g.id)).map(g=>(
-                  <GameTile key={g.id} g={g} sel={false} onClick={()=>addGame(g.id)} />
-                ))}
-              </div>
-              {GAMES.filter(g=>!owned.has(g.id)).length===0 && <p className="muted" style={{ textAlign:"center", padding:20 }}>Tüm oyunlar zaten ekli.</p>}
+              {!pick ? (<>
+                <div className="grid-games">
+                  {GAMES.filter(g=>!owned.has(g.id)).map(g=>(
+                    <GameTile key={g.id} g={g} sel={false} onClick={()=>choose(g.id)} />
+                  ))}
+                </div>
+                {GAMES.filter(g=>!owned.has(g.id)).length===0 && <p className="muted" style={{ textAlign:"center", padding:20 }}>Tüm oyunlar zaten ekli.</p>}
+              </>) : (()=>{ const g=gameById(pick); return (
+                <div>
+                  <div className="flex" style={{ alignItems:"center", gap:12, marginBottom:18 }}>
+                    <GameIcon gameId={g.id} size={40} />
+                    <div className="disp" style={{ fontWeight:700, fontSize:18 }}>{g.name}</div>
+                  </div>
+                  <div style={{ display:"grid", gap:14 }}>
+                    <div className="field"><label>Rank</label>
+                      <select className="input" value={pickRank} onChange={e=>setPickRank(e.target.value)}>
+                        {g.ranks.map(r=><option key={r}>{r}</option>)}
+                      </select></div>
+                    <div className="field"><label>Rol (çoklu — tikle)</label>
+                      <MultiSelect options={g.roles} value={pickRoles} onChange={setPickRoles} placeholder="Rol seç" /></div>
+                  </div>
+                  <div className="flex" style={{ gap:8, marginTop:20, alignItems:"center" }}>
+                    <button className="btn btn-ghost btn-sm" onClick={()=>setPick(null)}>← Geri</button>
+                    <button className="btn btn-primary btn-sm" style={{ marginLeft:"auto" }} onClick={confirmAdd}><Plus size={15}/> Ekle</button>
+                  </div>
+                </div>
+              ); })()}
             </Hud>
           </div>
         </div>
@@ -2968,8 +3066,20 @@ function MyGames({ user, setUser, push, ads }){
 }
 
 /* ============================== SETTINGS ============================== */
-function SettingsView({ user, setUser, push, onLogout }){
+function SettingsView({ user, setUser, push, onLogout, onPersist }){
   const [notif, setNotif] = useState(true);
+  const [online, setOnline] = useState(user.online!==false);
+  const [socials, setSocials] = useState({ ...(user.socials||{}) });
+  const [times, setTimes] = useState(user.times||[]);
+  const dirty = online!==(user.online!==false)
+    || JSON.stringify(socials)!==JSON.stringify(user.socials||{})
+    || JSON.stringify(times)!==JSON.stringify(user.times||[]);
+  const save = () => {
+    const patch = { online, socials, times };
+    setUser(u=>({ ...u, ...patch }));
+    if(onPersist) onPersist(patch);
+    push("Ayarlar kaydedildi","ok");
+  };
   return (
     <div style={{ maxWidth:720 }}>
       <span className="eyebrow">// AYARLAR</span>
@@ -2979,13 +3089,13 @@ function SettingsView({ user, setUser, push, onLogout }){
         <h3 className="disp" style={{ fontSize:17, fontWeight:600, marginBottom:14 }}>Tercihler</h3>
         <ToggleRow label="Davet bildirimleri" desc="Yeni davet geldiğinde haber ver" on={notif} onToggle={()=>setNotif(v=>!v)} />
         <div className="divider" style={{ margin:"12px 0" }} />
-        <ToggleRow label="Çevrimiçi görünürlük" desc="Diğer oyuncular online olduğunu görsün" on={user.online!==false} onToggle={()=>setUser(u=>({ ...u, online: u.online===false }))} />
+        <ToggleRow label="Çevrimiçi görünürlük" desc="Diğer oyuncular online olduğunu görsün" on={online} onToggle={()=>setOnline(v=>!v)} />
       </Hud>
 
       <Hud style={{ marginBottom:16 }}>
         <h3 className="disp" style={{ fontSize:17, fontWeight:600, marginBottom:6 }}>Aktif Saatlerin</h3>
         <p className="muted" style={{ fontSize:13, marginBottom:14 }}>Hangi saatlerde oyundasın? Eşleşmelerin buna göre yapılır.</p>
-        <HoursPicker value={user.times||[]} onChange={(t)=>setUser(u=>({ ...u, times:t }))} />
+        <HoursPicker value={times} onChange={setTimes} />
       </Hud>
 
       <Hud style={{ marginBottom:16 }}>
@@ -2997,7 +3107,7 @@ function SettingsView({ user, setUser, push, onLogout }){
           {CONTACT_FIELDS.map(f=>(
             <div key={f.id} style={{ display:"grid", gap:5 }}>
               <span className="mono" style={{ fontSize:10, letterSpacing:".05em", color:f.color }}>{f.label}</span>
-              <input className="input" placeholder={f.ph} value={user.socials[f.id]||""} onChange={e=>setUser(u=>({ ...u, socials:{ ...u.socials, [f.id]:e.target.value } }))} />
+              <input className="input" placeholder={f.ph} maxLength={200} value={socials[f.id]||""} onChange={e=>setSocials(prev=>({ ...prev, [f.id]:e.target.value }))} />
             </div>
           ))}
         </div>
@@ -3011,6 +3121,11 @@ function SettingsView({ user, setUser, push, onLogout }){
 
         <button className="btn btn-danger btn-block" style={{ marginTop:16 }} onClick={onLogout}><LogOut size={15}/> Çıkış Yap</button>
       </Hud>
+
+      <div className="save-bar">
+        <button className="btn btn-volt" disabled={!dirty} onClick={save} style={!dirty?{ opacity:.55 }:undefined}><Check size={16}/> Kaydet</button>
+        <span className="muted" style={{ fontSize:12.5 }}>{dirty ? "Kaydedilmemiş değişiklikler var" : "Her şey kaydedildi"}</span>
+      </div>
     </div>
   );
 }
