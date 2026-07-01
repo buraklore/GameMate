@@ -578,7 +578,7 @@ function RankBadge({ gameId, rank, sm }){
   );
 }
 
-const BUILD = "v9.5";
+const BUILD = "v9.6";
 const AVATARS = ["🎮","🕹️","👾","🤖","👽","🥷","🧙","🦊","🐺","🦅","🦉","🐉","🐲","🦈","🐙","🦁","🐯","🐆","🦂","🐸","🔥","⚡","💀","🛡️","⚔️","🎯","🏆","👑","🌟","🎲"];
 function hashCode(s){ let h=0; for(let i=0;i<s.length;i++){ h=(h<<5)-h+s.charCodeAt(i); h|=0; } return Math.abs(h); }
 function Avatar({ name, size=46, online, ring, avatar }){
@@ -2535,6 +2535,10 @@ function MultiSelect({ options, value=[], onChange, placeholder="Seç", labelOf,
               <span style={{ fontSize:13.5 }}>{lbl(o)}</span>
             </button>
           ); })}
+          <div style={{ position:"sticky", bottom:0, background:"var(--panel)", borderTop:"1px solid var(--line)", padding:"8px 10px", display:"flex", justifyContent:"space-between", alignItems:"center", gap:8, zIndex:2 }}>
+            <span className="muted" style={{ fontSize:11.5 }}>{value.length ? value.length+" seçili" : "Seçim yok"}</span>
+            <button type="button" onClick={()=>setOpen(false)} className="btn btn-primary btn-sm" style={{ padding:"7px 18px" }}><Check size={13}/> Okey</button>
+          </div>
         </div>
       )}
     </div>
@@ -2561,17 +2565,17 @@ function DobPicker({ value, onChange }){
 }
 
 /* Platform (cihaz) seçici — PC / PS5 */
-function DeviceToggle({ value=[], onChange, single }){
+function DeviceToggle({ value=[], onChange, single, compact }){
   const DEV=[{k:"PC",ic:"🖥️"},{k:"PS5",ic:"🎮"}];
   const toggle=k=> single ? onChange(value.includes(k)?[]:[k]) : onChange(value.includes(k)?value.filter(x=>x!==k):[...value,k]);
   return (
-    <div className="flex" style={{ gap:10, flexWrap:"wrap" }}>
+    <div className="flex" style={{ gap:compact?8:10, flexWrap:"wrap" }}>
       {DEV.map(dv=>{ const on=value.includes(dv.k); return (
         <button key={dv.k} type="button" onClick={()=>toggle(dv.k)}
-          style={{ flex:1, minWidth:130, display:"flex", alignItems:"center", justifyContent:"center", gap:9, padding:"13px 18px",
+          style={{ flex: compact?"0 0 auto":1, minWidth: compact?0:130, display:"inline-flex", alignItems:"center", justifyContent:"center", gap: compact?7:9, padding: compact?"8px 15px":"13px 18px",
             border:"1px solid", borderColor:on?"var(--cyan)":"var(--line)", background:on?"rgba(34,211,238,.12)":"var(--panel-2)",
-            color:on?"var(--cyan)":"var(--muted)", clipPath:"var(--notch-sm)", fontWeight:700, fontSize:14.5, cursor:"pointer" }}>
-          <span style={{ fontSize:19 }}>{dv.ic}</span> {dv.k} {on && <Check size={15} />}
+            color:on?"var(--cyan)":"var(--muted)", clipPath:"var(--notch-sm)", fontWeight:700, fontSize: compact?13:14.5, cursor:"pointer" }}>
+          <span style={{ fontSize: compact?15:19 }}>{dv.ic}</span> {dv.k} {on && <Check size={compact?13:15} />}
         </button>
       ); })}
     </div>
@@ -2645,8 +2649,8 @@ function Discover({ user, outgoing, friends, onInvite, onView, simulateMatch, qu
       {/* filters */}
       <Hud className="noclip" style={{ marginBottom:20 }}>
         <div style={{ marginBottom:16 }}>
-          <label style={{ fontSize:12.5, color:"var(--muted)", display:"block", marginBottom:8 }}>1. Önce platform seç — PC / PS5</label>
-          <DeviceToggle value={fDevices} onChange={setFDevices} />
+          <label style={{ fontSize:12.5, color:"var(--muted)", display:"block", marginBottom:8 }}>Platform</label>
+          <DeviceToggle value={fDevices} onChange={setFDevices} compact />
         </div>
         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))", gap:12, alignItems:"end" }}>
           <div className="field"><label>Oyun (çoklu — tikle)</label>
