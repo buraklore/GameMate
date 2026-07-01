@@ -246,7 +246,7 @@ select.input{appearance:none;background-image:linear-gradient(45deg,transparent 
 
 /* marquee */
 .marquee{display:flex;gap:12px;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
-.marquee-track{display:flex;width:max-content;animation:scrollx 32s linear infinite;flex:0 0 auto;will-change:transform}
+.marquee-track{display:flex;width:max-content;animation:scrollx 60s linear infinite;flex:0 0 auto;will-change:transform}
 @keyframes scrollx{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
 /* section */
@@ -371,8 +371,6 @@ const GAMES = [
     ranks:["Bronz","Gümüş","Altın","Platin","Elmas","Üstat","Fatih"], roles:["Vurucu","Destek","Sürücü","Keskin Nişancı"] },
   { id:"amongus", name:"Among Us", short:"AU", cat:"casual", color:"#C51111", Icon:Gamepad2,
     ranks:["Mürettebat","Dedektif","Sahtekar Uzmanı","Galaksi Beyni"], roles:["Mürettebat","Sahtekar"] },
-  { id:"terraria", name:"Terraria", short:"TER", cat:"casual", color:"#8BC34A", Icon:Gamepad2,
-    ranks:["Ön-Zorlu Mod","Zorlu Mod","Uzman","Üstat"], roles:["İnşaatçı","Dövüşçü","Kaşif"] },
   { id:"marvelrivals", name:"Marvel Rivals", short:"MR", cat:"competitive", color:"#ED1D24", Icon:Crosshair,
     ranks:["Bronz","Gümüş","Altın","Platin","Elmas","Yüce","Efsane","Ebedi","Tek Üstün"], roles:["Düellocu","Öncü","Stratejist"] },
   { id:"cod", name:"Call of Duty: Warzone", short:"COD", cat:"competitive", color:"#7FB800", Icon:Crosshair,
@@ -381,12 +379,8 @@ const GAMES = [
     ranks:["Er","Onbaşı","Çavuş","Subay","General"], roles:["Saldırgan","Sıhhiyeci","Destek","Keşif","Mühendis"] },
   { id:"thefinals", name:"The Finals", short:"FIN", cat:"competitive", color:"#D6001C", Icon:Zap,
     ranks:["Bronz","Gümüş","Altın","Platin","Elmas","Rubin"], roles:["Hafif","Orta","Ağır"] },
-  { id:"deltaforce", name:"Delta Force", short:"DF", cat:"competitive", color:"#6B7A1E", Icon:Crosshair,
-    ranks:["Er","Onbaşı","Çavuş","Subay","Komutan"], roles:["Saldırgan","Destek","Keskin Nişancı","Mühendis"] },
   { id:"tarkov", name:"Escape from Tarkov", short:"EFT", cat:"competitive", color:"#9A8866", Icon:Crosshair,
     ranks:["Seviye 1-10","11-20","21-30","31-40","40+"], roles:["Saldırgan","Keskin Nişancı","Destek","Yağmacı"] },
-  { id:"arcraiders", name:"ARC Raiders", short:"ARC", cat:"competitive", color:"#2BB2E0", Icon:Crosshair,
-    ranks:["Çaylak","Akıncı","Uzman","Veteran","Efsane"], roles:["Vurucu","Destek","Keşif"] },
   { id:"destiny2", name:"Destiny 2", short:"D2", cat:"competitive", color:"#4A90D9", Icon:Crosshair,
     ranks:["Çaylak","Muhafız","Efsane","Rakip","Efsanevi"], roles:["Avcı","Büyücü","Titan"] },
   { id:"tft", name:"Teamfight Tactics", short:"TFT", cat:"competitive", color:"#00C2A8", Icon:Crown,
@@ -397,7 +391,7 @@ const GAMES = [
     ranks:["Demir","Bronz","Gümüş","Altın","Platin","Elmas","Usta"], roles:["Dövüşçü"] },
   { id:"gt7", name:"Gran Turismo 7", short:"GT7", cat:"competitive", color:"#1B59C4", Icon:Zap,
     ranks:["E","D","C","B","A","S"], roles:["Pilot"] },
-  { id:"eafc", name:"EA Sports FC 26", short:"FC26", cat:"competitive", color:"#1D9BF0", logo:"ea", Icon:Trophy,
+  { id:"eafc", name:"EA Sports FC (FIFA)", short:"FC26", cat:"competitive", color:"#1D9BF0", logo:"ea", Icon:Trophy,
     ranks:["Div 10","Div 7","Div 5","Div 3","Div 1","Elit"], roles:["Forvet","Orta Saha","Defans","Kaleci","Kanat"] },
   { id:"nba2k", name:"NBA 2K26", short:"2K", cat:"competitive", color:"#C8102E", Icon:Trophy,
     ranks:["Çaylak","Yıldız","All-Star","Efsane"], roles:["Oyun Kurucu","Şutör","Pivot","Forvet"] },
@@ -409,12 +403,8 @@ const GAMES = [
     ranks:["Başlangıç","MR5","MR10","MR15","MR20+"], roles:["Hasar","Destek","Tank","Keşif"] },
   { id:"diablo4", name:"Diablo IV", short:"D4", cat:"casual", color:"#9B1B1B", Icon:Flame,
     ranks:["Maceracı","Kâbus","Cehennem I","Cehennem IV","Ebedi"], roles:["Barbar","Büyücü","Nekromancer","Druid","Haydut"] },
-  { id:"poe2", name:"Path of Exile 2", short:"PoE2", cat:"casual", color:"#A14B2A", Icon:Flame,
-    ranks:["Acemi","Maceracı","Usta","Efsane"], roles:["Savaşçı","Büyücü","Suikastçı","Korucu"] },
   { id:"eldenring", name:"Elden Ring", short:"ER", cat:"casual", color:"#C9A227", Icon:Swords,
     ranks:["Lekeli","Şövalye","Lord Adayı","Elden Lord"], roles:["Yakın Dövüş","Büyü","Co-op Yardım","İstilacı"] },
-  { id:"mhwilds", name:"Monster Hunter Wilds", short:"MHW", cat:"casual", color:"#2E8B57", Icon:Swords,
-    ranks:["Avcı 1-3","4-6","7-9","Usta Avcı"], roles:["Yakın Dövüş","Menzilli","Destek"] },
   { id:"bg3", name:"Baldur's Gate 3", short:"BG3", cat:"casual", color:"#7B2D26", Icon:Sparkles,
     ranks:["1. Seviye","5. Seviye","10. Seviye","Efsane"], roles:["Savaşçı","Büyücü","Haydut","Ruhban","Paladin"] },
   { id:"seaofthieves", name:"Sea of Thieves", short:"SoT", cat:"casual", color:"#1CA3DE", Icon:Gamepad2,
@@ -423,21 +413,25 @@ const GAMES = [
     ranks:["Kül III","Gümüş","Altın","İris I"], roles:["Hayatta Kalan","Katil"] },
   { id:"palworld", name:"Palworld", short:"PAL", cat:"casual", color:"#3FB4C9", Icon:Gamepad2,
     ranks:["Yeni","Pal Eğitmeni","Üs Lideri","Veteran"], roles:["Avcı","İnşaatçı","Üretici","Savaşçı"] },
-  { id:"valheim", name:"Valheim", short:"VLH", cat:"casual", color:"#6F8FAF", Icon:Shield,
-    ranks:["Sürgün","Kâşif","Viking","Efsane"], roles:["İnşaatçı","Savaşçı","Kâşif","Çiftçi"] },
-  { id:"stardew", name:"Stardew Valley", short:"SDV", cat:"casual", color:"#8FBC5A", Icon:Gamepad2,
-    ranks:["Yeni Çiftçi","Çiftçi","Usta","Efsane"], roles:["Çiftçi","Madenci","Balıkçı","Toplayıcı"] },
   { id:"roblox", name:"Roblox", short:"RBLX", cat:"casual", color:"#E2231A", logo:"roblox", Icon:Gamepad2,
     ranks:["Yeni","Oyuncu","Yaratıcı","Veteran"], roles:["Oyuncu","Yaratıcı","Rol Yapma"] },
   { id:"fallguys", name:"Fall Guys", short:"FALL", cat:"casual", color:"#FF5FA2", Icon:Sparkles,
     ranks:["Fasulye","Yarışmacı","Finalist","Şampiyon"], roles:["Yarışmacı","Takım"] },
-  { id:"ffxiv", name:"Final Fantasy XIV", short:"FF14", cat:"casual", color:"#2E4FA3", Icon:Crown,
-    ranks:["Maceracı","Savaşçı","Veteran","Efsane"], roles:["Tank","Şifacı","Hasar"] },
   { id:"rust", name:"Rust", short:"RUST", cat:"casual", color:"#CE412B", logo:"rust", Icon:Flame,
     ranks:["Çıplak","Hayatta Kalan","Kabile","Raider","Veteran"], roles:["Toplayıcı","Raider","İnşaatçı","Nişancı"] },
+  { id:"genshin", name:"Genshin Impact", short:"GI", cat:"casual", color:"#4FC3F7", Icon:Sparkles,
+    ranks:["AR 1-20","AR 20-35","AR 35-45","AR 45-55","AR 55+"], roles:["Ana DPS","Alt DPS","Destek","Kalkan"] },
+  { id:"division2", name:"The Division 2", short:"TD2", cat:"competitive", color:"#F58220", Icon:Crosshair,
+    ranks:["Kademe 1","Kademe 2","Kademe 3","Kademe 4","Kademe 5"], roles:["DPS","Tank","Destek","Keskin Nişancı"] },
+  { id:"wow", name:"World of Warcraft", short:"WoW", cat:"casual", color:"#F4C430", Icon:Swords,
+    ranks:["Bronz","Gümüş","Altın","Platin","Elmas","Efsane"], roles:["Tank","Şifacı","Hasar"] },
+  { id:"efootball", name:"eFootball (PES)", short:"PES", cat:"competitive", color:"#00A94F", Icon:Trophy,
+    ranks:["Başlangıç","Amatör","Profesyonel","Süper Star","Efsane","Dünya Klasmanı"], roles:["Forvet","Orta Saha","Defans","Kaleci"] },
+  { id:"mk1", name:"Mortal Kombat 1", short:"MK1", cat:"competitive", color:"#C1121F", Icon:Swords,
+    ranks:["Çırak","Savaşçı","Usta","Elit","Şampiyon","Büyük Usta"], roles:["Zoner","Rushdown","Grappler","Dengeli"] }
 ];
 const gameById = id => GAMES.find(g => g.id === id);
-const PC_ONLY = new Set(["lol","cs2","dota2","fivem","tarkov","tft","valheim"]);
+const PC_ONLY = new Set(["lol","cs2","dota2","fivem","tarkov","tft","wow"]);
 const PS5_ONLY = new Set(["gt7"]);
 const gamePlat = id => PC_ONLY.has(id) ? ["PC"] : PS5_ONLY.has(id) ? ["PS5"] : ["PC","PS5"];
 const gameOnDevices = (id, devs) => (!devs || devs.length===0) ? true : gamePlat(id).some(p=>devs.includes(p));
@@ -459,7 +453,6 @@ const PLATFORMS = [
   { id:"epic", label:"Epic Games", color:"#9aa0a6", field:"Epic ID" },
   { id:"discord", label:"Discord", color:"#5865F2", field:"Discord" },
   { id:"psn", label:"PlayStation", color:"#2E6DB4", field:"PSN ID" },
-  { id:"xbox", label:"Xbox", color:"#107C10", field:"Xbox Tag" },
   { id:"nintendo", label:"Nintendo", color:"#E60012", field:"Switch FC" },
 ];
 /* Elle girilen iletişim alanları — yalnızca eşleşilen (arkadaş) oyuncular görür */
@@ -470,7 +463,6 @@ const CONTACT_FIELDS = [
   { id:"riot", label:"RIOT ID", color:"#FF4655", ph:"örn. Komutan#TR1" },
   { id:"steam", label:"STEAM KULLANICI ADI", color:"#66c0f4", ph:"örn. komutan_tr" },
   { id:"epic", label:"EPIC GAMES KULLANICI ADI", color:"#c2c2c2", ph:"örn. KomutanTR" },
-  { id:"xbox", label:"XBOX GAMERTAG", color:"#107C10", ph:"örn. KomutanTR" },
 ];
 
 const PLAYERS = [
@@ -528,7 +520,7 @@ const PLAYERS = [
 const DEFAULT_USER = {
   name:"Komutan", country:"🇹🇷", email:"", age:24, online:true, admin:false, avatar:"🎮", devices:["PC"], bio:"",
   tags:["friendly","competitive"], times:["19","20","21","22"],
-  socials:{ discord:"", steam:"", steamUrl:"", riot:"", epic:"", psn:"", xbox:"" },
+  socials:{ discord:"", steam:"", steamUrl:"", riot:"", epic:"", psn:"" },
   games:[{g:"valorant",rank:"Altın",role:"Başlatıcı",ps:"Rekabetçi"}],
 };
 
@@ -553,7 +545,7 @@ function RankBadge({ gameId, rank, sm }){
   );
 }
 
-const BUILD = "v9.0";
+const BUILD = "v9.3";
 const AVATARS = ["🎮","🕹️","👾","🤖","👽","🥷","🧙","🦊","🐺","🦅","🦉","🐉","🐲","🦈","🐙","🦁","🐯","🐆","🦂","🐸","🔥","⚡","💀","🛡️","⚔️","🎯","🏆","👑","🌟","🎲"];
 function hashCode(s){ let h=0; for(let i=0;i<s.length;i++){ h=(h<<5)-h+s.charCodeAt(i); h|=0; } return Math.abs(h); }
 function Avatar({ name, size=46, online, ring, avatar }){
@@ -652,7 +644,8 @@ function useToasts(){
 }
 
 /* ============================== LANDING ============================== */
-function Landing({ onStart, onLogin, onInfo, onBlog, siteCfg={ logoSize:42 } }){
+function Landing({ onStart, onLogin, onInfo, onBlog, siteCfg={ logoSize:42 }, players=[] }){
+  const onlineNow=(players||[]).filter(p=>p.online).length; const totalNow=(players||[]).length;
   const liveQueue = [
     { name:"NyxStorm", game:"valorant", rank:"Elmas", t:"şimdi" },
     { name:"FrostByte", game:"cs2", rank:"Küresel Elit", t:"2sn önce" },
@@ -686,7 +679,7 @@ function Landing({ onStart, onLogin, onInfo, onBlog, siteCfg={ logoSize:42 } }){
         <div className="hero-grid">
           <div>
             <span className="chip" style={{ color:"var(--cyan)", borderColor:"rgba(34,211,238,.3)" }}>
-              <span className="online-dot" /> 2.847 oyuncu şu an queue&apos;da
+              <span className="online-dot" /> {onlineNow.toLocaleString("tr-TR")} oyuncu şu an aktif
             </span>
             <h1 className="disp">
               TEK BAŞINA<br/>OYNAMA.<br/>
@@ -701,7 +694,7 @@ function Landing({ onStart, onLogin, onInfo, onBlog, siteCfg={ logoSize:42 } }){
             </div>
             <div className="statline">
               <div className="s"><b className="h-grad">{GAMES.length}</b><span>Desteklenen Oyun</span></div>
-              <div className="s"><b style={{color:"var(--volt)"}}>{PLAYERS.length}</b><span>Eşleşme</span></div>
+              <div className="s"><b style={{color:"var(--volt)"}}>{totalNow.toLocaleString("tr-TR")}</b><span>Oyuncu</span></div>
               <div className="s"><b style={{color:"var(--cyan)"}}>2</b><span>Platform Desteği</span></div>
             </div>
           </div>
@@ -897,7 +890,7 @@ function Onboarding({ initialName, onComplete }){
       ps:cfg[id].ps || "Rekabetçi",
     }));
     onComplete({ games, tags, times: hours.length?hours:["20"], devices, bio: bio.trim(), avatar,
-      socials:{ discord:contact.discord, steam:contact.steam, steamUrl:contact.steamUrl, riot:"", epic:"", psn:contact.psn, xbox:"" } });
+      socials:{ discord:contact.discord, steam:contact.steam, steamUrl:contact.steamUrl, riot:"", epic:"", psn:contact.psn } });
   };
 
   return (
@@ -1083,7 +1076,7 @@ function ageFromDob(dob){
   return (a>0&&a<120)?a:0;
 }
 /* ============================== URL YÖNLENDİRME ============================== */
-const TAB_PATHS = { discover:"/kesfet", invites:"/davetler", friends:"/arkadaslar", messages:"/mesajlar", profile:"/profil", mygames:"/oyunlarim", settings:"/ayarlar", blog:"/blog", info:"/nasil-calisir", admin:"/yonetim", about:"/hakkinda" };
+const TAB_PATHS = { discover:"/kesfet", invites:"/davetler", friends:"/arkadaslar", messages:"/mesajlar", profile:"/profil", mygames:"/oyunlarim", settings:"/ayarlar", contact:"/iletisim", blog:"/blog", info:"/nasil-calisir", admin:"/yonetim", about:"/hakkinda" };
 const PATH_TABS = Object.fromEntries(Object.entries(TAB_PATHS).map(([k,v])=>[v,k]));
 function routeToPath(screen, tab, post){
   if(screen==="login") return "/giris";
@@ -1102,6 +1095,8 @@ function pathToRoute(path){
   if(PATH_TABS[p]) return { screen:"app", tab:PATH_TABS[p] };
   return { screen:"landing" };
 }
+
+function siteOrigin(){ try { return (typeof window!=="undefined" && window.location && window.location.origin) ? window.location.origin.replace(/\/$/,"") : ""; } catch(e){ return ""; } }
 
 function App(){
   const DB = (typeof window!=="undefined" && window.__GM_DB) || null;
@@ -1161,8 +1156,8 @@ function App(){
     title:"GameMate — Oyun Arkadaşı & Takım Bul (PC / PS5)",
     desc:"GameMate ile aynı oyunları oynayan, seninle uyumlu takım arkadaşları bul. Valorant, LoL, CS2 ve daha fazlası için PC ve PS5 duo & takım eşleşmesi.",
     keywords:"oyun arkadaşı bul, duo bul, takım arkadaşı, valorant duo, lol takım arkadaşı, ps5 oyun arkadaşı, cs2 takım, gamemate",
-    ogImage:"https://gamemate.gg/og-cover.png",
-    canonical:"https://gamemate.gg/",
+    ogImage:(typeof window!=="undefined"&&window.location?window.location.origin+"/og-cover.png":"/og-cover.png"),
+    canonical:(typeof window!=="undefined"&&window.location?window.location.origin+"/":"/"),
     robots:"index, follow",
     twitter:"summary_large_image",
     siteName:"GameMate",
@@ -1193,24 +1188,24 @@ function App(){
     setMeta('meta[name="theme-color"]','name','theme-color', seo.themeColor);
     setMeta('meta[property="og:title"]','property','og:title', seo.title);
     setMeta('meta[property="og:description"]','property','og:description', seo.desc);
-    setMeta('meta[property="og:image"]','property','og:image', seo.ogImage);
+    setMeta('meta[property="og:image"]','property','og:image', siteOrigin()+"/og-cover.png");
     setMeta('meta[property="og:type"]','property','og:type','website');
-    setMeta('meta[property="og:url"]','property','og:url', seo.canonical);
+    setMeta('meta[property="og:url"]','property','og:url', siteOrigin()+"/");
     setMeta('meta[property="og:site_name"]','property','og:site_name', seo.siteName);
     setMeta('meta[property="og:locale"]','property','og:locale', seo.locale);
     setMeta('meta[name="twitter:card"]','name','twitter:card', seo.twitter);
     setMeta('meta[name="twitter:title"]','name','twitter:title', seo.title);
     setMeta('meta[name="twitter:description"]','name','twitter:description', seo.desc);
-    setMeta('meta[name="twitter:image"]','name','twitter:image', seo.ogImage);
+    setMeta('meta[name="twitter:image"]','name','twitter:image', siteOrigin()+"/og-cover.png");
     setMeta('meta[name="twitter:site"]','name','twitter:site', seo.twitterHandle);
     let link = document.head.querySelector('link[rel="canonical"]');
     if(!link){ link=document.createElement("link"); link.setAttribute("rel","canonical"); document.head.appendChild(link); }
-    link.setAttribute("href", seo.canonical||"");
+    link.setAttribute("href", siteOrigin()+"/");
     const ld = { "@context":"https://schema.org", "@graph":[
-      { "@type":"Organization", "name":seo.siteName||"GameMate", "url":seo.canonical||"", "logo":seo.ogImage||"",
+      { "@type":"Organization", "name":seo.siteName||"GameMate", "url":siteOrigin()+"/", "logo":siteOrigin()+"/og-cover.png",
         "sameAs":[seo.twitterHandle?("https://twitter.com/"+seo.twitterHandle.replace(/^@/,"")):null,"https://discord.gg/gamemate"].filter(Boolean) },
-      { "@type":"WebSite", "name":seo.title||"GameMate", "url":seo.canonical||"",
-        "potentialAction":{ "@type":"SearchAction", "target":(seo.canonical||"")+"?q={search_term_string}", "query-input":"required name=search_term_string" } }
+      { "@type":"WebSite", "name":seo.title||"GameMate", "url":siteOrigin()+"/",
+        "potentialAction":{ "@type":"SearchAction", "target":siteOrigin()+"/?q={search_term_string}", "query-input":"required name=search_term_string" } }
     ] };
     let ldEl = document.getElementById("gm-jsonld");
     if(!ldEl){ ldEl=document.createElement("script"); ldEl.type="application/ld+json"; ldEl.id="gm-jsonld"; document.head.appendChild(ldEl); }
@@ -1223,7 +1218,7 @@ function App(){
     const setCanon=(href)=>{ let l=document.head.querySelector('link[rel="canonical"]'); if(!l){l=document.createElement("link");l.setAttribute("rel","canonical");document.head.appendChild(l);} l.setAttribute("href",href||""); };
     let artEl=document.getElementById("gm-jsonld-article");
     if(post){
-      const base=(seo.canonical||"https://gamemate.gg/").replace(/\/$/,"");
+      const base=siteOrigin();
       const url=base+"/blog/"+post.id;
       document.title=post.title+" — GameMate Blog";
       setM('meta[name="description"]','name','description',post.excerpt);
@@ -1244,10 +1239,10 @@ function App(){
       setM('meta[property="og:title"]','property','og:title',seo.title);
       setM('meta[property="og:description"]','property','og:description',seo.desc);
       setM('meta[property="og:type"]','property','og:type','website');
-      setM('meta[property="og:url"]','property','og:url',seo.canonical);
+      setM('meta[property="og:url"]','property','og:url',siteOrigin()+(typeof window!=="undefined"?window.location.pathname:"/"));
       setM('meta[name="twitter:title"]','name','twitter:title',seo.title);
       setM('meta[name="twitter:description"]','name','twitter:description',seo.desc);
-      setCanon(seo.canonical);
+      setCanon(siteOrigin()+(typeof window!=="undefined"?window.location.pathname:"/"));
       if(artEl) artEl.remove();
     }
   }, [tab, blogPost, seo]);
@@ -1372,7 +1367,7 @@ function App(){
   if (screen==="landing")
     return <Shell><Background/>
       <div className="landing-zoom" style={{ "--lz": siteCfg.landingScale }}>
-        <Landing onStart={()=>{ setAuthErr(""); setScreen("register"); }} onLogin={()=>{ setAuthErr(""); setScreen("login"); }} onInfo={()=>setScreen("pubinfo")} onBlog={()=>setScreen("pubblog")} siteCfg={siteCfg} />
+        <Landing onStart={()=>{ setAuthErr(""); setScreen("register"); }} onLogin={()=>{ setAuthErr(""); setScreen("login"); }} onInfo={()=>setScreen("pubinfo")} onBlog={()=>setScreen("pubblog")} siteCfg={siteCfg} players={players} />
         <div className="container" style={{ padding:"0 24px" }}><Footer text={siteCfg.footer} onNav={(p)=>setScreen("pub"+p)} /></div>
       </div>{toasts}</Shell>;
   if (screen==="register")
@@ -1416,6 +1411,7 @@ function App(){
     { id:"profile", label:"Profil", Icon:User },
     { id:"mygames", label:"Oyunlarım", Icon:Gamepad2 },
     { id:"settings", label:"Ayarlar", Icon:Settings },
+    { id:"contact", label:"İletişim", Icon:Send },
     ...(user.admin ? [{ id:"admin", label:"Admin Paneli", Icon:Shield }] : []),
   ];
 
@@ -2025,7 +2021,7 @@ function AdminPanel({ banned, onBan, onUnban, reports, onDismissReport, onRemove
           <Hud accent>
             <div className="mono muted2" style={{ fontSize:10.5, letterSpacing:".12em", marginBottom:12 }}>// GOOGLE ARAMA ÖNİZLEMESİ</div>
             <div style={{ background:"#fff", borderRadius:8, padding:"14px 16px" }}>
-              <div style={{ color:"#202124", fontSize:12.5, fontFamily:"arial,sans-serif" }}>{seo.canonical||"https://gamemate.gg/"}</div>
+              <div style={{ color:"#202124", fontSize:12.5, fontFamily:"arial,sans-serif" }}>{seo.canonical||(siteOrigin()+"/")}</div>
               <div style={{ color:"#1a0dab", fontSize:20, fontFamily:"arial,sans-serif", margin:"3px 0 4px", lineHeight:1.2 }}>{seo.title||"GameMate"}</div>
               <div style={{ color:"#4d5156", fontSize:13.5, fontFamily:"arial,sans-serif", lineHeight:1.5 }}>{(seo.desc||"").slice(0,170)}{(seo.desc||"").length>170?"…":""}</div>
             </div>
@@ -2052,7 +2048,7 @@ function AdminPanel({ banned, onBan, onUnban, reports, onDismissReport, onRemove
             <label style={{ fontSize:12.5, color:"var(--muted)", display:"block", marginBottom:6 }}>JSON-LD (otomatik gömülür)</label>
             <div className="mono" style={{ fontSize:11, background:"var(--void)", border:"1px solid var(--line)", padding:"12px 14px", borderRadius:6, overflowX:"auto", color:"var(--muted)", whiteSpace:"pre", marginBottom:14 }}>{jsonLdPreview}</div>
             <label style={{ fontSize:12.5, color:"var(--muted)", display:"block", marginBottom:6 }}>robots.txt önerisi</label>
-            <div className="mono" style={{ fontSize:11.5, background:"var(--void)", border:"1px solid var(--line)", padding:"12px 14px", borderRadius:6, color:"var(--muted)", whiteSpace:"pre" }}>{"User-agent: *\nAllow: /\nSitemap: "+(seo.canonical||"https://gamemate.gg/")+"sitemap.xml"}</div>
+            <div className="mono" style={{ fontSize:11.5, background:"var(--void)", border:"1px solid var(--line)", padding:"12px 14px", borderRadius:6, color:"var(--muted)", whiteSpace:"pre" }}>{"User-agent: *\nAllow: /\nSitemap: "+(siteOrigin()+"/")+"sitemap.xml"}</div>
           </Hud>
           <p className="muted2" style={{ fontSize:12, marginTop:14, lineHeight:1.6 }}>Not: Bu prototip tek-sayfa (SPA) olduğundan tam SEO (sitemap.xml, robots.txt, sunucu tarafı render / SSR) yalnızca üretimdeki Next.js sürümünde tam çalışır. Burada başlık ve meta etiketleri tarayıcıda canlı güncellenir — geliştirici araçlarından (Elements → head) görebilirsin.</p>
         </div>
@@ -2116,7 +2112,7 @@ function PrivacyView(){
       <Sec title="3. Çerezler ve Reklamlar">Oturumunu açık tutmak ve tercihlerini hatırlamak için çerez kullanırız. Sitede reklam gösterildiğinde (ör. Google AdSense), reklam sağlayıcıları ilgi alanına dayalı reklam için çerez kullanabilir. Tarayıcı ayarlarından çerezleri yönetebilirsin.</Sec>
       <Sec title="4. Veri Paylaşımı">Eşleştiğin oyuncularla yalnızca senin paylaşmayı seçtiğin iletişim bilgilerin (Steam/Discord) paylaşılır. Yasal zorunluluklar dışında verilerin gizli tutulur.</Sec>
       <Sec title="5. Haklarınız">Hesabına ait verilere erişme, düzeltme ve silinmesini talep etme hakkın vardır. Hesabını sildiğinde profil verilerin kaldırılır.</Sec>
-      <Sec title="6. İletişim">Gizlilikle ilgili sorular için İletişim sayfasından bize ulaşabilir ya da destek@gamemate.gg adresine yazabilirsin.</Sec>
+      <Sec title="6. İletişim">Gizlilikle ilgili sorular için İletişim sayfasından bize ulaşabilirsin.</Sec>
     </div>
   );
 }
@@ -2429,8 +2425,9 @@ function BlogView({ ads, onCTA, slug, onOpen, onBack }){
 }
 
 /* Çoklu seçim dropdown — tikle, birden fazla seç (satır-içi, portal yok) */
-function MultiSelect({ options, value=[], onChange, placeholder="Seç", labelOf, disabled }){
+function MultiSelect({ options, value=[], onChange, placeholder="Seç", labelOf, disabled, searchable=false, searchPlaceholder="Ara..." }){
   const [open, setOpen] = useState(false);
+  const [q, setQ] = useState("");
   const ref = useRef(null);
   const lbl = labelOf || (x=>x);
   const toggle = v => onChange(value.includes(v) ? value.filter(x=>x!==v) : [...value, v]);
@@ -2440,6 +2437,8 @@ function MultiSelect({ options, value=[], onChange, placeholder="Seç", labelOf,
     document.addEventListener("mousedown", close);
     return ()=> document.removeEventListener("mousedown", close);
   },[open]);
+  useEffect(()=>{ if(!open) setQ(""); },[open]);
+  const shown = (searchable && q.trim()) ? options.filter(o=>String(lbl(o)).toLocaleLowerCase("tr").includes(q.trim().toLocaleLowerCase("tr"))) : options;
   return (
     <div ref={ref} style={{ position:"relative" }}>
       <button type="button" className="input" disabled={disabled} onClick={()=>setOpen(o=>!o)}
@@ -2451,8 +2450,16 @@ function MultiSelect({ options, value=[], onChange, placeholder="Seç", labelOf,
       </button>
       {open && !disabled && (
         <div style={{ position:"absolute", top:"calc(100% + 5px)", left:0, right:0, zIndex:200, background:"var(--panel)", border:"1px solid var(--line)", maxHeight:240, overflowY:"auto", boxShadow:"0 16px 48px rgba(0,0,0,.6)" }}>
-          {options.length===0 && <div style={{ fontSize:12.5, padding:"10px 12px", color:"var(--muted-2)" }}>Seçenek yok</div>}
-          {options.map(o=>{ const on=value.includes(o); return (
+          {searchable && (
+            <div style={{ position:"sticky", top:0, background:"var(--panel)", padding:8, borderBottom:"1px solid var(--line)", zIndex:2 }}>
+              <div style={{ position:"relative" }}>
+                <Search size={14} style={{ position:"absolute", left:9, top:10, color:"var(--muted)" }} />
+                <input className="input" autoFocus value={q} onChange={e=>setQ(e.target.value)} onClick={e=>e.stopPropagation()} placeholder={searchPlaceholder} style={{ paddingLeft:30, height:34, fontSize:13 }} />
+              </div>
+            </div>
+          )}
+          {shown.length===0 && <div style={{ fontSize:12.5, padding:"10px 12px", color:"var(--muted-2)" }}>{q.trim()?"Sonuç bulunamadı":"Seçenek yok"}</div>}
+          {shown.map(o=>{ const on=value.includes(o); return (
             <button key={o} type="button" onClick={()=>toggle(o)}
               style={{ width:"100%", textAlign:"left", display:"flex", alignItems:"center", gap:9, padding:"9px 12px",
                 background: on?"rgba(124,58,237,.18)":"var(--panel)", border:"none", borderBottom:"1px solid var(--line-soft)", cursor:"pointer", color:"var(--text)" }}>
@@ -2577,7 +2584,7 @@ function Discover({ user, outgoing, friends, onInvite, onView, simulateMatch, qu
         </div>
         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))", gap:12, alignItems:"end" }}>
           <div className="field"><label>Oyun (çoklu — tikle)</label>
-            <MultiSelect options={GAMES.filter(g=>gameOnDevices(g.id, fDevices)).map(g=>g.id)} value={fGames} onChange={setFGames} placeholder="Tüm oyunlar" labelOf={id=>{const g=gameById(id);return g?g.name:id;}} /></div>
+            <MultiSelect options={GAMES.filter(g=>gameOnDevices(g.id, fDevices)).map(g=>g.id)} value={fGames} onChange={setFGames} placeholder="Tüm oyunlar" labelOf={id=>{const g=gameById(id);return g?g.name:id;}} searchable searchPlaceholder="Oyun ara..." /></div>
           <div className="field"><label>Rol (çoklu — tikle)</label>
             <MultiSelect options={roleOpts} value={fRoles} onChange={setFRoles} placeholder="Tüm roller" /></div>
           <div className="field"><label>Etiket (çoklu — tikle)</label>
