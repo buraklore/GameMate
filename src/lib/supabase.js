@@ -15,8 +15,6 @@ const key = import.meta.env.VITE_SUPABASE_ANON_KEY || FALLBACK_ANON_KEY
 export const supaEnabled = Boolean(url && key)
 export const supabase = supaEnabled ? createClient(url, key) : null
 
-if (supaEnabled) {
-  console.info('[GameMate] Supabase bağlı:', url)
-} else {
-  console.info('[GameMate] Supabase env değişkenleri yok — demo (bellek) modunda çalışılıyor.')
+if (import.meta.env.DEV) {
+  console.info(supaEnabled ? '[GameMate] Supabase bağlı.' : '[GameMate] Demo (bellek) modu.')
 }

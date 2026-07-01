@@ -69,10 +69,8 @@ create table if not exists public.site_settings (
 );
 
 -- ============================================================
---  RLS (Row Level Security)
---  DİKKAT: Bu politikalar PROTOTIP içindir — anon (herkese açık)
---  okuma/yazmaya izin verir. Canlıya almadan önce Supabase Auth
---  ekleyip politikaları kısıtlayın (ör. yalnızca admin yazabilsin).
+--  RLS (Row Level Security) — GÜVENLİ politikalar
+--  (Ayrıntılı sürüm + mevcut DB için migration: supabase/security.sql)
 -- ============================================================
 alter table public.profiles        enable row level security;
 alter table public.contact_messages enable row level security;
@@ -81,15 +79,52 @@ alter table public.ratings         enable row level security;
 alter table public.bans            enable row level security;
 alter table public.site_settings   enable row level security;
 
-do $$
-declare t text;
-begin
-  foreach t in array array['profiles','contact_messages','wall_comments','ratings','bans','site_settings']
-  loop
-    execute format('drop policy if exists "anon_all_%1$s" on public.%1$I;', t);
-    execute format('create policy "anon_all_%1$s" on public.%1$I for all to anon, authenticated using (true) with check (true);', t);
-  end loop;
-end$$;
+-- Admin kontrolü (RLS içinde kullanılır)
+create or replace function public.is_admin()
+returns boolean language sql stable security definer set search_path = public as $$
+  select exists (select 1 from public.profiles where user_id = auth.uid() and admin = true);
+$$;
+revoke all on function public.is_admin() from public;
+grant execute on function public.is_admin() to anon, authenticated;
+
+-- Profiller: herkes okur; kullanıcı yalnızca kendi profilini yazar; admin/id/user_id/rating API'den değişmez
+create policy "profiles_select"       on public.profiles for select to anon, authenticated using (true);
+create policy "profiles_insert_own"   on public.profiles for insert to authenticated with check (user_id = auth.uid() and admin = false);
+create policy "profiles_update_own"   on public.profiles for update to authenticated using (user_id = auth.uid()) with check (user_id = auth.uid());
+create policy "profiles_update_admin" on public.profiles for update to authenticated using (public.is_admin()) with check (public.is_admin());
+create policy "profiles_delete_own"   on public.profiles for delete to authenticated using (user_id = auth.uid() or public.is_admin());
+revoke update on public.profiles from anon;
+revoke update on public.profiles from authenticated;
+grant update (name, country, age, online, devices, bio, avatar, tags, socials, times, games) on public.profiles to authenticated;
+
+-- İletişim mesajları (PII): yalnızca admin okur/yönetir; herkes gönderebilir
+create policy "contact_select_admin" on public.contact_messages for select to authenticated using (public.is_admin());
+create policy "contact_insert"       on public.contact_messages for insert to anon, authenticated with check (char_length(name) between 1 and 100 and char_length(email) between 3 and 200 and char_length(coalesce(subject,'')) <= 200 and char_length(message) between 1 and 5000);
+create policy "contact_update_admin" on public.contact_messages for update to authenticated using (public.is_admin()) with check (public.is_admin());
+create policy "contact_delete_admin" on public.contact_messages for delete to authenticated using (public.is_admin());
+
+-- Duvar yorumları: herkes okur; giriş yapmış kullanıcı ekler; silme/güncelleme admin
+create policy "wall_select"       on public.wall_comments for select to anon, authenticated using (true);
+create policy "wall_insert"       on public.wall_comments for insert to authenticated with check (char_length(author) between 1 and 60 and char_length(text) between 1 and 1000 and stars between 0 and 5);
+create policy "wall_update_admin" on public.wall_comments for update to authenticated using (public.is_admin()) with check (public.is_admin());
+create policy "wall_delete_admin" on public.wall_comments for delete to authenticated using (public.is_admin());
+
+-- Puanlar: herkes okur; giriş yapmış kullanıcı 0–5 yazar; silme admin
+create policy "ratings_select"       on public.ratings for select to anon, authenticated using (true);
+create policy "ratings_insert"       on public.ratings for insert to authenticated with check (stars between 0 and 5);
+create policy "ratings_update"       on public.ratings for update to authenticated using (true) with check (stars between 0 and 5);
+create policy "ratings_delete_admin" on public.ratings for delete to authenticated using (public.is_admin());
+
+-- Banlar: herkes okur (gizleme için); ekleme/silme/güncelleme admin
+create policy "bans_select"       on public.bans for select to anon, authenticated using (true);
+create policy "bans_insert_admin" on public.bans for insert to authenticated with check (public.is_admin());
+create policy "bans_update_admin" on public.bans for update to authenticated using (public.is_admin()) with check (public.is_admin());
+create policy "bans_delete_admin" on public.bans for delete to authenticated using (public.is_admin());
+
+-- Site ayarları: herkes okur; yalnızca admin yazar (reklam/SEO enjeksiyonu engellenir)
+create policy "settings_select"       on public.site_settings for select to anon, authenticated using (true);
+create policy "settings_insert_admin" on public.site_settings for insert to authenticated with check (public.is_admin());
+create policy "settings_update_admin" on public.site_settings for update to authenticated using (public.is_admin()) with check (public.is_admin());
 
 -- ============================================================
 --  Örnek veri (demo oyuncular)

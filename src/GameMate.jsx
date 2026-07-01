@@ -545,7 +545,7 @@ function RankBadge({ gameId, rank, sm }){
   );
 }
 
-const BUILD = "v9.3";
+const BUILD = "v9.4";
 const AVATARS = ["🎮","🕹️","👾","🤖","👽","🥷","🧙","🦊","🐺","🦅","🦉","🐉","🐲","🦈","🐙","🦁","🐯","🐆","🦂","🐸","🔥","⚡","💀","🛡️","⚔️","🎯","🏆","👑","🌟","🎲"];
 function hashCode(s){ let h=0; for(let i=0;i<s.length;i++){ h=(h<<5)-h+s.charCodeAt(i); h|=0; } return Math.abs(h); }
 function Avatar({ name, size=46, online, ring, avatar }){
@@ -1671,7 +1671,7 @@ function PlayerProfile({ pid, matched, invited, comments=[], myRating=0, ads, on
                 <span className="mono" style={{ fontSize:11.5, color:"#fda4b4" }}>⚠ Yorumlarda argo, küfür vb. tespit edilirse hesabın siteden <b>kalıcı olarak banlanır</b>.</span>
               </div>
               <div style={{ marginBottom:8 }}>
-                <textarea className="input" rows={3} placeholder="Bu oyuncu hakkında yorumun..." value={text} onChange={e=>setText(e.target.value)} style={{ resize:"vertical", minHeight:70 }} />
+                <textarea className="input" rows={3} maxLength={1000} placeholder="Bu oyuncu hakkında yorumun..." value={text} onChange={e=>setText(e.target.value)} style={{ resize:"vertical", minHeight:70 }} />
               </div>
               <div className="flex" style={{ justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:10, marginBottom:16 }}>
                 <div className="flex" style={{ gap:8, alignItems:"center" }}>
@@ -2168,14 +2168,14 @@ function ContactView({ onSend, prefillEmail="" }){
         <div style={{ display:"grid", gap:14 }}>
           <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(150px,1fr))", gap:12 }}>
             <div className="field"><label>Adın</label>
-              <input className="input" value={f.name} onChange={e=>setF({ ...f, name:e.target.value })} placeholder="Adın" /></div>
+              <input className="input" maxLength={100} value={f.name} onChange={e=>setF({ ...f, name:e.target.value })} placeholder="Adın" /></div>
             <div className="field"><label>E-posta</label>
-              <input className="input" type="email" value={f.email} onChange={e=>setF({ ...f, email:e.target.value })} placeholder="ornek@mail.com" /></div>
+              <input className="input" type="email" maxLength={200} value={f.email} onChange={e=>setF({ ...f, email:e.target.value })} placeholder="ornek@mail.com" /></div>
           </div>
           <div className="field"><label>Konu</label>
-            <input className="input" value={f.subject} onChange={e=>setF({ ...f, subject:e.target.value })} placeholder="örn. Hesap sorunu, öneri, iş birliği" /></div>
+            <input className="input" maxLength={200} value={f.subject} onChange={e=>setF({ ...f, subject:e.target.value })} placeholder="örn. Hesap sorunu, öneri, iş birliği" /></div>
           <div className="field"><label>Mesajın</label>
-            <textarea className="input" rows={5} value={f.message} onChange={e=>setF({ ...f, message:e.target.value })} placeholder="Bize iletmek istediklerini yaz..." /></div>
+            <textarea className="input" rows={5} maxLength={5000} value={f.message} onChange={e=>setF({ ...f, message:e.target.value })} placeholder="Bize iletmek istediklerini yaz..." /></div>
           <button className="btn btn-primary" disabled={!valid} onClick={submit}><Send size={15}/> Mesajı Gönder</button>
         </div>
       </Hud>
@@ -2832,7 +2832,7 @@ function Profile({ user, setUser, push, ads, onPersist }){
                   ))}
                 </div>
                 <div className="mono muted" style={{ fontSize:11, letterSpacing:".14em", marginBottom:8 }}>HAKKINDA</div>
-                <textarea className="input" rows={3} value={bio} onChange={e=>setBio(e.target.value)} placeholder="Kendinden bahset..." />
+                <textarea className="input" rows={3} maxLength={500} value={bio} onChange={e=>setBio(e.target.value)} placeholder="Kendinden bahset..." />
                 <div className="flex" style={{ gap:8, marginTop:10 }}>
                   <button className="btn btn-volt btn-sm" onClick={save}><Check size={14}/> Kaydet</button>
                   <button className="btn btn-ghost btn-sm" onClick={()=>{setBio(user.bio);setAv(user.avatar||"🎮");setEdit(false);}}>İptal</button>
