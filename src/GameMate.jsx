@@ -178,7 +178,10 @@ select.input{appearance:none;background-image:linear-gradient(45deg,transparent 
 .fg-body{background:linear-gradient(165deg,#191426,#111022 55%,#0d0d18),repeating-linear-gradient(90deg,rgba(139,92,246,.045) 0 1px,transparent 1px 26px),repeating-linear-gradient(0deg,rgba(34,211,238,.03) 0 1px,transparent 1px 26px);border-radius:0 0 13px 13px;padding:14px 15px}
 .fg-body .field>label{color:var(--cyan);opacity:.9;letter-spacing:.14em;position:relative;padding-left:11px}
 .fg-body .field>label::before{content:"";position:absolute;left:0;top:52%;transform:translateY(-50%);width:3px;height:11px;background:linear-gradient(var(--violet),var(--cyan));border-radius:2px;box-shadow:0 0 6px rgba(34,211,238,.5)}
-.fg-body .input,.fg-body .sel-wrap select{background:linear-gradient(180deg,rgba(24,18,44,.7),rgba(9,9,18,.72));border:1px solid rgba(139,92,246,.38);transition:all .15s}
+.fg-body .input,.fg-body .sel-wrap select{background:linear-gradient(180deg,rgba(28,20,54,.82),rgba(11,11,23,.82));border:1.5px solid rgba(139,92,246,.5);box-shadow:0 2px 10px rgba(0,0,0,.28),inset 0 0 14px rgba(139,92,246,.06);transition:all .15s;font-weight:500}
+.ms-ph{}
+.ms-ph .ms-ph-mark{width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 9px rgba(34,211,238,.9);flex-shrink:0;animation:pulse 2s infinite}
+.fg-body .ms-ph>span:last-child{color:#7fe9ff;font-family:var(--ff-mono);font-size:12.5px;letter-spacing:.02em;font-weight:600;text-shadow:0 0 10px rgba(34,211,238,.35)}
 .fg-body .input:hover,.fg-body .sel-wrap select:hover{border-color:var(--cyan);box-shadow:0 0 16px rgba(34,211,238,.18),inset 0 0 12px rgba(139,92,246,.1)}
 .fg-body .input:focus,.fg-body .sel-wrap select:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(34,211,238,.15),0 0 16px rgba(34,211,238,.18)}
 .fg-body .filt-lbl{color:var(--cyan);opacity:.9;position:relative;padding-left:11px}
@@ -618,7 +621,7 @@ function RankBadge({ gameId, rank, sm }){
   );
 }
 
-const BUILD = "v10.5";
+const BUILD = "v10.6";
 const AVATARS = ["🎮","🕹️","👾","🤖","👽","🥷","🧙","🦊","🐺","🦅","🦉","🐉","🐲","🦈","🐙","🦁","🐯","🐆","🦂","🐸","🔥","⚡","💀","🛡️","⚔️","🎯","🏆","👑","🌟","🎲"];
 function hashCode(s){ let h=0; for(let i=0;i<s.length;i++){ h=(h<<5)-h+s.charCodeAt(i); h|=0; } return Math.abs(h); }
 function Avatar({ name, size=46, online, ring, avatar }){
@@ -2646,7 +2649,7 @@ function BlogView({ ads, onCTA, slug, onOpen, onBack }){
 }
 
 /* Çoklu seçim dropdown — tikle, birden fazla seç (satır-içi, portal yok) */
-function MultiSelect({ options, value=[], onChange, placeholder="Seç", labelOf, disabled, searchable=false, searchPlaceholder="Ara..." }){
+function MultiSelect({ options, value=[], onChange, placeholder="Seç", labelOf, disabled, searchable=false, searchPlaceholder="Ara...", gaming }){
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
   const ref = useRef(null);
@@ -2664,8 +2667,9 @@ function MultiSelect({ options, value=[], onChange, placeholder="Seç", labelOf,
     <div ref={ref} style={{ position:"relative" }}>
       <button type="button" className="input" disabled={disabled} onClick={()=>setOpen(o=>!o)}
         style={{ textAlign:"left", display:"flex", alignItems:"center", justifyContent:"space-between", gap:8, cursor:disabled?"not-allowed":"pointer" }}>
-        <span style={{ overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap", color: value.length?"var(--text)":"var(--muted-2)" }}>
-          {value.length ? value.map(v=>lbl(v)).join(", ") : placeholder}
+        <span className={(!value.length&&gaming)?"ms-ph":undefined} style={{ display:"inline-flex", alignItems:"center", gap:7, minWidth:0, flex:1, overflow:"hidden", color: value.length?"var(--text)":"var(--muted-2)" }}>
+          {!value.length && gaming && <span className="ms-ph-mark" />}
+          <span style={{ overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{value.length ? value.map(v=>lbl(v)).join(", ") : placeholder}</span>
         </span>
         <ChevronRight size={14} style={{ transform: open?"rotate(-90deg)":"rotate(90deg)", color:"var(--muted)", flexShrink:0, transition:"transform .15s" }} />
       </button>
@@ -2915,13 +2919,13 @@ function Discover({ user, outgoing, friends, onInvite, onView, simulateMatch, qu
           </div>
           <div className="filt-grid" style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(150px,1fr))", gap:10, marginBottom:12 }}>
             <div className="field"><label>Oyun</label>
-              <MultiSelect options={GAMES.filter(g=>gameOnDevices(g.id, fDevices)).map(g=>g.id)} value={fGames} onChange={setFGames} placeholder="Tüm oyunlar" labelOf={id=>{const g=gameById(id);return g?g.name:id;}} searchable searchPlaceholder="Oyun ara..." /></div>
+              <MultiSelect options={GAMES.filter(g=>gameOnDevices(g.id, fDevices)).map(g=>g.id)} value={fGames} onChange={setFGames} gaming placeholder="Tüm oyunlar" labelOf={id=>{const g=gameById(id);return g?g.name:id;}} searchable searchPlaceholder="Oyun ara..." /></div>
             <div className="field"><label>Rank</label>
-              <MultiSelect options={rankOpts} value={fRanks} onChange={setFRanks} placeholder={fGames.length?"Tüm ranklar":"Önce oyun seç"} disabled={!fGames.length} /></div>
+              <MultiSelect options={rankOpts} value={fRanks} onChange={setFRanks} gaming placeholder={fGames.length?"Tüm ranklar":"Önce oyun seç"} disabled={!fGames.length} /></div>
             <div className="field"><label>Rol</label>
-              <MultiSelect options={roleOpts} value={fRoles} onChange={setFRoles} placeholder="Tüm roller" /></div>
+              <MultiSelect options={roleOpts} value={fRoles} onChange={setFRoles} gaming placeholder="Tüm roller" /></div>
             <div className="field"><label>Etiket</label>
-              <MultiSelect options={TAGS.map(t=>t.id)} value={fTags} onChange={setFTags} placeholder="Tüm tarzlar" labelOf={id=>{const t=tagById(id);return t?t.label:id;}} /></div>
+              <MultiSelect options={TAGS.map(t=>t.id)} value={fTags} onChange={setFTags} gaming placeholder="Tüm tarzlar" labelOf={id=>{const t=tagById(id);return t?t.label:id;}} /></div>
           </div>
           <div>
             <label className="filt-lbl" style={{ display:"block", marginBottom:7 }}>Oyun Saati (TSİ)</label>
