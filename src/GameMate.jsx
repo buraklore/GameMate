@@ -171,6 +171,16 @@ a{color:inherit;text-decoration:none}
 select.input{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 18px) 18px,calc(100% - 13px) 18px;background-size:5px 5px,5px 5px;background-repeat:no-repeat;padding-right:34px}
 .checkrow{display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;font-size:13.5px;color:var(--muted)}
 .filter-card .hud-body{padding:10px 12px}
+.disc-hero{position:relative;overflow:hidden;border:1px solid rgba(139,92,246,.28);border-radius:16px;background:linear-gradient(135deg,#1b1033 0%,#101026 48%,#0b1620 100%);padding:20px 22px;margin-bottom:16px}
+.disc-hero::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 14% 18%,rgba(139,92,246,.3),transparent 46%),radial-gradient(circle at 92% 88%,rgba(34,211,238,.2),transparent 42%);pointer-events:none}
+.disc-hero::after{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--violet) 30%,var(--cyan) 70%,transparent)}
+.disc-hero-content{position:relative;z-index:1;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.disc-hero-icon{width:52px;height:52px;display:grid;place-items:center;border-radius:14px;background:linear-gradient(135deg,rgba(139,92,246,.28),rgba(34,211,238,.18));border:1px solid rgba(139,92,246,.45);color:var(--cyan);flex-shrink:0;box-shadow:0 0 26px rgba(139,92,246,.28)}
+.disc-hero-title{font-size:29px;font-weight:800;margin:2px 0 4px;letter-spacing:-.01em;background:linear-gradient(90deg,#fff,#c9b8ff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.disc-hero-count{display:flex;align-items:center;gap:10px;padding:9px 16px;border-radius:12px;background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.32);flex-shrink:0}
+.dhc-num{font-family:var(--ff-disp);font-size:30px;font-weight:800;color:var(--cyan);line-height:1;text-shadow:0 0 16px rgba(34,211,238,.5)}
+.dhc-lbl{font-family:var(--ff-mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);line-height:1.25}
+@media (max-width:560px){ .disc-hero-title{font-size:24px} .disc-hero{padding:16px 16px} .disc-hero-icon{width:44px;height:44px} }
 .filt-lbl{font-family:var(--ff-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 .filter-card .field{gap:5px}
 .filter-card .hours-selects{gap:8px;flex-wrap:wrap;align-items:flex-end}
@@ -588,7 +598,7 @@ function RankBadge({ gameId, rank, sm }){
   );
 }
 
-const BUILD = "v10.0";
+const BUILD = "v10.1";
 const AVATARS = ["🎮","🕹️","👾","🤖","👽","🥷","🧙","🦊","🐺","🦅","🦉","🐉","🐲","🦈","🐙","🦁","🐯","🐆","🦂","🐸","🔥","⚡","💀","🛡️","⚔️","🎯","🏆","👑","🌟","🎲"];
 function hashCode(s){ let h=0; for(let i=0;i<s.length;i++){ h=(h<<5)-h+s.charCodeAt(i); h|=0; } return Math.abs(h); }
 function Avatar({ name, size=46, online, ring, avatar }){
@@ -1201,6 +1211,7 @@ function App(){
   const [commentReports, setCommentReports] = useState([]);
   const [banned, setBanned] = useState([]);
   const [ratings, setRatings] = useState({});
+  const [ratingAvg, setRatingAvg] = useState({});
   const [ads, setAds] = useState({ enabled:false, client:"", placements:{}, slots:{} });
   const [siteCfg, setSiteCfg] = useState({ logoSize:42, landingScale:1.12, footer:"© 2026 GameMate. Tüm hakları saklıdır." });
   const [contactMsgs, setContactMsgs] = useState([]);
@@ -1220,8 +1231,14 @@ function App(){
   });
   const [players, setPlayers] = useState(PLAYERS);
   const [myProfileId, setMyProfileId] = useState(null);
+  const playersView = useMemo(()=> players.map(p => ratingAvg[p.id]!=null ? { ...p, rating: ratingAvg[p.id] } : p), [players, ratingAvg]);
   const settingsReady = useRef(false);
-  const ratePlayer = (pid,n) => { setRatings(r=>({ ...r, [pid]:n })); DB && DB.setRating(pid,n); push("Puanın kaydedildi","ok"); };
+  const ratePlayer = (pid,n) => {
+    setRatings(r=>({ ...r, [pid]:n }));
+    setRatingAvg(a=>({ ...a, [pid]:n }));
+    if(DB && DB.setRating){ DB.setRating(pid, n, authUserId).then(()=>{ if(DB.getRatings) DB.getRatings(authUserId).then(r=>{ if(r){ setRatings(r.mine||{}); setRatingAvg(r.avg||{}); } }); }); }
+    push("Puanın kaydedildi","ok");
+  };
   const addContactMsg = (m) => { setContactMsgs(list => [{ ...m, id:Date.now(), date:new Date().toLocaleString("tr-TR"), read:false }, ...list]); push("Mesajın gönderildi — en kısa sürede dönüş yapacağız","ok"); if(DB){ DB.addContactMessage(m).then(()=>DB.getContactMessages().then(r=>{ if(r) setContactMsgs(r); })); } };
   const markMsgRead = (id) => { setContactMsgs(list => list.map(m=>m.id===id?{...m,read:true}:m)); DB && DB.setMessageRead(id); };
   const deleteMsg = (id) => { setContactMsgs(list => list.filter(m=>m.id!==id)); DB && DB.deleteMessage(id); };
@@ -1304,13 +1321,25 @@ function App(){
     DB.getSettings().then(st=>{ if(st){ if(st.siteCfg) setSiteCfg(s=>({ ...s, ...st.siteCfg })); if(st.seo) setSeo(s=>({ ...s, ...st.seo })); if(st.ads) setAds(a=>({ ...a, ...st.ads })); } });
     DB.getContactMessages().then(r=>{ if(r) setContactMsgs(r); });
     DB.getComments().then(w=>{ if(w) setWalls(w); });
-    DB.getRatings().then(r=>{ if(r) setRatings(r); });
     DB.getBans().then(b=>{ if(b) setBanned(b); });
   }, []);
   useEffect(()=>{
     if(!DB || !DB.getInvites || !myProfileId) return;
     DB.getInvites(myProfileId).then(r=>{ if(r){ setIncoming(r.incoming); setOutgoing(new Set(r.outgoing)); if(r.friends) setFriends(r.friends); } });
   }, [myProfileId]);
+  useEffect(()=>{
+    if(!DB || !DB.getRatings) return;
+    DB.getRatings(authUserId).then(r=>{ if(r){ setRatings(r.mine||{}); setRatingAvg(r.avg||{}); } });
+  }, [authUserId]);
+  useEffect(()=>{
+    if(!DB || !DB.getMessages || !myProfileId) return;
+    DB.getMessages(myProfileId).then(cv=>{ if(cv) setConversations(cv); });
+  }, [myProfileId]);
+  useEffect(()=>{
+    if(!DB || !DB.getMessages || !myProfileId || tab!=="messages") return;
+    const iv = setInterval(()=>{ DB.getMessages(myProfileId).then(cv=>{ if(cv) setConversations(cv); }); }, 8000);
+    return ()=>clearInterval(iv);
+  }, [tab, myProfileId]);
   useEffect(()=>{
     if(!DB) return;
     if(!settingsReady.current){ settingsReady.current = true; return; }
@@ -1395,7 +1424,7 @@ function App(){
   const removeComment = (pid,cid) => { setWalls(w=>({ ...w, [pid]:(w[pid]||[]).filter(c=>c.id!==cid) })); setCommentReports(rs=>rs.filter(r=>!(r.pid===pid&&r.cid===cid))); DB && DB.deleteComment(cid); push("Yorum silindi","info"); };
   const banUser = (pid) => { setBanned(b=>b.includes(pid)?b:[...b,pid]); DB && DB.setBan(pid,true); const pl=players.find(x=>x.id===pid); push((pl?pl.name:"Kullanıcı")+" siteden banlandı","info"); };
   const unbanUser = (pid) => { setBanned(b=>b.filter(x=>x!==pid)); DB && DB.setBan(pid,false); };
-  const sendMessage = (pid, text) => { const t=(text||"").trim(); if(!t) return; setConversations(c=>({ ...c, [pid]:[...(c[pid]||[]), { me:true, t, time:"şimdi" }] })); };
+  const sendMessage = (pid, text) => { const t=(text||"").trim(); if(!t) return; setConversations(c=>({ ...c, [pid]:[...(c[pid]||[]), { me:true, t, time:"şimdi" }] })); if(DB && DB.sendMessage && myProfileId){ DB.sendMessage(myProfileId, pid, t).then(()=>{ if(DB.getMessages) DB.getMessages(myProfileId).then(cv=>{ if(cv) setConversations(cv); }); }); } };
   const openChat = (pid) => { setActiveChat(pid); setTab("messages"); };
 
   const incomingCount = incoming.length;
@@ -1433,7 +1462,7 @@ function App(){
   if (screen==="landing")
     return <Shell><Background/>
       <div className="landing-zoom" style={{ "--lz": siteCfg.landingScale }}>
-        <Landing onStart={()=>{ setAuthErr(""); setScreen("register"); }} onLogin={()=>{ setAuthErr(""); setScreen("login"); }} onInfo={()=>setScreen("pubinfo")} onBlog={()=>setScreen("pubblog")} siteCfg={siteCfg} players={players} />
+        <Landing onStart={()=>{ setAuthErr(""); setScreen("register"); }} onLogin={()=>{ setAuthErr(""); setScreen("login"); }} onInfo={()=>setScreen("pubinfo")} onBlog={()=>setScreen("pubblog")} siteCfg={siteCfg} players={playersView} />
         <div className="container" style={{ padding:"0 24px" }}><Footer text={siteCfg.footer} onNav={(p)=>setScreen("pub"+p)} /></div>
       </div>{toasts}</Shell>;
   if (screen==="register")
@@ -1531,17 +1560,17 @@ function App(){
           <div className="main-area">
             {tab==="discover" && <Discover user={user} outgoing={outgoing} friends={friends}
               onInvite={sendInvite} onView={setViewPlayer} simulateMatch={acceptOutgoingAsMatch}
-              query={search} onSearch={setSearch} banned={banned} ads={ads} players={players} excludeId={myProfileId} />}
+              query={search} onSearch={setSearch} banned={banned} ads={ads} players={playersView} excludeId={myProfileId} />}
             {tab==="invites" && <Invites incoming={incoming} outgoing={outgoing}
-              onAccept={acceptInvite} onDecline={declineInvite} onCancel={cancelInvite} onView={setViewPlayer} ads={ads} players={players} />}
-            {tab==="friends" && <Friends friends={friends} onChat={openChat} onView={setViewPlayer} ads={ads} players={players} />}
-            {tab==="messages" && <MessagesView conversations={conversations} friends={friends} players={players} activeId={activeChat} setActiveId={setActiveChat} onSend={sendMessage} />}
+              onAccept={acceptInvite} onDecline={declineInvite} onCancel={cancelInvite} onView={setViewPlayer} ads={ads} players={playersView} />}
+            {tab==="friends" && <Friends friends={friends} onChat={openChat} onView={setViewPlayer} ads={ads} players={playersView} />}
+            {tab==="messages" && <MessagesView conversations={conversations} friends={friends} players={playersView} activeId={activeChat} setActiveId={setActiveChat} onSend={sendMessage} />}
             {tab==="profile" && <Profile user={user} setUser={setUser} push={push} ads={ads} onPersist={saveMyProfile} onGoSettings={()=>setTab("settings")} />}
             {tab==="mygames" && <MyGames user={user} setUser={setUser} push={push} ads={ads} onPersist={saveMyProfile} />}
             {tab==="settings" && <SettingsView user={user} setUser={setUser} push={push} onLogout={doLogout} onPersist={saveMyProfile} />}
             {tab==="blog" && <BlogView ads={ads} onCTA={()=>setTab("discover")} slug={blogPost} onOpen={(id)=>{ setTab("blog"); setBlogPost(id); }} onBack={()=>setBlogPost(null)} />}
             {tab==="info" && <InfoView />}
-            {tab==="admin" && user.admin && <AdminPanel banned={banned} onBan={banUser} onUnban={unbanUser} reports={commentReports} onDismissReport={dismissReport} onRemoveComment={removeComment} ads={ads} setAds={setAds} siteCfg={siteCfg} setSiteCfg={setSiteCfg} messages={contactMsgs} onMsgRead={markMsgRead} onMsgDelete={deleteMsg} seo={seo} setSeo={setSeo} players={players} />}
+            {tab==="admin" && user.admin && <AdminPanel banned={banned} onBan={banUser} onUnban={unbanUser} reports={commentReports} onDismissReport={dismissReport} onRemoveComment={removeComment} ads={ads} setAds={setAds} siteCfg={siteCfg} setSiteCfg={setSiteCfg} messages={contactMsgs} onMsgRead={markMsgRead} onMsgDelete={deleteMsg} seo={seo} setSeo={setSeo} players={playersView} />}
             {tab==="about" && <AboutView />}
             {tab==="privacy" && <PrivacyView />}
             {tab==="rules" && <RulesView />}
@@ -1555,7 +1584,7 @@ function App(){
         invited={outgoing.has(viewPlayer)} comments={walls[viewPlayer]||[]} myRating={ratings[viewPlayer]||0} ads={ads}
         onRate={(n)=>ratePlayer(viewPlayer,n)} onAddComment={addComment} onReport={reportComment}
         onInvite={()=>sendInvite(viewPlayer)}
-        onChat={()=>openChat(viewPlayer)} onClose={()=>setViewPlayer(null)} players={players} />}
+        onChat={()=>openChat(viewPlayer)} onClose={()=>setViewPlayer(null)} players={playersView} />}
       {sidebarOpen && <div onClick={()=>setSidebarOpen(false)} style={{ position:"fixed", inset:0, zIndex:110, background:"rgba(0,0,0,.5)" }} className="mob-only" />}
       {toasts}
     </Shell>
@@ -2664,15 +2693,19 @@ function Discover({ user, outgoing, friends, onInvite, onView, simulateMatch, qu
 
   return (
     <div>
-      <div className="flex" style={{ justifyContent:"space-between", alignItems:"flex-end", flexWrap:"wrap", gap:12, marginBottom:18 }}>
-        <div>
-          <span className="eyebrow">// EŞLEŞME</span>
-          <h1 className="disp" style={{ fontSize:34, fontWeight:700, marginTop:5, letterSpacing:"-.01em" }}>Takım arkadaşı bul</h1>
-          <p className="muted" style={{ fontSize:14 }}>Senin seviyene ve oyun tarzına uygun oyuncular.</p>
+      <div className="disc-hero">
+        <div className="disc-hero-content">
+          <div className="disc-hero-icon"><Crosshair size={26} /></div>
+          <div style={{ flex:1, minWidth:180 }}>
+            <span className="eyebrow" style={{ color:"var(--cyan)" }}>// MATCHMAKING</span>
+            <h1 className="disp disc-hero-title">Takım Arkadaşını Bul</h1>
+            <p className="muted" style={{ fontSize:13.5, margin:0 }}>Seviyene ve oyun tarzına uygun oyuncularla eşleş, sıraya gir, kazan.</p>
+          </div>
+          <div className="disc-hero-count">
+            <span className="dhc-num">{results.length}</span>
+            <span className="dhc-lbl">oyuncu<br/>bulundu</span>
+          </div>
         </div>
-        <span className="chip" style={{ color:"var(--cyan)", borderColor:"rgba(34,211,238,.3)", padding:"7px 12px" }}>
-          <Filter size={13} /> {results.length} oyuncu bulundu
-        </span>
       </div>
 
       {/* filters — kompakt */}

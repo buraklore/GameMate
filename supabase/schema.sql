@@ -48,9 +48,12 @@ create table if not exists public.wall_comments (
 
 -- ----------- Puanlar (oyuncu başına) -----------
 create table if not exists public.ratings (
-  profile_id  bigint primary key,
-  stars       int not null,
-  updated_at  timestamptz default now()
+  id          bigint generated always as identity primary key,
+  profile_id  bigint not null references public.profiles(id) on delete cascade,
+  rater_user  uuid not null default auth.uid() references auth.users(id) on delete cascade,
+  stars       int not null check (stars between 1 and 5),
+  created_at  timestamptz not null default now(),
+  unique (profile_id, rater_user)
 );
 
 -- ----------- Banlar -----------
@@ -110,10 +113,10 @@ create policy "wall_update_admin" on public.wall_comments for update to authenti
 create policy "wall_delete_admin" on public.wall_comments for delete to authenticated using (public.is_admin());
 
 -- Puanlar: herkes okur; giriş yapmış kullanıcı 0–5 yazar; silme admin
-create policy "ratings_select"       on public.ratings for select to anon, authenticated using (true);
-create policy "ratings_insert"       on public.ratings for insert to authenticated with check (stars between 0 and 5);
-create policy "ratings_update"       on public.ratings for update to authenticated using (true) with check (stars between 0 and 5);
-create policy "ratings_delete_admin" on public.ratings for delete to authenticated using (public.is_admin());
+create policy "ratings_select" on public.ratings for select to anon, authenticated using (true);
+create policy "ratings_insert" on public.ratings for insert to authenticated with check (rater_user = auth.uid() and stars between 1 and 5);
+create policy "ratings_update" on public.ratings for update to authenticated using (rater_user = auth.uid()) with check (rater_user = auth.uid() and stars between 1 and 5);
+create policy "ratings_delete" on public.ratings for delete to authenticated using (rater_user = auth.uid() or public.is_admin());
 
 -- Banlar: herkes okur (gizleme için); ekleme/silme/güncelleme admin
 create policy "bans_select"       on public.bans for select to anon, authenticated using (true);
@@ -125,6 +128,45 @@ create policy "bans_delete_admin" on public.bans for delete to authenticated usi
 create policy "settings_select"       on public.site_settings for select to anon, authenticated using (true);
 create policy "settings_insert_admin" on public.site_settings for insert to authenticated with check (public.is_admin());
 create policy "settings_update_admin" on public.site_settings for update to authenticated using (public.is_admin()) with check (public.is_admin());
+
+-- ----------- Davetler (invites) -----------
+create table if not exists public.invites (
+  id           bigint generated always as identity primary key,
+  from_user    uuid not null default auth.uid() references auth.users(id) on delete cascade,
+  from_profile bigint not null references public.profiles(id) on delete cascade,
+  to_profile   bigint not null references public.profiles(id) on delete cascade,
+  game         text,
+  status       text not null default 'pending' check (status in ('pending','accepted','declined')),
+  created_at   timestamptz not null default now(),
+  unique (from_user, to_profile)
+);
+alter table public.invites enable row level security;
+create policy "invites_select" on public.invites for select to authenticated
+  using (from_user = auth.uid() or to_profile in (select id from public.profiles where user_id = auth.uid()) or public.is_admin());
+create policy "invites_insert" on public.invites for insert to authenticated
+  with check (from_user = auth.uid() and from_profile in (select id from public.profiles where user_id = auth.uid()) and status = 'pending');
+create policy "invites_update" on public.invites for update to authenticated
+  using (to_profile in (select id from public.profiles where user_id = auth.uid()))
+  with check (to_profile in (select id from public.profiles where user_id = auth.uid()));
+create policy "invites_delete" on public.invites for delete to authenticated
+  using (from_user = auth.uid() or to_profile in (select id from public.profiles where user_id = auth.uid()) or public.is_admin());
+grant select, insert, update, delete on public.invites to authenticated;
+
+-- ----------- Mesajlar (chat) -----------
+create table if not exists public.messages (
+  id                bigint generated always as identity primary key,
+  sender_user       uuid not null default auth.uid() references auth.users(id) on delete cascade,
+  sender_profile    bigint not null references public.profiles(id) on delete cascade,
+  recipient_profile bigint not null references public.profiles(id) on delete cascade,
+  text              text not null check (char_length(text) between 1 and 2000),
+  created_at        timestamptz not null default now()
+);
+alter table public.messages enable row level security;
+create policy "messages_select" on public.messages for select to authenticated
+  using (sender_user = auth.uid() or recipient_profile in (select id from public.profiles where user_id = auth.uid()));
+create policy "messages_insert" on public.messages for insert to authenticated
+  with check (sender_user = auth.uid() and sender_profile in (select id from public.profiles where user_id = auth.uid()));
+grant select, insert on public.messages to authenticated;
 
 -- ============================================================
 --  Örnek veri (demo oyuncular)

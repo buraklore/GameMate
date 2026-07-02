@@ -126,20 +126,28 @@ export async function deleteComment(id) {
 }
 
 /* ---------- Puanlar ---------- */
-export async function getRatings() {
+export async function getRatings(myUid) {
   if (!supaEnabled) return null
   try {
-    const { data, error } = await supabase.from('ratings').select('*')
+    const { data, error } = await supabase.from('ratings').select('profile_id,rater_user,stars')
     if (error) throw error
-    const r = {}
-    ;(data || []).forEach(x => { r[x.profile_id] = x.stars })
-    return r
+    const sum = {}, cnt = {}, mine = {}
+    ;(data || []).forEach(x => {
+      sum[x.profile_id] = (sum[x.profile_id] || 0) + x.stars
+      cnt[x.profile_id] = (cnt[x.profile_id] || 0) + 1
+      if (myUid && x.rater_user === myUid) mine[x.profile_id] = x.stars
+    })
+    const avg = {}
+    Object.keys(sum).forEach(pid => { avg[pid] = Math.round((sum[pid] / cnt[pid]) * 10) / 10 })
+    return { avg, cnt, mine }
   } catch (e) { console.warn('[db] getRatings', e.message); return null }
 }
-export async function setRating(profileId, stars) {
+export async function setRating(profileId, stars, raterUser) {
   if (!supaEnabled) return
-  try { await supabase.from('ratings').upsert({ profile_id: profileId, stars }, { onConflict: 'profile_id' }) }
-  catch (e) { console.warn('[db] setRating', e.message) }
+  try {
+    const row = raterUser ? { profile_id: profileId, rater_user: raterUser, stars } : { profile_id: profileId, stars }
+    await supabase.from('ratings').upsert(row, { onConflict: 'profile_id,rater_user' })
+  } catch (e) { console.warn('[db] setRating', e.message) }
 }
 
 /* ---------- Banlar ---------- */
@@ -254,4 +262,40 @@ export async function respondInvite(fromProfile, status) {
     if (error) throw error
     return true
   } catch (e) { console.warn('[db] respondInvite', e.message); return false }
+}
+
+// ---- Mesajlar (chat) — kalıcı ----
+function fmtMsgTime(iso) {
+  try {
+    const d = new Date(iso), now = new Date()
+    if (d.toDateString() === now.toDateString()) return d.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })
+    const y = new Date(now); y.setDate(now.getDate() - 1)
+    if (d.toDateString() === y.toDateString()) return 'Dün'
+    return d.toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit' })
+  } catch (e) { return '' }
+}
+export async function getMessages(myProfileId) {
+  if (!supaEnabled || !myProfileId) return null
+  try {
+    const { data, error } = await supabase.from('messages')
+      .select('sender_profile,recipient_profile,text,created_at')
+      .order('created_at', { ascending: true })
+    if (error) throw error
+    const convos = {}
+    ;(data || []).forEach(m => {
+      const other = m.sender_profile === myProfileId ? m.recipient_profile : m.sender_profile
+      if (!convos[other]) convos[other] = []
+      convos[other].push({ me: m.sender_profile === myProfileId, t: m.text, time: fmtMsgTime(m.created_at) })
+    })
+    return convos
+  } catch (e) { console.warn('[db] getMessages', e.message); return null }
+}
+export async function sendMessage(senderProfile, recipientProfile, text) {
+  if (!supaEnabled) return false
+  try {
+    const { error } = await supabase.from('messages')
+      .insert({ sender_profile: senderProfile, recipient_profile: recipientProfile, text })
+    if (error) throw error
+    return true
+  } catch (e) { console.warn('[db] sendMessage', e.message); return false }
 }
