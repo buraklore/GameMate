@@ -170,7 +170,7 @@ a{color:inherit;text-decoration:none}
 .input:focus{outline:none;border-color:var(--violet);box-shadow:0 0 0 3px rgba(139,92,246,.18),0 4px 16px -8px rgba(139,92,246,.4)}
 select.input{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 18px) 18px,calc(100% - 13px) 18px;background-size:5px 5px,5px 5px;background-repeat:no-repeat;padding-right:34px}
 .checkrow{display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;font-size:13.5px;color:var(--muted)}
-.filter-card .hud-body{padding:11px 13px}
+.filter-card .hud-body{padding:10px 12px}
 .filt-lbl{font-family:var(--ff-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 .filter-card .field{gap:5px}
 .filter-card .hours-selects{gap:8px;flex-wrap:wrap;align-items:flex-end}
@@ -588,7 +588,7 @@ function RankBadge({ gameId, rank, sm }){
   );
 }
 
-const BUILD = "v9.8";
+const BUILD = "v9.9";
 const AVATARS = ["🎮","🕹️","👾","🤖","👽","🥷","🧙","🦊","🐺","🦅","🦉","🐉","🐲","🦈","🐙","🦁","🐯","🐆","🦂","🐸","🔥","⚡","💀","🛡️","⚔️","🎯","🏆","👑","🌟","🎲"];
 function hashCode(s){ let h=0; for(let i=0;i<s.length;i++){ h=(h<<5)-h+s.charCodeAt(i); h|=0; } return Math.abs(h); }
 function Avatar({ name, size=46, online, ring, avatar }){
@@ -1308,6 +1308,10 @@ function App(){
     DB.getBans().then(b=>{ if(b) setBanned(b); });
   }, []);
   useEffect(()=>{
+    if(!DB || !DB.getInvites || !myProfileId) return;
+    DB.getInvites(myProfileId).then(r=>{ if(r){ setIncoming(r.incoming); setOutgoing(new Set(r.outgoing)); } });
+  }, [myProfileId]);
+  useEffect(()=>{
     if(!DB) return;
     if(!settingsReady.current){ settingsReady.current = true; return; }
     const t = setTimeout(()=>{ DB.saveSettings({ siteCfg, seo, ads }); }, 800);
@@ -1399,20 +1403,25 @@ function App(){
   const sendInvite = (pid) => {
     setOutgoing(s => new Set(s).add(pid));
     const p = players.find(x=>x.id===pid);
+    const game = p && p.games && p.games[0] ? p.games[0].g : null;
+    if (DB && DB.addInvite && myProfileId && authUserId) DB.addInvite(authUserId, myProfileId, pid, game);
     push(`${p.name} oyuncusuna davet gönderildi`, "ok");
   };
   const acceptInvite = (pid) => {
     setIncoming(s => s.filter(x=>x!==pid));
     setFriends(s => s.includes(pid)?s:[...s,pid]);
+    if (DB && DB.respondInvite) DB.respondInvite(pid, "accepted");
     const p = players.find(x=>x.id===pid);
     push(`Eşleşme! ${p.name} ile bağlantı kuruldu — iletişim açıldı`, "ok");
   };
   const declineInvite = (pid) => {
     setIncoming(s => s.filter(x=>x!==pid));
+    if (DB && DB.respondInvite) DB.respondInvite(pid, "declined");
     push("Davet reddedildi", "info");
   };
   const cancelInvite = (pid) => {
     setOutgoing(s => { const n=new Set(s); n.delete(pid); return n; });
+    if (DB && DB.cancelInvite) DB.cancelInvite(pid);
     push("Davet iptal edildi", "info");
   };
   const acceptOutgoingAsMatch = (pid) => { // simulate other side accepting
@@ -1593,7 +1602,7 @@ function formatHours(times){
   return groups.map(([a,b])=> a===b ? fmt(a) : fmt(a)+"–"+fmt(b)).join(", ");
 }
 
-function HoursPicker({ value=[], onChange }){
+function HoursPicker({ value=[], onChange, noPresets }){
   const derive = () => {
     const hrs = [...new Set((value||[]).map(Number).filter(n=>!isNaN(n)&&n>=0&&n<=23))].sort((a,b)=>a-b);
     if(!hrs.length) return { s:19, e:23 };
@@ -1638,12 +1647,14 @@ function HoursPicker({ value=[], onChange }){
         <span>{value.length ? formatHours(value) : "—"}</span>
         {overnight && <span className="hours-badge">gece aşırı</span>}
       </div>
+      {!noPresets && (
       <div className="hours-presets">
         <button type="button" className="hr-preset" onClick={()=>apply(19,23)}>Akşam 19–23</button>
         <button type="button" className="hr-preset" onClick={()=>apply(19,2)}>Gece 19–02</button>
         <button type="button" className="hr-preset" onClick={()=>apply(12,18)}>Gündüz 12–18</button>
         <button type="button" className="hr-preset" onClick={()=>apply(0,23)}>Tüm gün</button>
       </div>
+      )}
     </div>
   );
 }
@@ -2688,7 +2699,7 @@ function Discover({ user, outgoing, friends, onInvite, onView, simulateMatch, qu
         </div>
         <div>
           <label className="filt-lbl" style={{ display:"block", marginBottom:7 }}>Oyun Saati (TSİ)</label>
-          <HoursPicker value={fTimes} onChange={setFTimes} />
+          <HoursPicker value={fTimes} onChange={setFTimes} noPresets />
         </div>
       </Hud>
 

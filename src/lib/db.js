@@ -214,3 +214,43 @@ export async function getMyProfile(userId) {
     return data ? rowToPlayer(data) : null
   } catch (e) { console.warn('[db] getMyProfile', e.message); return null }
 }
+
+// ---- Davetler (invites) — kalıcı ----
+export async function getInvites(myProfileId) {
+  if (!supaEnabled || !myProfileId) return null
+  try {
+    const { data, error } = await supabase.from('invites').select('from_profile,to_profile,game,status')
+    if (error) throw error
+    const rows = data || []
+    const incoming = rows.filter(r => r.to_profile === myProfileId && r.status === 'pending').map(r => r.from_profile)
+    const outgoing = rows.filter(r => r.from_profile === myProfileId && r.status !== 'declined').map(r => r.to_profile)
+    return { incoming, outgoing }
+  } catch (e) { console.warn('[db] getInvites', e.message); return null }
+}
+export async function addInvite(fromUser, fromProfile, toProfile, game) {
+  if (!supaEnabled) return false
+  try {
+    const { error } = await supabase.from('invites').upsert(
+      { from_user: fromUser, from_profile: fromProfile, to_profile: toProfile, game: game || null, status: 'pending' },
+      { onConflict: 'from_user,to_profile', ignoreDuplicates: true }
+    )
+    if (error) throw error
+    return true
+  } catch (e) { console.warn('[db] addInvite', e.message); return false }
+}
+export async function cancelInvite(toProfile) {
+  if (!supaEnabled) return false
+  try {
+    const { error } = await supabase.from('invites').delete().eq('to_profile', toProfile)
+    if (error) throw error
+    return true
+  } catch (e) { console.warn('[db] cancelInvite', e.message); return false }
+}
+export async function respondInvite(fromProfile, status) {
+  if (!supaEnabled) return false
+  try {
+    const { error } = await supabase.from('invites').update({ status }).eq('from_profile', fromProfile)
+    if (error) throw error
+    return true
+  } catch (e) { console.warn('[db] respondInvite', e.message); return false }
+}
