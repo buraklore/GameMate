@@ -170,13 +170,16 @@ a{color:inherit;text-decoration:none}
 .input:focus{outline:none;border-color:var(--violet);box-shadow:0 0 0 3px rgba(139,92,246,.18),0 4px 16px -8px rgba(139,92,246,.4)}
 select.input{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 18px) 18px,calc(100% - 13px) 18px;background-size:5px 5px,5px 5px;background-repeat:no-repeat;padding-right:34px}
 .checkrow{display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;font-size:13.5px;color:var(--muted)}
-.filter-card .hud-body{padding:15px 17px}
+.filter-card .hud-body{padding:11px 13px}
 .filt-lbl{font-family:var(--ff-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 .filter-card .field{gap:5px}
-.filter-card .sel-wrap select{padding:9px 30px 9px 12px}
-.filter-card .hours-selects{gap:9px}
-.filter-card .hours-summary{margin-top:8px;font-size:12.5px}
+.filter-card .hours-selects{gap:8px;flex-wrap:wrap;align-items:flex-end}
+.filter-card .hsel{flex:0 0 auto;min-width:0}
+.filter-card .sel-wrap select{padding:8px 30px 8px 11px;width:auto;min-width:92px;font-size:13px}
+.filter-card .hours-arrow{margin-bottom:9px}
+.filter-card .hours-summary{margin-top:8px;font-size:12px}
 .filter-card .hours-presets{margin-top:8px;gap:6px}
+.input:disabled{opacity:.5;cursor:not-allowed}
 
 /* ---------- layout ---------- */
 .container{max-width:1240px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
@@ -585,7 +588,7 @@ function RankBadge({ gameId, rank, sm }){
   );
 }
 
-const BUILD = "v9.7";
+const BUILD = "v9.8";
 const AVATARS = ["🎮","🕹️","👾","🤖","👽","🥷","🧙","🦊","🐺","🦅","🦉","🐉","🐲","🦈","🐙","🦁","🐯","🐆","🦂","🐸","🔥","⚡","💀","🛡️","⚔️","🎯","🏆","👑","🌟","🎲"];
 function hashCode(s){ let h=0; for(let i=0;i<s.length;i++){ h=(h<<5)-h+s.charCodeAt(i); h|=0; } return Math.abs(h); }
 function Avatar({ name, size=46, online, ring, avatar }){
@@ -2617,10 +2620,13 @@ function Discover({ user, outgoing, friends, onInvite, onView, simulateMatch, qu
   const [fRoles, setFRoles] = useState([]);
   const [fTags, setFTags] = useState([]);
   const [fTimes, setFTimes] = useState([]);
+  const [fRanks, setFRanks] = useState([]);
   const [onlyOnline, setOnlyOnline] = useState(false);
 
   const roleOpts = useMemo(()=>{ const src = fGames.length ? GAMES.filter(g=>fGames.includes(g.id)) : GAMES; return [...new Set(src.flatMap(g=>g.roles))]; }, [fGames]);
+  const rankOpts = useMemo(()=>{ if(!fGames.length) return []; const out=[]; fGames.forEach(gid=>{ const g=gameById(gid); if(g) g.ranks.forEach(r=>{ if(!out.includes(r)) out.push(r); }); }); return out; }, [fGames]);
   useEffect(()=>{ if(fDevices.length) setFGames(gs => gs.filter(id => gameOnDevices(id, fDevices))); }, [fDevices]);
+  useEffect(()=>{ setFRanks(rs => rs.filter(r => rankOpts.includes(r))); }, [rankOpts]);
 
   const results = useMemo(() => {
     return players.map(p => {
@@ -2629,7 +2635,12 @@ function Discover({ user, outgoing, friends, onInvite, onView, simulateMatch, qu
       const pdev = p.devices || ["PC"];
       if (fDevices.length && !fDevices.some(d=>pdev.includes(d))) return null;
       let entry;
-      if (fGames.length) { entry = p.games.find(x=>fGames.includes(x.g)); if(!entry) return null; }
+      if (fGames.length) {
+        const ms = p.games.filter(x=>fGames.includes(x.g));
+        if(!ms.length) return null;
+        if(fRanks.length){ const mr = ms.filter(x=>fRanks.includes(x.rank)); if(!mr.length) return null; entry = mr[0]; }
+        else entry = ms[0];
+      }
       else entry = p.games[0];
       if (fRoles.length && !p.games.some(x=>fRoles.includes(x.role))) return null;
       if (fTags.length && !fTags.some(t=>p.tags.includes(t))) return null;
@@ -2638,7 +2649,7 @@ function Discover({ user, outgoing, friends, onInvite, onView, simulateMatch, qu
       if (query) { const hay=(p.name+" "+p.games.map(x=>{const gg=gameById(x.g);return gg?gg.name:"";}).join(" ")+" "+p.tags.map(t=>{const tt=tagById(t);return tt?tt.label:"";}).join(" ")).toLowerCase(); if(!hay.includes(query.toLowerCase())) return null; }
       return { p, entry };
     }).filter(Boolean);
-  }, [players,excludeId,fDevices,fGames,fRoles,fTags,fTimes,onlyOnline,query,banned]);
+  }, [players,excludeId,fDevices,fGames,fRanks,fRoles,fTags,fTimes,onlyOnline,query,banned]);
 
   return (
     <div>
@@ -2668,6 +2679,8 @@ function Discover({ user, outgoing, friends, onInvite, onView, simulateMatch, qu
         <div className="filt-grid" style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(150px,1fr))", gap:10, marginBottom:12 }}>
           <div className="field"><label>Oyun</label>
             <MultiSelect options={GAMES.filter(g=>gameOnDevices(g.id, fDevices)).map(g=>g.id)} value={fGames} onChange={setFGames} placeholder="Tüm oyunlar" labelOf={id=>{const g=gameById(id);return g?g.name:id;}} searchable searchPlaceholder="Oyun ara..." /></div>
+          <div className="field"><label>Rank</label>
+            <MultiSelect options={rankOpts} value={fRanks} onChange={setFRanks} placeholder={fGames.length?"Tüm ranklar":"Önce oyun seç"} disabled={!fGames.length} /></div>
           <div className="field"><label>Rol</label>
             <MultiSelect options={roleOpts} value={fRoles} onChange={setFRoles} placeholder="Tüm roller" /></div>
           <div className="field"><label>Etiket</label>
