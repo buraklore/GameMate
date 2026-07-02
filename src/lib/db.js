@@ -305,10 +305,10 @@ export async function getWallPosts() {
   if (!supaEnabled) return null
   try {
     const { data, error } = await supabase.from('wall_posts')
-      .select('id,author_profile,author_name,text,game,created_at')
+      .select('id,author_profile,author_name,text,game,reported,created_at')
       .order('created_at', { ascending: false }).limit(100)
     if (error) throw error
-    return (data || []).map(p => ({ id: p.id, authorId: p.author_profile, author: p.author_name, text: p.text, game: p.game, time: fmtMsgTime(p.created_at) }))
+    return (data || []).map(p => ({ id: p.id, authorId: p.author_profile, author: p.author_name, text: p.text, game: p.game, reported: !!p.reported, time: fmtMsgTime(p.created_at) }))
   } catch (e) { console.warn('[db] getWallPosts', e.message); return null }
 }
 export async function addWallPost(authorProfile, authorName, text, game) {
@@ -325,4 +325,9 @@ export async function deleteWallPost(id) {
   if (!supaEnabled) return false
   try { const { error } = await supabase.from('wall_posts').delete().eq('id', id); if (error) throw error; return true }
   catch (e) { console.warn('[db] deleteWallPost', e.message); return false }
+}
+export async function setWallReported(id, val) {
+  if (!supaEnabled) return false
+  try { const { error } = await supabase.from('wall_posts').update({ reported: !!val }).eq('id', id); if (error) throw error; return true }
+  catch (e) { console.warn('[db] setWallReported', e.message); return false }
 }

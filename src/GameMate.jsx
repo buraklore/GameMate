@@ -175,7 +175,12 @@ select.input{appearance:none;background-image:linear-gradient(45deg,transparent 
 .fg-head{display:flex;justify-content:space-between;align-items:center;padding:9px 14px;background:linear-gradient(90deg,rgba(139,92,246,.22),rgba(34,211,238,.05));border-radius:13px 13px 0 0}
 .fg-head-l{display:flex;align-items:center;gap:7px;font-family:var(--ff-mono);font-size:11px;letter-spacing:.16em;color:var(--cyan);font-weight:700}
 .fg-head-r{font-family:var(--ff-mono);font-size:10px;color:var(--muted-2);letter-spacing:.06em}
-.fg-body{background:linear-gradient(165deg,#191426,#111022 55%,#0d0d18);border-radius:0 0 13px 13px;padding:13px 14px}
+.fg-body{background:linear-gradient(165deg,#191426,#111022 55%,#0d0d18),repeating-linear-gradient(90deg,rgba(139,92,246,.045) 0 1px,transparent 1px 26px),repeating-linear-gradient(0deg,rgba(34,211,238,.03) 0 1px,transparent 1px 26px);border-radius:0 0 13px 13px;padding:14px 15px}
+.fg-body .field>label{color:var(--cyan);opacity:.72;letter-spacing:.14em}
+.fg-body .input,.fg-body .sel-wrap select{background:rgba(9,9,18,.6);border-color:rgba(139,92,246,.28)}
+.fg-body .input:hover,.fg-body .sel-wrap select:hover{border-color:rgba(34,211,238,.55)}
+.fg-body .input:focus,.fg-body .sel-wrap select:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(34,211,238,.13)}
+.fg-body .filt-lbl{color:var(--cyan);opacity:.72}
 .fg-body .field{gap:5px}
 .fg-body .sel-wrap select{padding:8px 30px 8px 11px;width:auto;min-width:92px;font-size:13px}
 .fg-body .hours-selects{gap:8px;flex-wrap:wrap;align-items:flex-end}
@@ -610,7 +615,7 @@ function RankBadge({ gameId, rank, sm }){
   );
 }
 
-const BUILD = "v10.2";
+const BUILD = "v10.3";
 const AVATARS = ["🎮","🕹️","👾","🤖","👽","🥷","🧙","🦊","🐺","🦅","🦉","🐉","🐲","🦈","🐙","🦁","🐯","🐆","🦂","🐸","🔥","⚡","💀","🛡️","⚔️","🎯","🏆","👑","🌟","🎲"];
 function hashCode(s){ let h=0; for(let i=0;i<s.length;i++){ h=(h<<5)-h+s.charCodeAt(i); h|=0; } return Math.abs(h); }
 function Avatar({ name, size=46, online, ring, avatar }){
@@ -1449,10 +1454,13 @@ function App(){
     push("İlanın duvara eklendi","ok");
   };
   const removeWallPost = (id) => { setWallPosts(ps=>ps.filter(x=>x.id!==id)); if(DB && DB.deleteWallPost) DB.deleteWallPost(id); push("İlan silindi","info"); };
+  const reportWall = (id) => { setWallPosts(ps=>ps.map(x=>x.id===id?{ ...x, reported:true }:x)); if(DB && DB.setWallReported) DB.setWallReported(id, true); push("İlan şikayet edildi — admin inceleyecek","info"); };
+  const dismissWallReport = (id) => { setWallPosts(ps=>ps.map(x=>x.id===id?{ ...x, reported:false }:x)); if(DB && DB.setWallReported) DB.setWallReported(id, false); };
   const sendMessage = (pid, text) => { const t=(text||"").trim(); if(!t) return; setConversations(c=>({ ...c, [pid]:[...(c[pid]||[]), { me:true, t, time:"şimdi" }] })); if(DB && DB.sendMessage && myProfileId){ DB.sendMessage(myProfileId, pid, t).then(()=>{ if(DB.getMessages) DB.getMessages(myProfileId).then(cv=>{ if(cv) setConversations(cv); }); }); } };
   const openChat = (pid) => { setActiveChat(pid); setTab("messages"); };
 
   const incomingCount = incoming.length;
+  const wallReports = wallPosts.filter(p=>p.reported);
 
   const sendInvite = (pid) => {
     setOutgoing(s => new Set(s).add(pid));
@@ -1587,7 +1595,7 @@ function App(){
             {tab==="discover" && <Discover user={user} outgoing={outgoing} friends={friends}
               onInvite={sendInvite} onView={setViewPlayer} simulateMatch={acceptOutgoingAsMatch}
               query={search} onSearch={setSearch} banned={banned} ads={ads} players={playersView} excludeId={myProfileId} />}
-            {tab==="wall" && <WallView posts={wallPosts} user={user} onPost={postToWall} onDelete={removeWallPost} onView={setViewPlayer} isAdmin={!!user.admin} ads={ads} />}
+            {tab==="wall" && <WallView posts={wallPosts} user={user} players={playersView} onPost={postToWall} onDelete={removeWallPost} onReport={reportWall} onView={setViewPlayer} isAdmin={!!user.admin} ads={ads} />}
             {tab==="invites" && <Invites incoming={incoming} outgoing={outgoing}
               onAccept={acceptInvite} onDecline={declineInvite} onCancel={cancelInvite} onView={setViewPlayer} ads={ads} players={playersView} />}
             {tab==="friends" && <Friends friends={friends} onChat={openChat} onView={setViewPlayer} ads={ads} players={playersView} />}
@@ -1597,7 +1605,7 @@ function App(){
             {tab==="settings" && <SettingsView user={user} setUser={setUser} push={push} onLogout={doLogout} onPersist={saveMyProfile} />}
             {tab==="blog" && <BlogView ads={ads} onCTA={()=>setTab("discover")} slug={blogPost} onOpen={(id)=>{ setTab("blog"); setBlogPost(id); }} onBack={()=>setBlogPost(null)} />}
             {tab==="info" && <InfoView />}
-            {tab==="admin" && user.admin && <AdminPanel banned={banned} onBan={banUser} onUnban={unbanUser} reports={commentReports} onDismissReport={dismissReport} onRemoveComment={removeComment} ads={ads} setAds={setAds} siteCfg={siteCfg} setSiteCfg={setSiteCfg} messages={contactMsgs} onMsgRead={markMsgRead} onMsgDelete={deleteMsg} seo={seo} setSeo={setSeo} players={playersView} />}
+            {tab==="admin" && user.admin && <AdminPanel banned={banned} onBan={banUser} onUnban={unbanUser} reports={commentReports} onDismissReport={dismissReport} onRemoveComment={removeComment} wallReports={wallReports} onDeleteWallPost={removeWallPost} onDismissWallReport={dismissWallReport} ads={ads} setAds={setAds} siteCfg={siteCfg} setSiteCfg={setSiteCfg} messages={contactMsgs} onMsgRead={markMsgRead} onMsgDelete={deleteMsg} seo={seo} setSeo={setSeo} players={playersView} />}
             {tab==="about" && <AboutView />}
             {tab==="privacy" && <PrivacyView />}
             {tab==="rules" && <RulesView />}
@@ -1963,7 +1971,7 @@ function HeaderAd({ ads }){
   );
 }
 
-function AdminPanel({ banned, onBan, onUnban, reports, onDismissReport, onRemoveComment, ads, setAds, siteCfg, setSiteCfg, messages=[], onMsgRead, onMsgDelete, seo, setSeo, players=[] }){
+function AdminPanel({ banned, onBan, onUnban, reports, onDismissReport, onRemoveComment, wallReports=[], onDeleteWallPost, onDismissWallReport, ads, setAds, siteCfg, setSiteCfg, messages=[], onMsgRead, onMsgDelete, seo, setSeo, players=[] }){
   const [sub, setSub] = useState("users");
   const [wordInput, setWordInput] = useState("");
   const [q, setQ] = useState("");
@@ -1998,7 +2006,7 @@ function AdminPanel({ banned, onBan, onUnban, reports, onDismissReport, onRemove
       <span className="eyebrow">// ADMIN</span>
       <h1 className="disp" style={{ fontSize:28, fontWeight:700, margin:"4px 0 18px" }}>Admin Paneli</h1>
       <div className="flex" style={{ gap:8, flexWrap:"wrap", marginBottom:18 }}>
-        {[["users","Kullanıcılar"],["reports","Şikayet Edilen Yorumlar"],["words","Yasaklı Kelimeler"],["messages",unread?`Mesajlar (${unread})`:"Mesajlar"],["ads","Reklamlar"],["seo","SEO"],["site","Site Ayarları"]].map(([k,l])=>(
+        {[["users","Kullanıcılar"],["reports",(reports.length+wallReports.length)?`Şikayetler (${reports.length+wallReports.length})`:"Şikayetler"],["words","Yasaklı Kelimeler"],["messages",unread?`Mesajlar (${unread})`:"Mesajlar"],["ads","Reklamlar"],["seo","SEO"],["site","Site Ayarları"]].map(([k,l])=>(
           <button key={k} className={`chip`} onClick={()=>setSub(k)}
             style={{ cursor:"pointer", padding:"8px 13px", color:sub===k?"var(--violet-hi)":"var(--muted)", borderColor:sub===k?"rgba(139,92,246,.5)":"var(--line)" }}>{l}</button>
         ))}
@@ -2030,18 +2038,42 @@ function AdminPanel({ banned, onBan, onUnban, reports, onDismissReport, onRemove
 
       {sub==="reports" && (
         <Hud>
-          {reports.length===0 ? <div style={{ textAlign:"center", padding:"30px 10px" }}><Shield size={28} style={{ color:"var(--muted-2)", marginBottom:10 }} /><div className="disp" style={{ fontSize:16, fontWeight:600 }}>Şikayet edilen yorum yok</div></div>
-          : <div style={{ display:"grid", gap:10 }}>
-              {reports.map(r=>(
-                <div key={r.id} style={{ background:"var(--panel-2)", border:"1px solid rgba(244,63,94,.3)", clipPath:"var(--notch-sm)", padding:"12px 14px" }}>
-                  <div className="mono muted2" style={{ fontSize:10.5, marginBottom:6 }}>{r.playerName} oyuncusunun duvarında · yazan: {r.author}</div>
-                  <p style={{ fontSize:13.5, marginBottom:10 }}>"{r.text}"</p>
-                  <div className="flex" style={{ gap:8 }}>
-                    <button className="btn btn-danger btn-sm" onClick={()=>onRemoveComment(r.pid, r.cid)}><X size={13}/> Yorumu Sil</button>
-                    <button className="btn btn-ghost btn-sm" onClick={()=>onDismissReport(r.id)}>Yoksay</button>
+          {reports.length===0 && wallReports.length===0 ? <div style={{ textAlign:"center", padding:"30px 10px" }}><Shield size={28} style={{ color:"var(--muted-2)", marginBottom:10 }} /><div className="disp" style={{ fontSize:16, fontWeight:600 }}>Şikayet yok</div></div>
+          : <div style={{ display:"grid", gap:18 }}>
+              {wallReports.length>0 && (
+                <div>
+                  <div className="mono" style={{ fontSize:11, letterSpacing:".12em", color:"var(--danger)", marginBottom:8 }}>TAKIM DUVARI İLANLARI ({wallReports.length})</div>
+                  <div style={{ display:"grid", gap:10 }}>
+                    {wallReports.map(p=>{ const g=p.game?gameById(p.game):null; return (
+                      <div key={p.id} style={{ background:"var(--panel-2)", border:"1px solid rgba(244,63,94,.3)", clipPath:"var(--notch-sm)", padding:"12px 14px" }}>
+                        <div className="mono muted2" style={{ fontSize:10.5, marginBottom:6 }}>yazan: {p.author}{g?" · "+g.name:""} · {p.time}</div>
+                        <p style={{ fontSize:13.5, marginBottom:10, whiteSpace:"pre-wrap" }}>"{p.text}"</p>
+                        <div className="flex" style={{ gap:8 }}>
+                          <button className="btn btn-danger btn-sm" onClick={()=>onDeleteWallPost(p.id)}><X size={13}/> İlanı Sil</button>
+                          <button className="btn btn-ghost btn-sm" onClick={()=>onDismissWallReport(p.id)}>Yoksay</button>
+                        </div>
+                      </div>
+                    ); })}
                   </div>
                 </div>
-              ))}
+              )}
+              {reports.length>0 && (
+                <div>
+                  <div className="mono" style={{ fontSize:11, letterSpacing:".12em", color:"var(--danger)", marginBottom:8 }}>PROFİL YORUMLARI ({reports.length})</div>
+                  <div style={{ display:"grid", gap:10 }}>
+                    {reports.map(r=>(
+                      <div key={r.id} style={{ background:"var(--panel-2)", border:"1px solid rgba(244,63,94,.3)", clipPath:"var(--notch-sm)", padding:"12px 14px" }}>
+                        <div className="mono muted2" style={{ fontSize:10.5, marginBottom:6 }}>{r.playerName} oyuncusunun duvarında · yazan: {r.author}</div>
+                        <p style={{ fontSize:13.5, marginBottom:10 }}>"{r.text}"</p>
+                        <div className="flex" style={{ gap:8 }}>
+                          <button className="btn btn-danger btn-sm" onClick={()=>onRemoveComment(r.pid, r.cid)}><X size={13}/> Yorumu Sil</button>
+                          <button className="btn btn-ghost btn-sm" onClick={()=>onDismissReport(r.id)}>Yoksay</button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>}
         </Hud>
       )}
@@ -2049,7 +2081,14 @@ function AdminPanel({ banned, onBan, onUnban, reports, onDismissReport, onRemove
       {sub==="words" && (
         <Hud>
           <h3 className="disp" style={{ fontSize:17, fontWeight:600, marginBottom:6 }}>Yasaklı Kelimeler (Spam / Küfür)</h3>
-          <p className="muted" style={{ fontSize:13, marginBottom:14 }}>Buraya eklediğin kelimeler <b style={{ color:"var(--text)" }}>Takım Duvarı</b> ilanlarında engellenir. Temel Türkçe/İngilizce küfürler zaten otomatik engellidir.</p>
+          <p className="muted" style={{ fontSize:13, marginBottom:14 }}>Aşağıdaki kelimeler <b style={{ color:"var(--text)" }}>Takım Duvarı</b> ilanlarında engellenir. Varsayılan küfürler otomatik engelli; ayrıca kendi spam/küfür kelimelerini ekleyebilirsin.</p>
+          <div style={{ marginBottom:18 }}>
+            <div className="mono" style={{ fontSize:11, letterSpacing:".1em", color:"var(--muted)", marginBottom:8 }}>VARSAYILAN — OTOMATİK ENGELLİ ({DEFAULT_BANNED.length})</div>
+            <div className="flex" style={{ flexWrap:"wrap", gap:6, maxHeight:160, overflowY:"auto", padding:"2px" }}>
+              {DEFAULT_BANNED.map(w=><span key={w} className="chip" style={{ fontSize:11, padding:"4px 9px", opacity:.62 }}>{w}</span>)}
+            </div>
+          </div>
+          <div className="mono" style={{ fontSize:11, letterSpacing:".1em", color:"var(--cyan)", marginBottom:8 }}>SENİN EKLEDİKLERİN (ekle / çıkar)</div>
           <div className="flex" style={{ gap:8, flexWrap:"wrap" }}>
             <input className="input" style={{ flex:"1 1 220px" }} placeholder="Kelime ekle (örn: reklam, bahis, küfür)..." value={wordInput}
               onChange={e=>setWordInput(e.target.value)}
@@ -2726,7 +2765,7 @@ function containsBanned(text, extra){
 }
 
 /* ============================== TAKIM DUVARI (wall) ============================== */
-function WallView({ posts=[], user, onPost, onDelete, onView, isAdmin, ads }){
+function WallView({ posts=[], user, players=[], onPost, onDelete, onReport, onView, isAdmin, ads }){
   const [text, setText] = useState("");
   const [game, setGame] = useState("");
   const submit = () => { const t=text.trim(); if(!t) return; onPost(t, game); setText(""); setGame(""); };
@@ -2761,20 +2800,24 @@ function WallView({ posts=[], user, onPost, onDelete, onView, isAdmin, ads }){
       : <div style={{ display:"grid", gap:12 }}>
           {posts.map(p=>{
             const g = p.game ? gameById(p.game) : null;
-            const mine = p.authorId!=null && (p.authorId===user.id || isAdmin);
+            const own = p.authorId!=null && p.authorId===user.id;
+            const canDelete = own || isAdmin;
+            const av = own ? user.avatar : ((players.find(x=>x.id===p.authorId)||{}).avatar);
             return (
               <Hud key={p.id} className="noclip">
                 <div className="flex" style={{ gap:12, alignItems:"flex-start" }}>
-                  <Avatar name={p.author} size={40} />
+                  <Avatar name={p.author} avatar={av} size={40} />
                   <div style={{ flex:1, minWidth:0 }}>
                     <div className="flex" style={{ alignItems:"center", gap:8, flexWrap:"wrap" }}>
                       <b className="disp uname-link" style={{ fontSize:14, cursor: p.authorId!=null?"pointer":"default" }} onClick={()=>{ if(p.authorId!=null) onView(p.authorId); }}>{p.author}</b>
                       {g && <span className="chip" style={{ fontSize:11, gap:5 }}><GameIcon gameId={g.id} size={13}/> {g.name}</span>}
                       <span className="mono muted2" style={{ fontSize:11 }}>{p.time}</span>
+                      {p.reported && <span className="chip" style={{ fontSize:10, color:"var(--danger)", borderColor:"rgba(255,80,80,.3)" }}>şikayet edildi</span>}
                     </div>
-                    <p style={{ margin:"6px 0 0", fontSize:14, lineHeight:1.55, whiteSpace:"pre-wrap", wordBreak:"break-word" }}>{p.text}</p>
+                    <p style={{ margin:"6px 0 8px", fontSize:14, lineHeight:1.55, whiteSpace:"pre-wrap", wordBreak:"break-word" }}>{p.text}</p>
+                    {!own && <button className="mono" onClick={()=>onReport(p.id)} disabled={p.reported} style={{ background:"none", border:"none", color: p.reported?"var(--muted-2)":"var(--muted)", cursor:p.reported?"default":"pointer", fontSize:11, padding:0, display:"inline-flex", alignItems:"center", gap:5 }}>⚑ {p.reported?"Şikayet edildi":"Şikayet et"}</button>}
                   </div>
-                  {mine && <button className="btn btn-ghost btn-sm" onClick={()=>onDelete(p.id)} title="Sil" style={{ flexShrink:0 }}><X size={14}/></button>}
+                  {canDelete && <button className="btn btn-ghost btn-sm" onClick={()=>onDelete(p.id)} title="Sil" style={{ flexShrink:0 }}><X size={14}/></button>}
                 </div>
               </Hud>
             );
