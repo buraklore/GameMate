@@ -223,8 +223,9 @@ export async function getInvites(myProfileId) {
     if (error) throw error
     const rows = data || []
     const incoming = rows.filter(r => r.to_profile === myProfileId && r.status === 'pending').map(r => r.from_profile)
-    const outgoing = rows.filter(r => r.from_profile === myProfileId && r.status !== 'declined').map(r => r.to_profile)
-    return { incoming, outgoing }
+    const outgoing = rows.filter(r => r.from_profile === myProfileId && r.status === 'pending').map(r => r.to_profile)
+    const friends = [...new Set(rows.filter(r => r.status === 'accepted').map(r => r.from_profile === myProfileId ? r.to_profile : r.from_profile))]
+    return { incoming, outgoing, friends }
   } catch (e) { console.warn('[db] getInvites', e.message); return null }
 }
 export async function addInvite(fromUser, fromProfile, toProfile, game) {

@@ -588,7 +588,7 @@ function RankBadge({ gameId, rank, sm }){
   );
 }
 
-const BUILD = "v9.9";
+const BUILD = "v10.0";
 const AVATARS = ["🎮","🕹️","👾","🤖","👽","🥷","🧙","🦊","🐺","🦅","🦉","🐉","🐲","🦈","🐙","🦁","🐯","🐆","🦂","🐸","🔥","⚡","💀","🛡️","⚔️","🎯","🏆","👑","🌟","🎲"];
 function hashCode(s){ let h=0; for(let i=0;i<s.length;i++){ h=(h<<5)-h+s.charCodeAt(i); h|=0; } return Math.abs(h); }
 function Avatar({ name, size=46, online, ring, avatar }){
@@ -1309,7 +1309,7 @@ function App(){
   }, []);
   useEffect(()=>{
     if(!DB || !DB.getInvites || !myProfileId) return;
-    DB.getInvites(myProfileId).then(r=>{ if(r){ setIncoming(r.incoming); setOutgoing(new Set(r.outgoing)); } });
+    DB.getInvites(myProfileId).then(r=>{ if(r){ setIncoming(r.incoming); setOutgoing(new Set(r.outgoing)); if(r.friends) setFriends(r.friends); } });
   }, [myProfileId]);
   useEffect(()=>{
     if(!DB) return;
@@ -1537,7 +1537,7 @@ function App(){
             {tab==="friends" && <Friends friends={friends} onChat={openChat} onView={setViewPlayer} ads={ads} players={players} />}
             {tab==="messages" && <MessagesView conversations={conversations} friends={friends} players={players} activeId={activeChat} setActiveId={setActiveChat} onSend={sendMessage} />}
             {tab==="profile" && <Profile user={user} setUser={setUser} push={push} ads={ads} onPersist={saveMyProfile} onGoSettings={()=>setTab("settings")} />}
-            {tab==="mygames" && <MyGames user={user} setUser={setUser} push={push} ads={ads} />}
+            {tab==="mygames" && <MyGames user={user} setUser={setUser} push={push} ads={ads} onPersist={saveMyProfile} />}
             {tab==="settings" && <SettingsView user={user} setUser={setUser} push={push} onLogout={doLogout} onPersist={saveMyProfile} />}
             {tab==="blog" && <BlogView ads={ads} onCTA={()=>setTab("discover")} slug={blogPost} onOpen={(id)=>{ setTab("blog"); setBlogPost(id); }} onBack={()=>setBlogPost(null)} />}
             {tab==="info" && <InfoView />}
@@ -3007,21 +3007,23 @@ function Profile({ user, setUser, push, ads, onPersist, onGoSettings }){
 }
 
 /* ============================== MY GAMES ============================== */
-function MyGames({ user, setUser, push, ads }){
+function MyGames({ user, setUser, push, ads, onPersist }){
   const [adding, setAdding] = useState(false);
   const [pick, setPick] = useState(null);
   const [pickRank, setPickRank] = useState("");
   const [pickRoles, setPickRoles] = useState([]);
   const owned = new Set(user.games.map(x=>x.g));
+  const persist = (games) => { if(onPersist) onPersist({ games }); };
   const openAdd = () => { setPick(null); setPickRank(""); setPickRoles([]); setAdding(true); };
   const choose = (gid) => { const g=gameById(gid); setPick(gid); setPickRank(g.ranks[0]); setPickRoles([g.roles[0]]); };
   const confirmAdd = () => {
     const g = gameById(pick); const rl = pickRoles.length?pickRoles:[g.roles[0]];
-    setUser(u=>({ ...u, games:[...u.games, { g:pick, rank:pickRank||g.ranks[0], role:rl.join(", "), roles:rl, ps:"Günlük" }] }));
+    const ng = [...user.games, { g:pick, rank:pickRank||g.ranks[0], role:rl.join(", "), roles:rl, ps:"Günlük" }];
+    setUser(u=>({ ...u, games:ng })); persist(ng);
     setAdding(false); setPick(null); push(`${g.name} eklendi`, "ok");
   };
-  const removeGame = (gid) => { setUser(u=>({...u, games:u.games.filter(x=>x.g!==gid)})); push("Oyun kaldırıldı","info"); };
-  const updateGame = (gid, k, v) => setUser(u=>({ ...u, games:u.games.map(x=>{ if(x.g!==gid) return x; const nx={...x,[k]:v}; if(k==="roles") nx.role=(v||[]).join(", "); return nx; }) }));
+  const removeGame = (gid) => { const ng=user.games.filter(x=>x.g!==gid); setUser(u=>({...u, games:ng})); persist(ng); push("Oyun kaldırıldı","info"); };
+  const updateGame = (gid, k, v) => { const ng=user.games.map(x=>{ if(x.g!==gid) return x; const nx={...x,[k]:v}; if(k==="roles") nx.role=(v||[]).join(", "); return nx; }); setUser(u=>({ ...u, games:ng })); persist(ng); };
 
   return (
     <div>
