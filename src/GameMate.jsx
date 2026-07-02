@@ -615,7 +615,7 @@ function RankBadge({ gameId, rank, sm }){
   );
 }
 
-const BUILD = "v10.3";
+const BUILD = "v10.4";
 const AVATARS = ["🎮","🕹️","👾","🤖","👽","🥷","🧙","🦊","🐺","🦅","🦉","🐉","🐲","🦈","🐙","🦁","🐯","🐆","🦂","🐸","🔥","⚡","💀","🛡️","⚔️","🎯","🏆","👑","🌟","🎲"];
 function hashCode(s){ let h=0; for(let i=0;i<s.length;i++){ h=(h<<5)-h+s.charCodeAt(i); h|=0; } return Math.abs(h); }
 function Avatar({ name, size=46, online, ring, avatar }){
@@ -2755,12 +2755,12 @@ function normalizeWord(s){
     .replace(/(.)\1{2,}/g,"$1$1");
 }
 function containsBanned(text, extra){
-  const list = DEFAULT_BANNED.concat(extra||[]).map(w=>normalizeWord(w).replace(/[^a-z]/g,"")).filter(w=>w.length>=3);
+  const list = DEFAULT_BANNED.concat(extra||[]).map(w=>normalizeWord(w).replace(/[^a-z]/g,"")).filter(w=>w.length>=2);
   const clean = normalizeWord(text);
   const words = clean.replace(/[^a-z\s]/g," ").split(/\s+/).filter(Boolean);
   for(let i=0;i<words.length;i++){ if(list.indexOf(words[i])>=0) return true; }
   const joined = clean.replace(/[^a-z]/g,"");
-  for(let j=0;j<list.length;j++){ if(list[j].length>=4 && joined.indexOf(list[j])>=0) return true; }
+  for(let j=0;j<list.length;j++){ if(list[j].length>=5 && joined.indexOf(list[j])>=0) return true; }
   return false;
 }
 
