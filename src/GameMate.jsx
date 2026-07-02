@@ -203,7 +203,20 @@ select.input{appearance:none;background-image:linear-gradient(45deg,transparent 
 .disc-hero-count{display:flex;align-items:center;gap:10px;padding:9px 16px;border-radius:12px;background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.32);flex-shrink:0}
 .dhc-num{font-family:var(--ff-disp);font-size:30px;font-weight:800;color:var(--cyan);line-height:1;text-shadow:0 0 16px rgba(34,211,238,.5)}
 .dhc-lbl{font-family:var(--ff-mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);line-height:1.25}
-@media (max-width:560px){ .disc-hero-title{font-size:24px} .disc-hero{padding:16px 16px} .disc-hero-icon{width:44px;height:44px} }
+@media (max-width:560px){
+  .disc-hero{padding:14px 14px}
+  .disc-hero-title{font-size:22px}
+  .disc-hero-icon{width:42px;height:42px}
+  .disc-hero-content{gap:12px}
+  .disc-hero-count{padding:7px 12px}
+  .dhc-num{font-size:24px}
+  .topbar{padding:9px 12px;gap:8px}
+  .main-area{padding:14px 12px 42px}
+  .hdr-nav{gap:5px;margin-left:0!important}
+  .hdr-nav .btn-sm{padding:6px 9px;font-size:11.5px}
+  .fg-body{padding:12px 12px}
+  h1.disp{font-size:22px}
+}
 .filt-lbl{font-family:var(--ff-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 .filter-card .field{gap:5px}
 .filter-card .hours-selects{gap:8px;flex-wrap:wrap;align-items:flex-end}
@@ -359,8 +372,8 @@ select.input{appearance:none;background-image:linear-gradient(45deg,transparent 
   .gm-root{--uiz:1}
   .hero-grid{grid-template-columns:1fr;gap:28px}
   .grid-feat{grid-template-columns:repeat(2,1fr)}
-  .app-shell{grid-template-columns:1fr}
-  .sidebar{position:fixed;left:0;top:0;z-index:120;transform:translateX(-100%);transition:transform .25s;width:248px}
+  .app-shell{grid-template-columns:1fr;z-index:auto}
+  .sidebar{position:fixed;left:0;top:0;z-index:1300;transform:translateX(-100%);transition:transform .25s;width:248px}
   .sidebar.open{transform:none;box-shadow:30px 0 80px rgba(0,0,0,.6)}
   .mob-only{display:flex!important}
 }
@@ -370,6 +383,7 @@ select.input{appearance:none;background-image:linear-gradient(45deg,transparent 
   .statline{gap:18px}
   .main-area,.topbar{padding-left:16px;padding-right:16px}
 }
+.mob-logo{background:none;border:none;cursor:pointer;padding:2px 4px;align-items:center}
 .landing-zoom{zoom:var(--lz,1)}
 @media (max-width:760px){
   .landing-zoom{zoom:1!important}
@@ -621,7 +635,7 @@ function RankBadge({ gameId, rank, sm }){
   );
 }
 
-const BUILD = "v10.6";
+const BUILD = "v10.7";
 const AVATARS = ["🎮","🕹️","👾","🤖","👽","🥷","🧙","🦊","🐺","🦅","🦉","🐉","🐲","🦈","🐙","🦁","🐯","🐆","🦂","🐸","🔥","⚡","💀","🛡️","⚔️","🎯","🏆","👑","🌟","🎲"];
 function hashCode(s){ let h=0; for(let i=0;i<s.length;i++){ h=(h<<5)-h+s.charCodeAt(i); h|=0; } return Math.abs(h); }
 function Avatar({ name, size=46, online, ring, avatar }){
@@ -1572,7 +1586,8 @@ function App(){
         </aside>
         <main>
           <div className="topbar">
-            <button className="btn btn-ghost btn-sm mob-only" style={{display:"none"}} onClick={()=>setSidebarOpen(o=>!o)}><Menu size={16} /></button>
+            <button className="btn btn-ghost btn-sm mob-only" style={{display:"none"}} onClick={()=>setSidebarOpen(o=>!o)} title="Menü"><Menu size={16} /></button>
+            <button className="mob-logo mob-only" style={{display:"none"}} onClick={()=>{ setTab("discover"); setSidebarOpen(false); }} title="Ana sayfa (Oyuncu Bul)"><Logo size={26} /></button>
             <div className="tb-search" style={{ flex:1, position:"relative", maxWidth:460 }}>
               <Search size={16} style={{ position:"absolute", left:13, top:13, color:"var(--muted)", zIndex:1 }} />
               <input className="input" style={{ paddingLeft:38 }} placeholder="Oyuncu, oyun veya etiket ara..." value={search} onChange={e=>{ setSearch(e.target.value); setTab("discover"); }} />
@@ -1635,7 +1650,7 @@ function App(){
         onRate={(n)=>ratePlayer(viewPlayer,n)} onAddComment={addComment} onReport={reportComment}
         onInvite={()=>sendInvite(viewPlayer)}
         onChat={()=>openChat(viewPlayer)} onClose={()=>setViewPlayer(null)} players={playersView} />}
-      {sidebarOpen && <div onClick={()=>setSidebarOpen(false)} style={{ position:"fixed", inset:0, zIndex:110, background:"rgba(0,0,0,.5)" }} className="mob-only" />}
+      {sidebarOpen && <div onClick={()=>setSidebarOpen(false)} style={{ position:"fixed", inset:0, zIndex:1200, background:"rgba(0,0,0,.55)", backdropFilter:"blur(2px)" }} className="mob-only" />}
       {toasts}
     </Shell>
   );
