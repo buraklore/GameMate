@@ -299,3 +299,30 @@ export async function sendMessage(senderProfile, recipientProfile, text) {
     return true
   } catch (e) { console.warn('[db] sendMessage', e.message); return false }
 }
+
+// ---- Takım Duvarı (wall_posts) ----
+export async function getWallPosts() {
+  if (!supaEnabled) return null
+  try {
+    const { data, error } = await supabase.from('wall_posts')
+      .select('id,author_profile,author_name,text,game,created_at')
+      .order('created_at', { ascending: false }).limit(100)
+    if (error) throw error
+    return (data || []).map(p => ({ id: p.id, authorId: p.author_profile, author: p.author_name, text: p.text, game: p.game, time: fmtMsgTime(p.created_at) }))
+  } catch (e) { console.warn('[db] getWallPosts', e.message); return null }
+}
+export async function addWallPost(authorProfile, authorName, text, game) {
+  if (!supaEnabled) return null
+  try {
+    const { data, error } = await supabase.from('wall_posts')
+      .insert({ author_profile: authorProfile, author_name: authorName, text, game: game || null })
+      .select('id,author_profile,author_name,text,game,created_at').single()
+    if (error) throw error
+    return { id: data.id, authorId: data.author_profile, author: data.author_name, text: data.text, game: data.game, time: fmtMsgTime(data.created_at) }
+  } catch (e) { console.warn('[db] addWallPost', e.message); return null }
+}
+export async function deleteWallPost(id) {
+  if (!supaEnabled) return false
+  try { const { error } = await supabase.from('wall_posts').delete().eq('id', id); if (error) throw error; return true }
+  catch (e) { console.warn('[db] deleteWallPost', e.message); return false }
+}

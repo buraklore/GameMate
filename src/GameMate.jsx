@@ -171,6 +171,18 @@ a{color:inherit;text-decoration:none}
 select.input{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 18px) 18px,calc(100% - 13px) 18px;background-size:5px 5px,5px 5px;background-repeat:no-repeat;padding-right:34px}
 .checkrow{display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;font-size:13.5px;color:var(--muted)}
 .filter-card .hud-body{padding:10px 12px}
+.filter-gaming{position:relative;border-radius:14px;padding:1px;background:linear-gradient(135deg,rgba(139,92,246,.55),rgba(34,211,238,.4) 60%,rgba(139,92,246,.3));box-shadow:0 0 30px rgba(139,92,246,.12)}
+.fg-head{display:flex;justify-content:space-between;align-items:center;padding:9px 14px;background:linear-gradient(90deg,rgba(139,92,246,.22),rgba(34,211,238,.05));border-radius:13px 13px 0 0}
+.fg-head-l{display:flex;align-items:center;gap:7px;font-family:var(--ff-mono);font-size:11px;letter-spacing:.16em;color:var(--cyan);font-weight:700}
+.fg-head-r{font-family:var(--ff-mono);font-size:10px;color:var(--muted-2);letter-spacing:.06em}
+.fg-body{background:linear-gradient(165deg,#191426,#111022 55%,#0d0d18);border-radius:0 0 13px 13px;padding:13px 14px}
+.fg-body .field{gap:5px}
+.fg-body .sel-wrap select{padding:8px 30px 8px 11px;width:auto;min-width:92px;font-size:13px}
+.fg-body .hours-selects{gap:8px;flex-wrap:wrap;align-items:flex-end}
+.fg-body .hsel{flex:0 0 auto;min-width:0}
+.fg-body .hours-arrow{margin-bottom:9px}
+.fg-body .hours-summary{margin-top:8px;font-size:12px}
+@media (max-width:560px){ .fg-head-r{display:none} }
 .disc-hero{position:relative;overflow:hidden;border:1px solid rgba(139,92,246,.28);border-radius:16px;background:linear-gradient(135deg,#1b1033 0%,#101026 48%,#0b1620 100%);padding:20px 22px;margin-bottom:16px}
 .disc-hero::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 14% 18%,rgba(139,92,246,.3),transparent 46%),radial-gradient(circle at 92% 88%,rgba(34,211,238,.2),transparent 42%);pointer-events:none}
 .disc-hero::after{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--violet) 30%,var(--cyan) 70%,transparent)}
@@ -598,7 +610,7 @@ function RankBadge({ gameId, rank, sm }){
   );
 }
 
-const BUILD = "v10.1";
+const BUILD = "v10.2";
 const AVATARS = ["🎮","🕹️","👾","🤖","👽","🥷","🧙","🦊","🐺","🦅","🦉","🐉","🐲","🦈","🐙","🦁","🐯","🐆","🦂","🐸","🔥","⚡","💀","🛡️","⚔️","🎯","🏆","👑","🌟","🎲"];
 function hashCode(s){ let h=0; for(let i=0;i<s.length;i++){ h=(h<<5)-h+s.charCodeAt(i); h|=0; } return Math.abs(h); }
 function Avatar({ name, size=46, online, ring, avatar }){
@@ -1132,7 +1144,7 @@ function ageFromDob(dob){
   return (a>0&&a<120)?a:0;
 }
 /* ============================== URL YÖNLENDİRME ============================== */
-const TAB_PATHS = { discover:"/kesfet", invites:"/davetler", friends:"/arkadaslar", messages:"/mesajlar", profile:"/profil", mygames:"/oyunlarim", settings:"/ayarlar", contact:"/iletisim", blog:"/blog", info:"/nasil-calisir", admin:"/yonetim", about:"/hakkinda" };
+const TAB_PATHS = { discover:"/kesfet", wall:"/duvar", invites:"/davetler", friends:"/arkadaslar", messages:"/mesajlar", profile:"/profil", mygames:"/oyunlarim", settings:"/ayarlar", contact:"/iletisim", blog:"/blog", info:"/nasil-calisir", admin:"/yonetim", about:"/hakkinda" };
 const PATH_TABS = Object.fromEntries(Object.entries(TAB_PATHS).map(([k,v])=>[v,k]));
 function routeToPath(screen, tab, post){
   if(screen==="login") return "/giris";
@@ -1205,6 +1217,7 @@ function App(){
   useEffect(()=>{ if(tab!=="blog" && blogPost) setBlogPost(null); }, [tab]);
   const [chatWith, setChatWith] = useState(null);
   const [conversations, setConversations] = useState(SEED_CONVOS);
+  const [wallPosts, setWallPosts] = useState(SEED_WALL_POSTS);
   const [activeChat, setActiveChat] = useState(null);
   const [search, setSearch] = useState("");
   const [walls, setWalls] = useState(SEED_WALLS);
@@ -1324,6 +1337,10 @@ function App(){
     DB.getBans().then(b=>{ if(b) setBanned(b); });
   }, []);
   useEffect(()=>{
+    if(!DB || !DB.getWallPosts) return;
+    DB.getWallPosts().then(r=>{ if(r) setWallPosts(r); });
+  }, []);
+  useEffect(()=>{
     if(!DB || !DB.getInvites || !myProfileId) return;
     DB.getInvites(myProfileId).then(r=>{ if(r){ setIncoming(r.incoming); setOutgoing(new Set(r.outgoing)); if(r.friends) setFriends(r.friends); } });
   }, [myProfileId]);
@@ -1424,6 +1441,14 @@ function App(){
   const removeComment = (pid,cid) => { setWalls(w=>({ ...w, [pid]:(w[pid]||[]).filter(c=>c.id!==cid) })); setCommentReports(rs=>rs.filter(r=>!(r.pid===pid&&r.cid===cid))); DB && DB.deleteComment(cid); push("Yorum silindi","info"); };
   const banUser = (pid) => { setBanned(b=>b.includes(pid)?b:[...b,pid]); DB && DB.setBan(pid,true); const pl=players.find(x=>x.id===pid); push((pl?pl.name:"Kullanıcı")+" siteden banlandı","info"); };
   const unbanUser = (pid) => { setBanned(b=>b.filter(x=>x!==pid)); DB && DB.setBan(pid,false); };
+  const postToWall = (text, game) => {
+    if(containsBanned(text, siteCfg.bannedWords||[])){ push("İlanın yasaklı/uygunsuz kelime içeriyor. Lütfen düzenle.","bad"); return; }
+    const opt = { id:"tmp"+Date.now(), authorId: myProfileId||user.id, author:user.name, text, game:game||null, time:"şimdi" };
+    setWallPosts(ps=>[opt, ...ps]);
+    if(DB && DB.addWallPost && myProfileId){ DB.addWallPost(myProfileId, user.name, text, game).then(row=>{ if(row) setWallPosts(ps=>ps.map(x=>x.id===opt.id?row:x)); }); }
+    push("İlanın duvara eklendi","ok");
+  };
+  const removeWallPost = (id) => { setWallPosts(ps=>ps.filter(x=>x.id!==id)); if(DB && DB.deleteWallPost) DB.deleteWallPost(id); push("İlan silindi","info"); };
   const sendMessage = (pid, text) => { const t=(text||"").trim(); if(!t) return; setConversations(c=>({ ...c, [pid]:[...(c[pid]||[]), { me:true, t, time:"şimdi" }] })); if(DB && DB.sendMessage && myProfileId){ DB.sendMessage(myProfileId, pid, t).then(()=>{ if(DB.getMessages) DB.getMessages(myProfileId).then(cv=>{ if(cv) setConversations(cv); }); }); } };
   const openChat = (pid) => { setActiveChat(pid); setTab("messages"); };
 
@@ -1500,6 +1525,7 @@ function App(){
   // ---- main app ----
   const nav = [
     { id:"discover", label:"Oyuncu Bul", Icon:Search },
+    { id:"wall", label:"Takım Duvarı", Icon:Swords },
     { id:"invites", label:"Davetler", Icon:Bell, badge: incomingCount||undefined },
     { id:"friends", label:"Arkadaşlar", Icon:Users },
     { id:"messages", label:"Mesajlar", Icon:MessageSquare, badge: undefined },
@@ -1561,6 +1587,7 @@ function App(){
             {tab==="discover" && <Discover user={user} outgoing={outgoing} friends={friends}
               onInvite={sendInvite} onView={setViewPlayer} simulateMatch={acceptOutgoingAsMatch}
               query={search} onSearch={setSearch} banned={banned} ads={ads} players={playersView} excludeId={myProfileId} />}
+            {tab==="wall" && <WallView posts={wallPosts} user={user} onPost={postToWall} onDelete={removeWallPost} onView={setViewPlayer} isAdmin={!!user.admin} ads={ads} />}
             {tab==="invites" && <Invites incoming={incoming} outgoing={outgoing}
               onAccept={acceptInvite} onDecline={declineInvite} onCancel={cancelInvite} onView={setViewPlayer} ads={ads} players={playersView} />}
             {tab==="friends" && <Friends friends={friends} onChat={openChat} onView={setViewPlayer} ads={ads} players={playersView} />}
@@ -1592,6 +1619,11 @@ function App(){
 }
 
 /* ============================== EK ÖZELLİKLER ============================== */
+const SEED_WALL_POSTS = [
+  { id:"w1", authorId:1, author:"NyxStorm", text:"3 kişiyiz Valorant, 2 kişi lazım. Elmas+ ve mikrofon şart. Akşam oynuyoruz.", game:"valorant", time:"5 dk" },
+  { id:"w2", authorId:6, author:"TurboGoal", text:"4 kişiyiz LoL aramda, 1 destek gerek. Platin ortalama, chill takım.", game:"lol", time:"37 dk" },
+  { id:"w3", authorId:11, author:"GhostDiver", text:"CS2 premier için 2 kişi arıyoruz. 18+ ve iletişime açık olun.", game:"cs2", time:"1 sa" },
+];
 const SEED_CONVOS = {
   5: [ { me:false, t:"selam! eşleştik 🎮 hangi oyunu oynayalım?", time:"14:02" }, { me:true, t:"valorant ranked takılalım mı? mic açık", time:"14:03" }, { me:false, t:"olur, discord'da buluşalım. 5 dk sonra hazırım", time:"14:04" } ],
   1: [ { me:false, t:"bu akşam müsait misin? cs2 premier düşünüyorum", time:"12:20" }, { me:true, t:"21'den sonra varım, 2 kişi daha ayarlayalım", time:"12:25" } ],
@@ -1933,6 +1965,7 @@ function HeaderAd({ ads }){
 
 function AdminPanel({ banned, onBan, onUnban, reports, onDismissReport, onRemoveComment, ads, setAds, siteCfg, setSiteCfg, messages=[], onMsgRead, onMsgDelete, seo, setSeo, players=[] }){
   const [sub, setSub] = useState("users");
+  const [wordInput, setWordInput] = useState("");
   const [q, setQ] = useState("");
   const unread = (messages||[]).filter(m=>!m.read).length;
   const seoChecks = [
@@ -1965,7 +1998,7 @@ function AdminPanel({ banned, onBan, onUnban, reports, onDismissReport, onRemove
       <span className="eyebrow">// ADMIN</span>
       <h1 className="disp" style={{ fontSize:28, fontWeight:700, margin:"4px 0 18px" }}>Admin Paneli</h1>
       <div className="flex" style={{ gap:8, flexWrap:"wrap", marginBottom:18 }}>
-        {[["users","Kullanıcılar"],["reports","Şikayet Edilen Yorumlar"],["messages",unread?`Mesajlar (${unread})`:"Mesajlar"],["ads","Reklamlar"],["seo","SEO"],["site","Site Ayarları"]].map(([k,l])=>(
+        {[["users","Kullanıcılar"],["reports","Şikayet Edilen Yorumlar"],["words","Yasaklı Kelimeler"],["messages",unread?`Mesajlar (${unread})`:"Mesajlar"],["ads","Reklamlar"],["seo","SEO"],["site","Site Ayarları"]].map(([k,l])=>(
           <button key={k} className={`chip`} onClick={()=>setSub(k)}
             style={{ cursor:"pointer", padding:"8px 13px", color:sub===k?"var(--violet-hi)":"var(--muted)", borderColor:sub===k?"rgba(139,92,246,.5)":"var(--line)" }}>{l}</button>
         ))}
@@ -2013,6 +2046,27 @@ function AdminPanel({ banned, onBan, onUnban, reports, onDismissReport, onRemove
         </Hud>
       )}
 
+      {sub==="words" && (
+        <Hud>
+          <h3 className="disp" style={{ fontSize:17, fontWeight:600, marginBottom:6 }}>Yasaklı Kelimeler (Spam / Küfür)</h3>
+          <p className="muted" style={{ fontSize:13, marginBottom:14 }}>Buraya eklediğin kelimeler <b style={{ color:"var(--text)" }}>Takım Duvarı</b> ilanlarında engellenir. Temel Türkçe/İngilizce küfürler zaten otomatik engellidir.</p>
+          <div className="flex" style={{ gap:8, flexWrap:"wrap" }}>
+            <input className="input" style={{ flex:"1 1 220px" }} placeholder="Kelime ekle (örn: reklam, bahis, küfür)..." value={wordInput}
+              onChange={e=>setWordInput(e.target.value)}
+              onKeyDown={e=>{ if(e.key==="Enter"){ const w=wordInput.trim().toLowerCase(); if(w && (siteCfg.bannedWords||[]).indexOf(w)<0) setSiteCfg(c=>({ ...c, bannedWords:[...(c.bannedWords||[]), w] })); setWordInput(""); } }} />
+            <button className="btn btn-primary btn-sm" onClick={()=>{ const w=wordInput.trim().toLowerCase(); if(w && (siteCfg.bannedWords||[]).indexOf(w)<0) setSiteCfg(c=>({ ...c, bannedWords:[...(c.bannedWords||[]), w] })); setWordInput(""); }}><Plus size={14}/> Ekle</button>
+          </div>
+          <div className="flex" style={{ flexWrap:"wrap", gap:8, marginTop:16 }}>
+            {(siteCfg.bannedWords||[]).length===0 && <span className="muted" style={{ fontSize:13 }}>Henüz özel kelime eklenmedi. (Temel küfürler yine de engelli.)</span>}
+            {(siteCfg.bannedWords||[]).map(w=>(
+              <span key={w} className="chip" style={{ gap:6, padding:"6px 10px" }}>{w}
+                <button onClick={()=>setSiteCfg(c=>({ ...c, bannedWords:(c.bannedWords||[]).filter(x=>x!==w) }))} title="Kaldır" style={{ background:"none", border:"none", color:"var(--danger)", cursor:"pointer", padding:0, display:"flex", alignItems:"center" }}><X size={13}/></button>
+              </span>
+            ))}
+          </div>
+          <p className="mono muted2" style={{ fontSize:11, marginTop:14 }}>Değişiklikler otomatik kaydedilir.</p>
+        </Hud>
+      )}
       {sub==="ads" && (
         <div>
           <Hud style={{ marginBottom:14 }}>
@@ -2653,6 +2707,83 @@ function Footer({ text, onNav }){
 
 function Shell({ children }){ return <div className="gm-root"><style>{css}</style>{children}</div>; }
 
+/* ============================== YASAKLI KELİMELER (küfür/spam filtresi) ============================== */
+const DEFAULT_BANNED = ["amk","amq","amina","amcik","aminakoyayim","siktir","sikerim","sikeyim","sikik","sikik","yavsak","yavşak","gavat","kaltak","orospu","orospucocugu","pezevenk","gotveren","gotlek","ibne","ipne","yarrak","yarrag","kahpe","kevase","pust","godos","surtuk","oruspu","fuck","fuk","fucker","fuckyou","motherfucker","shit","bullshit","bitch","asshole","bastard","dickhead","pussy","cunt","slut","whore","nigger","nigga","faggot","retard","wanker","twat"];
+function normalizeWord(s){
+  return (s||"").toLowerCase()
+    .replace(/ı/g,"i").replace(/ş/g,"s").replace(/ğ/g,"g").replace(/ü/g,"u").replace(/ö/g,"o").replace(/ç/g,"c")
+    .replace(/@/g,"a").replace(/\$/g,"s").replace(/0/g,"o").replace(/1/g,"i").replace(/3/g,"e").replace(/4/g,"a").replace(/5/g,"s").replace(/7/g,"t")
+    .replace(/(.)\1{2,}/g,"$1$1");
+}
+function containsBanned(text, extra){
+  const list = DEFAULT_BANNED.concat(extra||[]).map(w=>normalizeWord(w).replace(/[^a-z]/g,"")).filter(w=>w.length>=3);
+  const clean = normalizeWord(text);
+  const words = clean.replace(/[^a-z\s]/g," ").split(/\s+/).filter(Boolean);
+  for(let i=0;i<words.length;i++){ if(list.indexOf(words[i])>=0) return true; }
+  const joined = clean.replace(/[^a-z]/g,"");
+  for(let j=0;j<list.length;j++){ if(list[j].length>=4 && joined.indexOf(list[j])>=0) return true; }
+  return false;
+}
+
+/* ============================== TAKIM DUVARI (wall) ============================== */
+function WallView({ posts=[], user, onPost, onDelete, onView, isAdmin, ads }){
+  const [text, setText] = useState("");
+  const [game, setGame] = useState("");
+  const submit = () => { const t=text.trim(); if(!t) return; onPost(t, game); setText(""); setGame(""); };
+  return (
+    <div>
+      <div className="disc-hero" style={{ marginBottom:16 }}>
+        <div className="disc-hero-content">
+          <div className="disc-hero-icon"><Swords size={24} /></div>
+          <div style={{ flex:1, minWidth:180 }}>
+            <span className="eyebrow" style={{ color:"var(--cyan)" }}>// TAKIM DUVARI</span>
+            <h1 className="disp disc-hero-title">Takım Duvarı</h1>
+            <p className="muted" style={{ fontSize:13.5, margin:0 }}>Takım arkadaşı ara, ilan bırak. Örn: &quot;4 kişiyiz LoL aramda, 1 destek lazım.&quot;</p>
+          </div>
+        </div>
+      </div>
+      <Hud className="noclip" style={{ marginBottom:16 }}>
+        <textarea className="input" rows={3} maxLength={500} placeholder={'Ne arıyorsun? Örn: "2 kişiyiz Valorant, 3 kişi lazım — Elmas+, mikrofon şart"'} value={text} onChange={e=>setText(e.target.value)} style={{ resize:"vertical", fontFamily:"inherit", lineHeight:1.5 }} />
+        <div className="flex" style={{ justifyContent:"space-between", alignItems:"center", gap:10, marginTop:10, flexWrap:"wrap" }}>
+          <div className="sel-wrap" style={{ maxWidth:220, flex:"1 1 160px" }}>
+            <select className="input" value={game} onChange={e=>setGame(e.target.value)}>
+              <option value="">Oyun (opsiyonel)</option>
+              {GAMES.map(g=><option key={g.id} value={g.id}>{g.name}</option>)}
+            </select>
+          </div>
+          <div className="flex" style={{ alignItems:"center", gap:10 }}>
+            <span className="mono muted2" style={{ fontSize:11 }}>{text.length}/500</span>
+            <button className="btn btn-primary btn-sm" onClick={submit} disabled={!text.trim()}><Send size={14}/> Paylaş</button>
+          </div>
+        </div>
+      </Hud>
+      {posts.length===0 ? <EmptyBlock icon={Swords} title="Henüz ilan yok" text="İlk ilanı sen bırak — takımını topla!" />
+      : <div style={{ display:"grid", gap:12 }}>
+          {posts.map(p=>{
+            const g = p.game ? gameById(p.game) : null;
+            const mine = p.authorId!=null && (p.authorId===user.id || isAdmin);
+            return (
+              <Hud key={p.id} className="noclip">
+                <div className="flex" style={{ gap:12, alignItems:"flex-start" }}>
+                  <Avatar name={p.author} size={40} />
+                  <div style={{ flex:1, minWidth:0 }}>
+                    <div className="flex" style={{ alignItems:"center", gap:8, flexWrap:"wrap" }}>
+                      <b className="disp uname-link" style={{ fontSize:14, cursor: p.authorId!=null?"pointer":"default" }} onClick={()=>{ if(p.authorId!=null) onView(p.authorId); }}>{p.author}</b>
+                      {g && <span className="chip" style={{ fontSize:11, gap:5 }}><GameIcon gameId={g.id} size={13}/> {g.name}</span>}
+                      <span className="mono muted2" style={{ fontSize:11 }}>{p.time}</span>
+                    </div>
+                    <p style={{ margin:"6px 0 0", fontSize:14, lineHeight:1.55, whiteSpace:"pre-wrap", wordBreak:"break-word" }}>{p.text}</p>
+                  </div>
+                  {mine && <button className="btn btn-ghost btn-sm" onClick={()=>onDelete(p.id)} title="Sil" style={{ flexShrink:0 }}><X size={14}/></button>}
+                </div>
+              </Hud>
+            );
+          })}
+        </div>}
+    </div>
+  );
+}
+
 /* ============================== DISCOVER (player finder) ============================== */
 function Discover({ user, outgoing, friends, onInvite, onView, simulateMatch, query="", onSearch, banned=[], ads, players=[], excludeId=null }){
   const [fDevices, setFDevices] = useState([]);
@@ -2708,33 +2839,39 @@ function Discover({ user, outgoing, friends, onInvite, onView, simulateMatch, qu
         </div>
       </div>
 
-      {/* filters — kompakt */}
-      <Hud className="noclip filter-card" style={{ marginBottom:18 }}>
-        <div className="flex filt-top" style={{ justifyContent:"space-between", alignItems:"center", gap:12, flexWrap:"wrap", marginBottom:12 }}>
-          <div className="flex" style={{ alignItems:"center", gap:11, flexWrap:"wrap" }}>
-            <span className="filt-lbl">Platform</span>
-            <DeviceToggle value={fDevices} onChange={setFDevices} compact />
+      {/* filters — gaming */}
+      <div className="filter-gaming" style={{ marginBottom:18 }}>
+        <div className="fg-head">
+          <span className="fg-head-l"><Filter size={13}/> FİLTRELER</span>
+          <span className="fg-head-r">// eşleşmeni daralt</span>
+        </div>
+        <div className="fg-body">
+          <div className="flex filt-top" style={{ justifyContent:"space-between", alignItems:"center", gap:12, flexWrap:"wrap", marginBottom:12 }}>
+            <div className="flex" style={{ alignItems:"center", gap:11, flexWrap:"wrap" }}>
+              <span className="filt-lbl">Platform</span>
+              <DeviceToggle value={fDevices} onChange={setFDevices} compact />
+            </div>
+            <label className="checkrow" style={{ fontSize:13 }}>
+              <input type="checkbox" checked={onlyOnline} onChange={e=>setOnlyOnline(e.target.checked)} />
+              <span className="online-dot" /> Sadece online
+            </label>
           </div>
-          <label className="checkrow" style={{ fontSize:13 }}>
-            <input type="checkbox" checked={onlyOnline} onChange={e=>setOnlyOnline(e.target.checked)} />
-            <span className="online-dot" /> Sadece online
-          </label>
+          <div className="filt-grid" style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(150px,1fr))", gap:10, marginBottom:12 }}>
+            <div className="field"><label>Oyun</label>
+              <MultiSelect options={GAMES.filter(g=>gameOnDevices(g.id, fDevices)).map(g=>g.id)} value={fGames} onChange={setFGames} placeholder="Tüm oyunlar" labelOf={id=>{const g=gameById(id);return g?g.name:id;}} searchable searchPlaceholder="Oyun ara..." /></div>
+            <div className="field"><label>Rank</label>
+              <MultiSelect options={rankOpts} value={fRanks} onChange={setFRanks} placeholder={fGames.length?"Tüm ranklar":"Önce oyun seç"} disabled={!fGames.length} /></div>
+            <div className="field"><label>Rol</label>
+              <MultiSelect options={roleOpts} value={fRoles} onChange={setFRoles} placeholder="Tüm roller" /></div>
+            <div className="field"><label>Etiket</label>
+              <MultiSelect options={TAGS.map(t=>t.id)} value={fTags} onChange={setFTags} placeholder="Tüm tarzlar" labelOf={id=>{const t=tagById(id);return t?t.label:id;}} /></div>
+          </div>
+          <div>
+            <label className="filt-lbl" style={{ display:"block", marginBottom:7 }}>Oyun Saati (TSİ)</label>
+            <HoursPicker value={fTimes} onChange={setFTimes} noPresets />
+          </div>
         </div>
-        <div className="filt-grid" style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(150px,1fr))", gap:10, marginBottom:12 }}>
-          <div className="field"><label>Oyun</label>
-            <MultiSelect options={GAMES.filter(g=>gameOnDevices(g.id, fDevices)).map(g=>g.id)} value={fGames} onChange={setFGames} placeholder="Tüm oyunlar" labelOf={id=>{const g=gameById(id);return g?g.name:id;}} searchable searchPlaceholder="Oyun ara..." /></div>
-          <div className="field"><label>Rank</label>
-            <MultiSelect options={rankOpts} value={fRanks} onChange={setFRanks} placeholder={fGames.length?"Tüm ranklar":"Önce oyun seç"} disabled={!fGames.length} /></div>
-          <div className="field"><label>Rol</label>
-            <MultiSelect options={roleOpts} value={fRoles} onChange={setFRoles} placeholder="Tüm roller" /></div>
-          <div className="field"><label>Etiket</label>
-            <MultiSelect options={TAGS.map(t=>t.id)} value={fTags} onChange={setFTags} placeholder="Tüm tarzlar" labelOf={id=>{const t=tagById(id);return t?t.label:id;}} /></div>
-        </div>
-        <div>
-          <label className="filt-lbl" style={{ display:"block", marginBottom:7 }}>Oyun Saati (TSİ)</label>
-          <HoursPicker value={fTimes} onChange={setFTimes} noPresets />
-        </div>
-      </Hud>
+      </div>
 
       {ads && <AdSlot ads={ads} slot="discoverTop" format="leaderboard" style={{ marginBottom:18 }} />}
 
