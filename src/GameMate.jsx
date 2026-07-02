@@ -176,11 +176,14 @@ select.input{appearance:none;background-image:linear-gradient(45deg,transparent 
 .fg-head-l{display:flex;align-items:center;gap:7px;font-family:var(--ff-mono);font-size:11px;letter-spacing:.16em;color:var(--cyan);font-weight:700}
 .fg-head-r{font-family:var(--ff-mono);font-size:10px;color:var(--muted-2);letter-spacing:.06em}
 .fg-body{background:linear-gradient(165deg,#191426,#111022 55%,#0d0d18),repeating-linear-gradient(90deg,rgba(139,92,246,.045) 0 1px,transparent 1px 26px),repeating-linear-gradient(0deg,rgba(34,211,238,.03) 0 1px,transparent 1px 26px);border-radius:0 0 13px 13px;padding:14px 15px}
-.fg-body .field>label{color:var(--cyan);opacity:.72;letter-spacing:.14em}
-.fg-body .input,.fg-body .sel-wrap select{background:rgba(9,9,18,.6);border-color:rgba(139,92,246,.28)}
-.fg-body .input:hover,.fg-body .sel-wrap select:hover{border-color:rgba(34,211,238,.55)}
-.fg-body .input:focus,.fg-body .sel-wrap select:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(34,211,238,.13)}
-.fg-body .filt-lbl{color:var(--cyan);opacity:.72}
+.fg-body .field>label{color:var(--cyan);opacity:.9;letter-spacing:.14em;position:relative;padding-left:11px}
+.fg-body .field>label::before{content:"";position:absolute;left:0;top:52%;transform:translateY(-50%);width:3px;height:11px;background:linear-gradient(var(--violet),var(--cyan));border-radius:2px;box-shadow:0 0 6px rgba(34,211,238,.5)}
+.fg-body .input,.fg-body .sel-wrap select{background:linear-gradient(180deg,rgba(24,18,44,.7),rgba(9,9,18,.72));border:1px solid rgba(139,92,246,.38);transition:all .15s}
+.fg-body .input:hover,.fg-body .sel-wrap select:hover{border-color:var(--cyan);box-shadow:0 0 16px rgba(34,211,238,.18),inset 0 0 12px rgba(139,92,246,.1)}
+.fg-body .input:focus,.fg-body .sel-wrap select:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(34,211,238,.15),0 0 16px rgba(34,211,238,.18)}
+.fg-body .filt-lbl{color:var(--cyan);opacity:.9;position:relative;padding-left:11px}
+.fg-body .filt-lbl::before{content:"";position:absolute;left:0;top:52%;transform:translateY(-50%);width:3px;height:11px;background:linear-gradient(var(--violet),var(--cyan));border-radius:2px;box-shadow:0 0 6px rgba(34,211,238,.5)}
+.fg-head-l{text-shadow:0 0 10px rgba(34,211,238,.4)}
 .fg-body .field{gap:5px}
 .fg-body .sel-wrap select{padding:8px 30px 8px 11px;width:auto;min-width:92px;font-size:13px}
 .fg-body .hours-selects{gap:8px;flex-wrap:wrap;align-items:flex-end}
@@ -615,7 +618,7 @@ function RankBadge({ gameId, rank, sm }){
   );
 }
 
-const BUILD = "v10.4";
+const BUILD = "v10.5";
 const AVATARS = ["🎮","🕹️","👾","🤖","👽","🥷","🧙","🦊","🐺","🦅","🦉","🐉","🐲","🦈","🐙","🦁","🐯","🐆","🦂","🐸","🔥","⚡","💀","🛡️","⚔️","🎯","🏆","👑","🌟","🎲"];
 function hashCode(s){ let h=0; for(let i=0;i<s.length;i++){ h=(h<<5)-h+s.charCodeAt(i); h|=0; } return Math.abs(h); }
 function Avatar({ name, size=46, online, ring, avatar }){
@@ -1348,6 +1351,15 @@ function App(){
   useEffect(()=>{
     if(!DB || !DB.getInvites || !myProfileId) return;
     DB.getInvites(myProfileId).then(r=>{ if(r){ setIncoming(r.incoming); setOutgoing(new Set(r.outgoing)); if(r.friends) setFriends(r.friends); } });
+  }, [myProfileId]);
+  // Presence heartbeat — son görülmeyi güncel tut (çevrimiçi görünürlük için)
+  useEffect(()=>{
+    if(!DB || !DB.touchLastSeen || !myProfileId) return;
+    DB.touchLastSeen(myProfileId);
+    const iv = setInterval(()=>DB.touchLastSeen(myProfileId), 60000);
+    const onVis = ()=>{ if(!document.hidden) DB.touchLastSeen(myProfileId); };
+    document.addEventListener("visibilitychange", onVis);
+    return ()=>{ clearInterval(iv); document.removeEventListener("visibilitychange", onVis); };
   }, [myProfileId]);
   useEffect(()=>{
     if(!DB || !DB.getRatings) return;
@@ -2714,10 +2726,12 @@ function DeviceToggle({ value=[], onChange, single, compact }){
   return (
     <div className="flex" style={{ gap:compact?8:10, flexWrap:"wrap" }}>
       {DEV.map(dv=>{ const on=value.includes(dv.k); return (
-        <button key={dv.k} type="button" onClick={()=>toggle(dv.k)}
-          style={{ flex: compact?"0 0 auto":1, minWidth: compact?0:130, display:"inline-flex", alignItems:"center", justifyContent:"center", gap: compact?7:9, padding: compact?"8px 15px":"13px 18px",
-            border:"1px solid", borderColor:on?"var(--cyan)":"var(--line)", background:on?"rgba(34,211,238,.12)":"var(--panel-2)",
-            color:on?"var(--cyan)":"var(--muted)", clipPath:"var(--notch-sm)", fontWeight:700, fontSize: compact?13:14.5, cursor:"pointer" }}>
+        <button key={dv.k} type="button" onClick={()=>toggle(dv.k)} className={on?"devpill on":"devpill"}
+          style={{ flex: compact?"0 0 auto":1, minWidth: compact?0:130, display:"inline-flex", alignItems:"center", justifyContent:"center", gap: compact?7:9, padding: compact?"8px 16px":"13px 18px",
+            border:"1px solid", borderColor:on?"var(--cyan)":"rgba(139,92,246,.3)",
+            background:on?"linear-gradient(135deg,rgba(34,211,238,.26),rgba(139,92,246,.22))":"linear-gradient(180deg,rgba(22,17,40,.6),rgba(9,9,18,.65))",
+            color:on?"#eafcff":"var(--muted)", boxShadow:on?"0 0 18px rgba(34,211,238,.32)":"none",
+            clipPath:"var(--notch-sm)", fontWeight:800, fontSize: compact?13:14.5, letterSpacing:".02em", cursor:"pointer", transition:"all .15s" }}>
           <span style={{ fontSize: compact?15:19 }}>{dv.ic}</span> {dv.k} {on && <Check size={compact?13:15} />}
         </button>
       ); })}

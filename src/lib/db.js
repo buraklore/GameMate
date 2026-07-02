@@ -7,7 +7,7 @@ function rowToPlayer(r) {
     name: r.name,
     country: r.country || '🌐',
     age: r.age,
-    online: !!r.online,
+    online: (!!r.online) && !!r.last_seen && (Date.now() - Date.parse(r.last_seen) < 300000),
     admin: !!r.admin,
     devices: r.devices || ['PC'],
     bio: r.bio || '',
@@ -35,7 +35,7 @@ export async function addProfile(p) {
   const base = {
     name: p.name, country: p.country || '🇹🇷', age: p.age, online: true, admin: !!p.admin,
     devices: p.devices || [], bio: p.bio || '', tags: p.tags || [], socials: p.socials || {},
-    rating: 0, times: p.times || [], games: p.games || [], user_id: p.user_id || null,
+    rating: 0, times: p.times || [], games: p.games || [], user_id: p.user_id || null, last_seen: new Date().toISOString(),
   }
   try {
     const { data, error } = await supabase.from('profiles').insert({ ...base, avatar: p.avatar || '🎮' }).select().single()
@@ -219,7 +219,7 @@ export async function getMyProfile(userId) {
   try {
     const { data, error } = await supabase.from('profiles').select('*').eq('user_id', userId).maybeSingle()
     if (error) throw error
-    return data ? rowToPlayer(data) : null
+    return data ? { ...rowToPlayer(data), online: data.online !== false } : null
   } catch (e) { console.warn('[db] getMyProfile', e.message); return null }
 }
 
@@ -330,4 +330,10 @@ export async function setWallReported(id, val) {
   if (!supaEnabled) return false
   try { const { error } = await supabase.from('wall_posts').update({ reported: !!val }).eq('id', id); if (error) throw error; return true }
   catch (e) { console.warn('[db] setWallReported', e.message); return false }
+}
+
+// ---- Presence (çevrimiçi durumu) ----
+export async function touchLastSeen(profileId) {
+  if (!supaEnabled || !profileId) return
+  try { await supabase.from('profiles').update({ last_seen: new Date().toISOString() }).eq('id', profileId) } catch (e) {}
 }
